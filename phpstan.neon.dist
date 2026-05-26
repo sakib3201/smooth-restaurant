@@ -1,0 +1,29 @@
+parameters:
+    level: 8
+
+    paths:
+        - src/
+        - tests/
+
+    scanFiles:
+        - smooth-restaurant.php
+        - uninstall.php
+
+    bootstrapFiles:
+        - smooth-restaurant.php
+
+    excludePaths:
+        - vendor/*
+        - node_modules/*
+
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+        # ReflectionClass accepts string at runtime; class-string is ideal but not enforced here.
+        - message: '#Parameter \#1 \$objectOrClass of class ReflectionClass constructor expects class-string#'
+          path: src/Core/Container.php
+        # PHPUnit static assertions called dynamically are valid in test context.
+        - message: '#Dynamic call to static method PHPUnit\\Framework\\Assert::#'
+          paths:
+              - tests/Unit/Core/PluginTest.php
+              - tests/Integration/Core/ContainerTest.php

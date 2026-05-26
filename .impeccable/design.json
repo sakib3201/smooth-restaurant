@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-26T00:00:00Z",
+  "title": "Design System: Smooth Restaurant",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Warm Ember",
+        "canonical": "oklch(55% 0.18 45)",
+        "tonalRamp": [
+          "oklch(20% 0.05 45)",
+          "oklch(25% 0.08 45)",
+          "oklch(30% 0.10 45)",
+          "oklch(40% 0.14 45)",
+          "oklch(55% 0.18 45)",
+          "oklch(65% 0.16 45)",
+          "oklch(75% 0.12 45)",
+          "oklch(90% 0.05 45)"
+        ]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Warm White",
+        "canonical": "oklch(98% 0.002 65)",
+        "tonalRamp": [
+          "oklch(18% 0.01 65)",
+          "oklch(25% 0.01 65)",
+          "oklch(35% 0.01 65)",
+          "oklch(50% 0.01 65)",
+          "oklch(70% 0.01 65)",
+          "oklch(85% 0.005 65)",
+          "oklch(93% 0.003 65)",
+          "oklch(98% 0.002 65)"
+        ]
+      },
+      "neutral-surface": {
+        "role": "neutral",
+        "displayName": "Stone Surface",
+        "canonical": "oklch(96% 0.002 65)",
+        "tonalRamp": [
+          "oklch(20% 0.01 65)",
+          "oklch(28% 0.01 65)",
+          "oklch(38% 0.01 65)",
+          "oklch(55% 0.01 65)",
+          "oklch(75% 0.005 65)",
+          "oklch(88% 0.003 65)",
+          "oklch(94% 0.002 65)",
+          "oklch(97% 0.001 65)"
+        ]
+      },
+      "neutral-border": {
+        "role": "neutral",
+        "displayName": "Stone Border",
+        "canonical": "oklch(90% 0.005 65)",
+        "tonalRamp": [
+          "oklch(25% 0.01 65)",
+          "oklch(35% 0.01 65)",
+          "oklch(50% 0.01 65)",
+          "oklch(65% 0.008 65)",
+          "oklch(80% 0.005 65)",
+          "oklch(90% 0.005 65)",
+          "oklch(95% 0.003 65)",
+          "oklch(98% 0.001 65)"
+        ]
+      },
+      "neutral-text": {
+        "role": "neutral",
+        "displayName": "Charcoal",
+        "canonical": "oklch(25% 0.01 65)",
+        "tonalRamp": [
+          "oklch(10% 0.01 65)",
+          "oklch(18% 0.01 65)",
+          "oklch(25% 0.01 65)",
+          "oklch(35% 0.01 65)",
+          "oklch(50% 0.01 65)",
+          "oklch(65% 0.008 65)",
+          "oklch(80% 0.005 65)",
+          "oklch(95% 0.002 65)"
+        ]
+      },
+      "neutral-text-secondary": {
+        "role": "neutral",
+        "displayName": "Warm Gray",
+        "canonical": "oklch(55% 0.01 65)",
+        "tonalRamp": [
+          "oklch(20% 0.01 65)",
+          "oklch(30% 0.01 65)",
+          "oklch(40% 0.01 65)",
+          "oklch(55% 0.01 65)",
+          "oklch(70% 0.008 65)",
+          "oklch(82% 0.005 65)",
+          "oklch(92% 0.003 65)",
+          "oklch(97% 0.001 65)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Sage",
+        "canonical": "oklch(55% 0.15 145)",
+        "tonalRamp": [
+          "oklch(20% 0.05 145)",
+          "oklch(28% 0.08 145)",
+          "oklch(38% 0.12 145)",
+          "oklch(50% 0.15 145)",
+          "oklch(55% 0.15 145)",
+          "oklch(65% 0.12 145)",
+          "oklch(80% 0.08 145)",
+          "oklch(93% 0.03 145)"
+        ]
+      },
+      "warning": {
+        "role": "semantic",
+        "displayName": "Amber",
+        "canonical": "oklch(60% 0.15 75)",
+        "tonalRamp": [
+          "oklch(25% 0.06 75)",
+          "oklch(35% 0.10 75)",
+          "oklch(45% 0.13 75)",
+          "oklch(55% 0.15 75)",
+          "oklch(60% 0.15 75)",
+          "oklch(70% 0.12 75)",
+          "oklch(85% 0.08 75)",
+          "oklch(95% 0.03 75)"
+        ]
+      },
+      "error": {
+        "role": "semantic",
+        "displayName": "Crimson",
+        "canonical": "oklch(50% 0.20 25)",
+        "tonalRamp": [
+          "oklch(20% 0.08 25)",
+          "oklch(28% 0.12 25)",
+          "oklch(38% 0.16 25)",
+          "oklch(48% 0.20 25)",
+          "oklch(50% 0.20 25)",
+          "oklch(60% 0.16 25)",
+          "oklch(80% 0.10 25)",
+          "oklch(95% 0.03 25)"
+        ]
+      },
+      "info": {
+        "role": "semantic",
+        "displayName": "Slate",
+        "canonical": "oklch(55% 0.05 250)",
+        "tonalRamp": [
+          "oklch(20% 0.03 250)",
+          "oklch(30% 0.04 250)",
+          "oklch(40% 0.05 250)",
+          "oklch(50% 0.05 250)",
+          "oklch(55% 0.05 250)",
+          "oklch(65% 0.04 250)",
+          "oklch(82% 0.03 250)",
+          "oklch(95% 0.01 250)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles. Used once per screen."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, card titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Subsection headings, table column headers."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Primary reading text. Max line length 65-75ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, form labels, badges, metadata. Uppercase only for status badges and section labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-hover",
+        "value": "0 2px 8px rgba(0,0,0,0.06)",
+        "purpose": "Subtle lift on interactive cards and buttons during hover. Never persistent."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px rgba(194, 65, 12, 0.25)",
+        "purpose": "Warm Ember glow around focused interactive elements. Visible, warm, unmistakable."
+      },
+      {
+        "name": "modal-overlay",
+        "value": "0 8px 32px rgba(0,0,0,0.12)",
+        "purpose": "Elevated panels, dropdowns, and modals. The heaviest shadow in the system."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for state transitions."
+      },
+      {
+        "name": "ease-out-quart",
+        "value": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Exponential ease-out for dismissals, collapses, and removals."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Quick feedback: hover, focus, active states."
+      },
+      {
+        "name": "duration-normal",
+        "value": "200ms",
+        "purpose": "Standard transitions: panel slides, opacity fades."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single most important action on a screen. Warm Ember background, white text.",
+      "html": "<button class=\"ds-btn-primary\">Save Changes</button>",
+      "css": ".ds-btn-primary { background: #c2410c; color: #ffffff; padding: 8px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; letter-spacing: 0.01em; border: none; border-radius: 8px; cursor: pointer; transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: #9a3412; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.25); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary actions and cancel buttons. Transparent with border.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: transparent; color: #292524; padding: 8px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; letter-spacing: 0.01em; border: 1px solid #e7e5e4; border-radius: 8px; cursor: pointer; transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-secondary:hover { background: #f5f5f4; } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.25); }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Standard form input with warm focus state.",
+      "html": "<input type=\"text\" class=\"ds-input\" placeholder=\"Enter value\" />",
+      "css": ".ds-input { background: #fafaf9; color: #292524; padding: 8px 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.5; border: 1px solid #e7e5e4; border-radius: 8px; width: 100%; box-sizing: border-box; transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-input:focus { outline: none; border-color: #c2410c; box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.25); } .ds-input::placeholder { color: #78716c; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Content container with flat surface and subtle border.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Card Title</h3><p class=\"ds-card-body\">Card content goes here.</p></div>",
+      "css": ".ds-card { background: #fafaf9; color: #292524; padding: 24px; border: 1px solid #e7e5e4; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; } .ds-card-title { font-size: 1.25rem; font-weight: 600; line-height: 1.3; margin: 0 0 8px 0; } .ds-card-body { font-size: 0.875rem; font-weight: 400; line-height: 1.5; margin: 0; color: #78716c; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "status-badge",
+      "description": "Pill-shaped indicator for order status, reservation state, or alerts.",
+      "html": "<span class=\"ds-badge ds-badge-success\">Confirmed</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 4px 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 0.75rem; font-weight: 500; line-height: 1.4; letter-spacing: 0.01em; border-radius: 9999px; text-transform: uppercase; } .ds-badge-success { background: rgba(21, 128, 61, 0.1); color: #15803d; } .ds-badge-warning { background: rgba(180, 83, 9, 0.1); color: #b45309; } .ds-badge-error { background: rgba(185, 28, 28, 0.1); color: #b91c1c; } .ds-badge-info { background: rgba(71, 85, 105, 0.1); color: #475569; }"
+    },
+    {
+      "name": "Navigation Item",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Sidebar navigation item with icon and label.",
+      "html": "<a href=\"#\" class=\"ds-nav-item ds-nav-item-active\"><svg class=\"ds-nav-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/></svg><span>Dashboard</span></a>",
+      "css": ".ds-nav-item { display: flex; align-items: center; gap: 12px; padding: 8px 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #292524; text-decoration: none; border-radius: 8px; transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-item:hover { background: #f5f5f4; } .ds-nav-item-active { background: #f5f5f4; color: #c2410c; } .ds-nav-icon { width: 20px; height: 20px; flex-shrink: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calm Kitchen Pass",
+    "overview": "The Smooth Restaurant admin panel is designed to feel like a well-organized kitchen pass during prep hours: everything in its place, nothing extra, ready for the rush. The aesthetic is warm, capable, and unobtrusive. We reject the cold, clinical feel of generic SaaS dashboards and the overwhelming density of e-commerce admin panels. Instead, we aim for the quiet confidence of tools like Linear and Stripe: information-rich but never noisy, dense when needed but always breathable.",
+    "keyCharacteristics": [
+      "Warm, grounded neutrals with a single purposeful accent",
+      "System-native typography for zero loading overhead",
+      "Flat surfaces with tonal layering for depth",
+      "State-driven motion only: no decorative animation",
+      "Dark mode as a first-class citizen, defaulting to system preference",
+      "Touch-friendly minimum targets (44px) for tablet use at the host stand"
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "The primary accent (Warm Ember) is used on ≤10% of any given screen. Its rarity is the point. If a screen feels 'orange,' too much accent is being used.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Family Rule",
+        "body": "Only the system font stack is used. No display fonts, no mono fonts for UI labels, no second family for contrast. Hierarchy is achieved through weight, size, and color, not font switching.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, elevation, focus). Persistent shadows on cards or panels are prohibited.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use the system font stack exclusively. No custom font loading.",
+      "Do default to the user's system theme (light/dark) with a manual toggle available.",
+      "Do use Warm Ember on ≤10% of any screen. Its rarity is its power.",
+      "Do use tonal layering (Warm White → Stone Surface) to create depth without shadows.",
+      "Do ensure all interactive elements have a minimum 44px tap target for tablet use.",
+      "Do use both color and icon/shape for status indicators. Never rely on color alone.",
+      "Do respect prefers-reduced-motion. All transitions should be instant for users who request it.",
+      "Do use sentence case for all labels, headings, and buttons. No ALL CAPS except for status badges and section labels."
+    ],
+    "donts": [
+      "Don't load custom fonts or icon fonts. Use inline SVGs and the system stack.",
+      "Don't use gradient text (background-clip: text). Use a single solid color for all text.",
+      "Don't use glassmorphism (backdrop-filter blur) for any surface.",
+      "Don't use side-stripe borders (colored left/right borders > 1px) on cards, lists, or alerts.",
+      "Don't use the hero-metric template (big number, small label, gradient accent, supporting stats).",
+      "Don't create identical card grids (icon + heading + text, repeated endlessly).",
+      "Don't use modals as a first thought for every action.",
+      "Don't use em dashes. Use commas, colons, semicolons, periods, or parentheses.",
+      "Don't design like WooCommerce admin. Avoid dense forms, overwhelming sidebars, and e-commerce-centric layouts.",
+      "Don't use decorative motion that doesn't convey state.",
+      "Don't use pure black (#000) or pure white (#fff). All neutrals are tinted warm."
+    ]
+  }
+}

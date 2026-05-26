@@ -1,0 +1,74 @@
+name: Quality
+
+on:
+  workflow_dispatch:
+
+jobs:
+  quality:
+    name: Full Quality Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run PHPCS
+        run: composer cs:check || vendor/bin/phpcs
+
+      - name: Run PHPStan
+        run: composer stan || vendor/bin/phpstan analyse
+
+      - name: Run PHPUnit unit tests
+        run: composer test:unit || vendor/bin/phpunit --testsuite Unit
+
+      - name: Run PHPUnit integration tests
+        run: composer test:integration || vendor/bin/phpunit --testsuite Integration
+
+      - name: Run ESLint
+        run: npm run lint:js
+
+      - name: Run Stylelint
+        run: npm run lint:css
+
+      - name: Run Format Check
+        run: npm run format
+
+      - name: Run Jest unit tests
+        run: npm run test:js
+
+      - name: Build plugin
+        run: npm run build

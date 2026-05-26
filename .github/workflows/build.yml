@@ -1,0 +1,71 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Plugin
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build plugin
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+      - name: Create plugin ZIP
+        run: |
+          mkdir -p dist
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='node_modules' \
+                    --exclude='vendor' \
+                    --exclude='tests' \
+                    --exclude='*.config.js' \
+                    --exclude='*.config.json' \
+                    --exclude='composer.json' \
+                    --exclude='composer.lock' \
+                    --exclude='package.json' \
+                    --exclude='package-lock.json' \
+                    --exclude='phpcs.xml*' \
+                    --exclude='phpstan.neon*' \
+                    --exclude='playwright.config.*' \
+                    --exclude='jest.config.*' \
+                    --exclude='.eslint*' \
+                    --exclude='.stylelint*' \
+                    --exclude='.prettier*' \
+                    --exclude='README.md' \
+                    --exclude='CHANGELOG.md' \
+                    --exclude='CONTRIBUTING.md' \
+                    ./ dist/smooth-restaurant/
+          cd dist && zip -r smooth-restaurant.zip smooth-restaurant/
+
+      - name: Upload plugin ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: smooth-restaurant-plugin
+          path: dist/smooth-restaurant.zip

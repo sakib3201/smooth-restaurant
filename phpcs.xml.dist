@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<ruleset name="SmoothRestaurant">
+    <description>PHPCS ruleset for Smooth Restaurant plugin.</description>
+
+    <!-- Standards -->
+    <rule ref="WordPress"/>
+    <rule ref="WordPress-Extra"/>
+    <rule ref="WordPress-Docs"/>
+
+    <!-- Paths to check -->
+    <file>src/</file>
+    <file>tests/</file>
+
+    <!-- Exclude paths -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>node_modules/*</exclude-pattern>
+    <exclude-pattern>assets/build/*</exclude-pattern>
+
+    <!-- Minimum PHP version -->
+    <config name="testVersion" value="8.1-"/>
+
+    <!-- Namespace prefix for naming conventions -->
+    <config name="prefixes" value="SmoothRestaurant"/>
+
+    <!-- Disable file-naming rules because PSR-4 autoloading uses StudlyCase filenames -->
+    <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Text domain -->
+    <config name="text_domain" value="smooth-restaurant"/>
+
+    <!-- Disable reserved keyword parameter warnings for DI container variables -->
+    <rule ref="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.NamingConventions.ValidVariableName.NotSnakeCase">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable function/method naming rules for PSR-4 classes -->
+    <rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable Yoda condition rule -->
+    <rule ref="WordPress.PHP.YodaConditions.NotYoda">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable escape output in exception messages -->
+    <rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable commented-out code warnings -->
+    <rule ref="Squiz.PHP.CommentedOutCode.Found">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable inline comment end char rule -->
+    <rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable unused parameter warnings -->
+    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.Found">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Disable prefix-all-globals in tests/bootstrap.php -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+        <severity>0</severity>
+    </rule>
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
+        <severity>0</severity>
+    </rule>
+
+    <!-- Show progress and colors -->
+    <arg value="ps"/>
+    <arg name="colors"/>
+
+    <!-- Parallel processing -->
+    <arg name="parallel" value="8"/>
+</ruleset>

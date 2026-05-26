@@ -1,48 +1,75 @@
-# Wordpress - ignore core, configuration, examples, uploads and logs.
-# https://github.com/github/gitignore/blob/main/WordPress.gitignore
-
-# Core
-#
-# Note: if you want to stage/commit WP core files
-# you can delete this whole section/until Configuration.
-/wp-admin/
-/wp-content/index.php
-/wp-content/languages
-/wp-content/plugins/index.php
-/wp-content/themes/index.php
-/wp-includes/
-/index.php
-/license.txt
-/readme.html
-/wp-*.php
-/xmlrpc.php
-
-# Configuration
-wp-config.php
-
-# Example themes
-/wp-content/themes/twenty*/
-
-# Example plugin
-/wp-content/plugins/hello.php
-
-# Uploads
-/wp-content/uploads/
-
-# Log files
+# WordPress
 *.log
+wp-config.php
+wp-content/advanced-cache.php
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/mu-plugins/
+wp-content/wp-cache-config.php
+wp-content/plugins/hello.php
 
-# htaccess
-/.htaccess
+# Plugin specific
+/vendor/
+/node_modules/
+/build/
+/coverage/
+/reports/
+/.phpunit.cache/
+/.wp-env.override.json
 
-# All plugins
-#
-# Note: If you wish to whitelist plugins,
-# uncomment the next line
-#/wp-content/plugins
+# Build artifacts
+/assets/build/
+/languages/*.mo
+/languages/*.json
 
-# All themes
-#
-# Note: If you wish to whitelist themes,
-# uncomment the next line
-#/wp-content/themes
+# IDE
+/.idea/
+/.vscode/
+/.cursor/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Composer
+composer.lock
+
+# npm
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Cache / generated files
+.php-cs-fixer.cache
+
+# Test data
+/tests/e2e/test-results/
+/tests/e2e/playwright-report/
+/tests/e2e/blob-report/
+/playwright/.cache/
+
+# Coverage reports
+coverage.xml
+
+# Release packaging
+/dist/
+
+# Graphify
+/graphify-out/
+.graphify_*
+graphify_*
+
+# OpenCode plugins
+.opencode/plugins/

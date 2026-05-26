@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.smooth-restaurant-frontend {
+	@apply p-4 bg-gray-50 rounded border border-gray-200;
+
+	h2 {
+		@apply mb-2;
+	}
+}

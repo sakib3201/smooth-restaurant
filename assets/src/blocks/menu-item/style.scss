@@ -1,0 +1,19 @@
+.wp-block-smooth-restaurant-menu-item {
+	@apply p-4 border border-gray-200 rounded bg-white;
+
+	.menu-item-header {
+		@apply flex justify-between items-baseline mb-2;
+	}
+
+	.menu-item-title {
+		@apply text-lg font-bold text-gray-900 m-0;
+	}
+
+	.menu-item-price {
+		@apply text-base font-semibold text-green-700;
+	}
+
+	.menu-item-description {
+		@apply text-sm text-gray-600 m-0;
+	}
+}

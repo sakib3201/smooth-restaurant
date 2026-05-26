@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./assets/build",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@/admin/*": ["assets/src/admin/*"],
+      "@/frontend/*": ["assets/src/frontend/*"],
+      "@/shared/*": ["assets/src/shared/*"],
+      "@/blocks/*": ["assets/src/blocks/*"]
+    },
+    "types": ["node", "react", "react-dom"]
+  },
+  "include": [
+    "assets/src/**/*",
+    "tests/e2e/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "assets/build"
+  ]
+}

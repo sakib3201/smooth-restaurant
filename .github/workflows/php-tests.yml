@@ -1,0 +1,48 @@
+name: PHP Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  php-tests:
+    name: PHP Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: xdebug
+          tools: composer
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit unit tests
+        run: composer test:unit || vendor/bin/phpunit --testsuite Unit
+
+      - name: Run PHPUnit integration tests
+        run: composer test:integration || vendor/bin/phpunit --testsuite Integration
+
+      - name: Generate coverage report
+        run: |
+          vendor/bin/phpunit --coverage-clover coverage.xml || true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+        if: always()

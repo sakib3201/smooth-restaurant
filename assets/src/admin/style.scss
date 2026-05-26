@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.smooth-restaurant-admin {
+	@apply p-6 bg-white rounded shadow;
+
+	h1 {
+		@apply mb-4;
+	}
+}

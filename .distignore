@@ -1,0 +1,28 @@
+# This file is for unimportant files that should not be present in the distributed plugin.
+# It is used by the build script to exclude files from the ZIP distribution.
+
+/.git
+/.github
+/.vscode
+/.cursor
+/tests
+/config
+/bin
+/docs
+/coverage
+/reports
+/.phpunit.cache
+/node_modules
+/assets/build/*.map
+*.log
+.env*
+composer.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.editorconfig
+.php-cs-fixer.dist.php
+phpunit.xml.dist
+phpstan.neon.dist
+playwright.config.ts
+.wp-env.override.json

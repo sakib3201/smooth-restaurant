@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Global admin styles
+#wpbody-content {
+	.smooth-restaurant-wrap {
+		@apply max-w-4xl;
+	}
+}

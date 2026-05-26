@@ -1,0 +1,31 @@
+{
+	"apiVersion": 3,
+	"name": "smooth-restaurant/menu-item",
+	"version": "1.0.0",
+	"title": "Menu Item",
+	"category": "widgets",
+	"icon": "food",
+	"description": "Display a restaurant menu item with title, price, and description.",
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": ""
+		},
+		"price": {
+			"type": "string",
+			"default": ""
+		},
+		"description": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "smooth-restaurant",
+	"editorScript": "file:./index.tsx",
+	"editorStyle": "file:./style.scss",
+	"style": "file:./style.scss"
+}

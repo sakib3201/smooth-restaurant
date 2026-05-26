@@ -1,0 +1,13 @@
+import '@testing-library/jest-dom';
+
+// Mock WordPress packages commonly used in tests.
+jest.mock( '@wordpress/i18n', () => ( {
+	__: ( text: string ) => text,
+	_x: ( text: string ) => text,
+	_n: ( single: string, plural: string, count: number ) =>
+		count === 1 ? single : plural,
+	_nx: ( single: string, plural: string, count: number ) =>
+		count === 1 ? single : plural,
+	sprintf: ( format: string, ...args: unknown[] ) =>
+		format.replace( /%s/g, () => String( args.shift() ) ),
+} ) );

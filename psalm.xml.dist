@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="2"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <directory name="tests"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <!-- WordPress compatibility: treat PHPDoc types loosely -->
+        <LessSpecificReturnType errorLevel="info"/>
+
+        <!-- WordPress constants defined in bootstrap are not visible to Psalm -->
+        <UndefinedConstant errorLevel="info"/>
+
+        <!-- Classes are used via hooks / service providers, not direct instantiation -->
+        <UnusedClass errorLevel="info"/>
+        <PossiblyUnusedMethod errorLevel="info"/>
+        <PossiblyUnusedProperty errorLevel="info"/>
+        <PossiblyUnusedReturnValue errorLevel="info"/>
+        <PossiblyUnusedParam errorLevel="info"/>
+        <PossiblyInvalidArgument errorLevel="info"/>
+        <ArgumentTypeCoercion errorLevel="info"/>
+        <InvalidStringClass errorLevel="info"/>
+
+        <!-- PSR-4 class naming is used instead of WordPress class- prefix -->
+        <ClassMustBeFinal errorLevel="info"/>
+        <MissingOverrideAttribute errorLevel="info"/>
+    </issueHandlers>
+
+    <stubs>
+        <file name="vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"/>
+    </stubs>
+
+</psalm>
