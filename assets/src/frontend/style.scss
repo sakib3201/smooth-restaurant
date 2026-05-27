@@ -55,7 +55,7 @@
 	--sr-radius-lg: 12px;
 }
 
-/* Dark mode — only when explicitly requested via class or system preference */
+/* Dark mode — only when explicitly requested via .sr-dark class */
 .sr-reservation-form-wrapper.sr-dark {
 	--sr-bg: #0f172a;
 	--sr-surface: #1e293b;
@@ -66,20 +66,6 @@
 	--sr-success-border: rgba(21, 128, 61, 0.3);
 	--sr-error-bg: rgba(185, 28, 28, 0.15);
 	--sr-error-border: rgba(185, 28, 28, 0.3);
-}
-
-@media (prefers-color-scheme: dark) {
-	.sr-reservation-form-wrapper {
-		--sr-bg: #0f172a;
-		--sr-surface: #1e293b;
-		--sr-border: #334155;
-		--sr-text: #f8fafc;
-		--sr-text-secondary: #94a3b8;
-		--sr-success-bg: rgba(21, 128, 61, 0.15);
-		--sr-success-border: rgba(21, 128, 61, 0.3);
-		--sr-error-bg: rgba(185, 28, 28, 0.15);
-		--sr-error-border: rgba(185, 28, 28, 0.3);
-	}
 }
 
 /* Reduced motion */
