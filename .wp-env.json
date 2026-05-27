@@ -2,7 +2,7 @@
   "phpVersion": "8.1",
   "core": "WordPress/WordPress#7.0",
   "plugins": ["."],
-  "themes": ["twentytwentyfour"],
+  "themes": ["WordPress/twentytwentyfour"],
   "port": 8888,
   "testsPort": 8889,
   "lifecycleScripts": {

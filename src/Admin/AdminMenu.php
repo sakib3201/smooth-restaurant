@@ -54,51 +54,6 @@ class AdminMenu {
 			'dashicons-food',
 			25
 		);
-
-		add_submenu_page(
-			$this->menu_slug,
-			__( 'Dashboard', 'smooth-restaurant' ),
-			__( 'Dashboard', 'smooth-restaurant' ),
-			$this->capability,
-			$this->menu_slug,
-			array( $this, 'render_admin_page' )
-		);
-
-		add_submenu_page(
-			$this->menu_slug,
-			__( 'Menu Items', 'smooth-restaurant' ),
-			__( 'Menu Items', 'smooth-restaurant' ),
-			$this->capability,
-			'smooth-restaurant-menu-items',
-			array( $this, 'render_admin_page' )
-		);
-
-		add_submenu_page(
-			$this->menu_slug,
-			__( 'Orders', 'smooth-restaurant' ),
-			__( 'Orders', 'smooth-restaurant' ),
-			$this->capability,
-			'smooth-restaurant-orders',
-			array( $this, 'render_admin_page' )
-		);
-
-		add_submenu_page(
-			$this->menu_slug,
-			__( 'Reservations', 'smooth-restaurant' ),
-			__( 'Reservations', 'smooth-restaurant' ),
-			$this->capability,
-			'smooth-restaurant-reservations',
-			array( $this, 'render_admin_page' )
-		);
-
-		add_submenu_page(
-			$this->menu_slug,
-			__( 'Settings', 'smooth-restaurant' ),
-			__( 'Settings', 'smooth-restaurant' ),
-			$this->capability,
-			'smooth-restaurant-settings',
-			array( $this, 'render_admin_page' )
-		);
 	}
 
 	/**

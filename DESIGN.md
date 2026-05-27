@@ -1,33 +1,41 @@
-<!-- SEED: re-run /impeccable document once there's code to capture the actual tokens and components. -->
+<!-- Updated: Blue-based palette to differentiate from competitors -->
 
 ---
 name: "Smooth Restaurant"
 description: "The restaurant management plugin that actually works for restaurant people."
 colors:
   primary:
-    displayName: "Warm Ember"
+    displayName: "Deep Navy"
     role: "primary"
-    value: "#c2410c"
+    value: "#1e40af"
+  primary-dark:
+    displayName: "Navy Dark"
+    role: "primary"
+    value: "#1e3a8a"
+  primary-light:
+    displayName: "Navy Light"
+    role: "primary"
+    value: "#3b82f6"
   neutral-bg:
-    displayName: "Warm White"
+    displayName: "Cool White"
     role: "neutral"
-    value: "#fafaf9"
+    value: "#f8fafc"
   neutral-surface:
-    displayName: "Stone Surface"
+    displayName: "Cloud Surface"
     role: "neutral"
-    value: "#f5f5f4"
+    value: "#f1f5f9"
   neutral-border:
-    displayName: "Stone Border"
+    displayName: "Cloud Border"
     role: "neutral"
-    value: "#e7e5e4"
+    value: "#e2e8f0"
   neutral-text:
-    displayName: "Charcoal"
+    displayName: "Midnight"
     role: "neutral"
-    value: "#292524"
+    value: "#0f172a"
   neutral-text-secondary:
-    displayName: "Warm Gray"
+    displayName: "Cool Gray"
     role: "neutral"
-    value: "#78716c"
+    value: "#64748b"
   success:
     displayName: "Sage"
     role: "semantic"
@@ -95,7 +103,7 @@ components:
     padding: "8px 16px"
     typography: "{typography.label}"
   button-primary-hover:
-    backgroundColor: "#9a3412"
+    backgroundColor: "#1e3a8a"
     textColor: "#ffffff"
   button-secondary:
     backgroundColor: "transparent"
@@ -131,14 +139,14 @@ components:
 
 **Creative North Star: "The Calm Kitchen Pass"**
 
-The Smooth Restaurant admin panel is designed to feel like a well-organized kitchen pass during prep hours: everything in its place, nothing extra, ready for the rush. The aesthetic is warm, capable, and unobtrusive. We reject the cold, clinical feel of generic SaaS dashboards and the overwhelming density of e-commerce admin panels. Instead, we aim for the quiet confidence of tools like Linear and Stripe: information-rich but never noisy, dense when needed but always breathable.
+The Smooth Restaurant admin panel is designed to feel like a well-organized kitchen pass during prep hours: everything in its place, nothing extra, ready for the rush. The aesthetic is calm, capable, and unobtrusive. We reject the overwhelming density of e-commerce admin panels and the generic SaaS look. Instead, we aim for the quiet confidence of tools like Linear and Stripe: information-rich but never noisy, dense when needed but always breathable.
 
-This system uses a **Restrained** color strategy: tinted warm neutrals carry the surface, with a single warm ember accent reserved for primary actions and active states. The accent appears on no more than 10% of any screen. Its rarity is the point.
+This system uses a **Restrained** color strategy: tinted cool neutrals carry the surface, with a single deep navy accent reserved for primary actions and active states. The accent appears on no more than 10% of any screen. Its rarity is the point.
 
 The type system inherits the WordPress system font stack for technical performance and native feel. No custom fonts, no loading penalties, no visual departure from the platform the user already knows.
 
 **Key Characteristics:**
-- Warm, grounded neutrals with a single purposeful accent
+- Cool, grounded neutrals with a single purposeful accent
 - System-native typography for zero loading overhead
 - Flat surfaces with tonal layering for depth
 - State-driven motion only: no decorative animation
@@ -147,17 +155,19 @@ The type system inherits the WordPress system font stack for technical performan
 
 ## 2. Colors
 
-The palette is built on warm stone neutrals with a single ember accent. The warmth comes from subtle hue tinting toward orange (the brand's primary), creating cohesion without saturation.
+The palette is built on cool slate neutrals with a single deep navy accent. The coolness creates a professional, trustworthy feel that differentiates us from competitor products using warm orange/amber tones.
 
 ### Primary
-- **Warm Ember** (`#c2410c` / oklch(55% 0.18 45)): The sole accent. Used for primary buttons, active navigation items, links, and status indicators that demand attention. It appears sparingly; its rarity makes it effective.
+- **Deep Navy** (`#1e40af` / oklch(45% 0.18 260)): The sole accent. Used for primary buttons, active navigation items, links, and status indicators that demand attention. It appears sparingly; its rarity makes it effective.
+- **Navy Dark** (`#1e3a8a`): Hover state for primary buttons.
+- **Navy Light** (`#3b82f6`): Lighter variant for subtle accents and focus states.
 
 ### Neutral
-- **Warm White** (`#fafaf9` / oklch(98% 0.002 65)): The primary content background. Slightly warm, never pure white. Used for cards, panels, and main surfaces.
-- **Stone Surface** (`#f5f5f4` / oklch(96% 0.002 65)): Secondary surface for sidebars, toolbars, and elevated panels. Slightly darker than Warm White for subtle layering.
-- **Stone Border** (`#e7e5e4` / oklch(90% 0.005 65)): Dividers, input borders, and separators. Low contrast by design.
-- **Charcoal** (`#292524` / oklch(25% 0.01 65)): Primary text. High contrast against Warm White. Warm-tinted, never pure black.
-- **Warm Gray** (`#78716c` / oklch(55% 0.01 65)): Secondary text, placeholders, captions, and metadata.
+- **Cool White** (`#f8fafc` / oklch(98% 0.002 250)): The primary content background. Slightly cool, never pure white. Used for cards, panels, and main surfaces.
+- **Cloud Surface** (`#f1f5f9` / oklch(96% 0.002 250)): Secondary surface for sidebars, toolbars, and elevated panels. Slightly darker than Cool White for subtle layering.
+- **Cloud Border** (`#e2e8f0` / oklch(90% 0.005 250)): Dividers, input borders, and separators. Low contrast by design.
+- **Midnight** (`#0f172a` / oklch(20% 0.02 260)): Primary text. High contrast against Cool White. Cool-tinted, never pure black.
+- **Cool Gray** (`#64748b` / oklch(55% 0.03 260)): Secondary text, placeholders, captions, and metadata.
 
 ### Semantic
 - **Sage** (`#15803d`): Success states, confirmed orders, positive indicators.
@@ -167,13 +177,13 @@ The palette is built on warm stone neutrals with a single ember accent. The warm
 
 ### Dark Mode
 Dark mode inverts the neutral stack while preserving the primary accent and semantic colors:
-- Background: `#1c1917` (warm near-black, oklch(18% 0.01 65))
-- Surface: `#292524` (Charcoal becomes the surface)
-- Text: `#fafaf9` (Warm White becomes primary text)
-- Secondary text: `#a8a29e` (lightened Warm Gray)
-- Borders: `#44403c` (darkened Stone Border)
+- Background: `#0f172a` (cool near-black, oklch(18% 0.02 260))
+- Surface: `#1e293b` (dark slate becomes the surface)
+- Text: `#f8fafc` (Cool White becomes primary text)
+- Secondary text: `#94a3b8` (lightened Cool Gray)
+- Borders: `#334155` (darkened Cloud Border)
 
-**The One Accent Rule.** The primary accent (Warm Ember) is used on ≤10% of any given screen. Its rarity is the point. If a screen feels "orange," too much accent is being used. Rewrite with neutral buttons, neutral badges, or tonal backgrounds instead.
+**The One Accent Rule.** The primary accent (Deep Navy) is used on <=10% of any given screen. Its rarity is the point. If a screen feels "too blue," too much accent is being used. Rewrite with neutral buttons, neutral badges, or tonal backgrounds instead.
 
 ## 3. Typography
 
@@ -185,18 +195,18 @@ Dark mode inverts the neutral stack while preserving the primary accent and sema
 - **Display** (600, 1.5rem/24px, line-height 1.2): Page titles. Used once per screen.
 - **Headline** (600, 1.25rem/20px, line-height 1.3): Section headings, card titles.
 - **Title** (600, 1rem/16px, line-height 1.4): Subsection headings, table column headers.
-- **Body** (400, 0.875rem/14px, line-height 1.5): Primary reading text. Max line length 65–75ch.
+- **Body** (400, 0.875rem/14px, line-height 1.5): Primary reading text. Max line length 65-75ch.
 - **Label** (500, 0.75rem/12px, line-height 1.4, letter-spacing 0.01em): Buttons, form labels, badges, metadata. Uppercase only for status badges and section labels.
 
 **The One Family Rule.** Only the system font stack is used. No display fonts, no mono fonts for UI labels, no second family for contrast. Hierarchy is achieved through weight, size, and color, not font switching.
 
 ## 4. Elevation
 
-This system is **flat by default, layered by purpose**. Surfaces rest flat on the background. Depth is conveyed through tonal shifts (Warm White → Stone Surface) rather than shadows. Shadows appear only as a response to state: hover elevation, focus rings, and modal overlays.
+This system is **flat by default, layered by purpose**. Surfaces rest flat on the background. Depth is conveyed through tonal shifts (Cool White -> Cloud Surface) rather than shadows. Shadows appear only as a response to state: hover elevation, focus rings, and modal overlays.
 
 ### Shadow Vocabulary
 - **Ambient Hover** (`0 2px 8px rgba(0,0,0,0.06)`): Subtle lift on interactive cards and buttons during hover. Never persistent.
-- **Focus Ring** (`0 0 0 3px rgba(194, 65, 12, 0.25)`): Warm Ember glow around focused interactive elements. Visible, warm, unmistakable.
+- **Focus Ring** (`0 0 0 3px rgba(30, 64, 175, 0.25)`): Deep Navy glow around focused interactive elements. Visible, cool, unmistakable.
 - **Modal Overlay** (`0 8px 32px rgba(0,0,0,0.12)`): Elevated panels, dropdowns, and modals. The heaviest shadow in the system.
 
 **The Flat-By-Default Rule.** Surfaces are flat at rest. Shadows appear only as a response to state (hover, elevation, focus). Persistent shadows on cards or panels are prohibited.
@@ -205,10 +215,10 @@ This system is **flat by default, layered by purpose**. Surfaces rest flat on th
 
 ### Buttons
 - **Shape:** Gently rounded corners (8px radius)
-- **Primary:** Warm Ember background (`#c2410c`), white text, 8px 16px padding. Used for the single most important action on a screen.
-- **Hover / Focus:** Background darkens to `#9a3412`. Focus ring appears. Transition: 150ms ease-out.
-- **Secondary:** Transparent background, Charcoal text, 1px Stone Border. Used for secondary actions and cancel buttons.
-- **Ghost:** No background, no border, Warm Ember text. Used for tertiary actions and inline links.
+- **Primary:** Deep Navy background (`#1e40af`), white text, 8px 16px padding. Used for the single most important action on a screen.
+- **Hover / Focus:** Background darkens to `#1e3a8a`. Focus ring appears. Transition: 150ms ease-out.
+- **Secondary:** Transparent background, Midnight text, 1px Cloud Border. Used for secondary actions and cancel buttons.
+- **Ghost:** No background, no border, Deep Navy text. Used for tertiary actions and inline links.
 - **Danger:** Crimson background (`#b91c1c`), white text. Used for destructive actions (delete, cancel order).
 
 ### Status Badges / Chips
@@ -222,29 +232,29 @@ This system is **flat by default, layered by purpose**. Surfaces rest flat on th
 
 ### Cards / Containers
 - **Corner Style:** 12px radius. Slightly more rounded than buttons to distinguish container from control.
-- **Background:** Warm White (`#fafaf9`). In dark mode: `#1c1917`.
+- **Background:** Cool White (`#f8fafc`). In dark mode: `#0f172a`.
 - **Shadow Strategy:** Flat at rest. Ambient hover shadow on interactive cards only.
-- **Border:** 1px Stone Border (`#e7e5e4`) for definition. In dark mode: `#44403c`.
+- **Border:** 1px Cloud Border (`#e2e8f0`) for definition. In dark mode: `#334155`.
 - **Internal Padding:** 24px (`spacing.lg`). Consistent across all cards.
 
 ### Inputs / Fields
-- **Style:** 1px Stone Border, Warm White background, 8px radius, 8px 12px padding.
-- **Focus:** Border shifts to Warm Ember (`#c2410c`), focus ring appears. Background remains Warm White.
+- **Style:** 1px Cloud Border, Cool White background, 8px radius, 8px 12px padding.
+- **Focus:** Border shifts to Deep Navy (`#1e40af`), focus ring appears. Background remains Cool White.
 - **Error:** Border shifts to Crimson (`#b91c1c`), error text below in Crimson.
-- **Disabled:** Background shifts to Stone Surface, text to Warm Gray, border to Stone Border. No interaction.
+- **Disabled:** Background shifts to Cloud Surface, text to Cool Gray, border to Cloud Border. No interaction.
 
 ### Navigation
-- **Style:** Sidebar navigation with icon + label. Stone Surface background.
-- **Default:** Charcoal text, no background. 8px 12px padding, 8px radius.
-- **Hover:** Stone Surface background, Charcoal text.
-- **Active:** Stone Surface background, Warm Ember text, Warm Ember left border (2px, inside the item). This is the only permitted use of a side accent.
+- **Style:** Sidebar navigation with icon + label. Cloud Surface background.
+- **Default:** Midnight text, no background. 8px 12px padding, 8px radius.
+- **Hover:** Cloud Surface background, Midnight text.
+- **Active:** Cool White background, Deep Navy text, Deep Navy left border (2px, inside the item). This is the only permitted use of a side accent.
 - **Mobile:** Collapses to a bottom tab bar on screens < 768px.
 
 ### Tables / Data Grids
-- **Style:** No outer border. Row separators only (1px Stone Border).
-- **Header:** Stone Surface background, Label typography (500, 0.75rem), uppercase, Warm Gray text.
-- **Row:** Warm White background. Hover: Stone Surface background.
-- **Selected Row:** Stone Surface background, Warm Ember left border (2px).
+- **Style:** No outer border. Row separators only (1px Cloud Border).
+- **Header:** Cloud Surface background, Label typography (500, 0.75rem), uppercase, Cool Gray text.
+- **Row:** Cool White background. Hover: Cloud Surface background.
+- **Selected Row:** Cloud Surface background, Deep Navy left border (2px).
 - **Cell Padding:** 12px 16px.
 
 ## 6. Do's and Don'ts
@@ -252,8 +262,8 @@ This system is **flat by default, layered by purpose**. Surfaces rest flat on th
 ### Do:
 - **Do** use the system font stack exclusively. No custom font loading.
 - **Do** default to the user's system theme (light/dark) with a manual toggle available.
-- **Do** use Warm Ember on ≤10% of any screen. Its rarity is its power.
-- **Do** use tonal layering (Warm White → Stone Surface) to create depth without shadows.
+- **Do** use Deep Navy on <=10% of any screen. Its rarity is its power.
+- **Do** use tonal layering (Cool White -> Cloud Surface) to create depth without shadows.
 - **Do** ensure all interactive elements have a minimum 44px tap target for tablet use.
 - **Do** use both color and icon/shape for status indicators. Never rely on color alone.
 - **Do** respect `prefers-reduced-motion`. All transitions should be instant for users who request it.
@@ -270,4 +280,4 @@ This system is **flat by default, layered by purpose**. Surfaces rest flat on th
 - **Don't** use em dashes. Use commas, colons, semicolons, periods, or parentheses.
 - **Don't** design like WooCommerce admin. Avoid dense forms, overwhelming sidebars, and e-commerce-centric layouts.
 - **Don't** use decorative motion that doesn't convey state. No bouncing loaders, no elastic transitions, no choreographed page entrances.
-- **Don't** use pure black (`#000`) or pure white (`#fff`). All neutrals are tinted warm.
+- **Don't** use pure black (`#000`) or pure white (`#fff`). All neutrals are tinted cool.

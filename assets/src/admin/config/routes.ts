@@ -1,0 +1,22 @@
+import { lazy, type ComponentType } from 'react';
+import { __ } from '@wordpress/i18n';
+
+export interface RouteConfig {
+	path: string;
+	label: string;
+	component: ComponentType;
+}
+
+const Dashboard = lazy( () => import( '../pages/Dashboard' ).then( m => ( { default: m.Dashboard } ) ) );
+const MenuItems = lazy( () => import( '../pages/MenuItems' ).then( m => ( { default: m.MenuItems } ) ) );
+const Orders = lazy( () => import( '../pages/Orders' ).then( m => ( { default: m.Orders } ) ) );
+const Reservations = lazy( () => import( '../pages/Reservations' ).then( m => ( { default: m.Reservations } ) ) );
+const Settings = lazy( () => import( '../pages/Settings' ).then( m => ( { default: m.Settings } ) ) );
+
+export const routes: RouteConfig[] = [
+	{ path: '/', label: __( 'Dashboard', 'smooth-restaurant' ), component: Dashboard },
+	{ path: '/menu-items', label: __( 'Menu Items', 'smooth-restaurant' ), component: MenuItems },
+	{ path: '/orders', label: __( 'Orders', 'smooth-restaurant' ), component: Orders },
+	{ path: '/reservations', label: __( 'Reservations', 'smooth-restaurant' ), component: Reservations },
+	{ path: '/settings', label: __( 'Settings', 'smooth-restaurant' ), component: Settings },
+];

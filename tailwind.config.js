@@ -4,21 +4,65 @@ module.exports = {
 		'./assets/src/**/*.{js,jsx,ts,tsx}',
 	],
 	theme: {
-		extend: {
+			extend: {
 			colors: {
-				'sr-admin': {
-					50: '#f0f9ff',
-					100: '#e0f2fe',
-					200: '#bae6fd',
-					300: '#7dd3fc',
-					400: '#38bdf8',
-					500: '#0ea5e9',
-					600: '#0284c7',
-					700: '#0369a1',
-					800: '#075985',
-					900: '#0c4a6e',
-					950: '#082f49',
-				},
+				// Primary: Deep Navy Blue
+				'sr-primary': '#1e40af',
+				'sr-primary-dark': '#1e3a8a',
+				'sr-primary-light': '#3b82f6',
+
+				// Neutrals: CSS custom properties for theme switching
+				'sr-bg': 'var(--sr-bg)',
+				'sr-surface': 'var(--sr-surface)',
+				'sr-border': 'var(--sr-border)',
+				'sr-text': 'var(--sr-text)',
+				'sr-text-secondary': 'var(--sr-text-secondary)',
+
+				// Semantic
+				'sr-sage': '#15803d',
+				'sr-amber': '#b45309',
+				'sr-crimson': '#b91c1c',
+				'sr-slate': '#475569',
+
+				// State / Interaction
+				'sr-hover': 'var(--sr-hover)',
+				'sr-active': 'var(--sr-active)',
+				'sr-disabled': 'var(--sr-disabled)',
+				'sr-focus': 'rgba(30, 64, 175, 0.35)',
+			},
+			fontFamily: {
+				sans: [
+					'-apple-system',
+					'BlinkMacSystemFont',
+					"'Segoe UI'",
+					'Roboto',
+					'Oxygen-Sans',
+					'Ubuntu',
+					'Cantarell',
+					"'Helvetica Neue'",
+					'sans-serif',
+				],
+			},
+			fontSize: {
+				'display': ['1.5rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '600' }],
+				'headline': ['1.25rem', { lineHeight: '1.3', letterSpacing: '-0.005em', fontWeight: '600' }],
+				'title': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
+				'body': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],
+				'label': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '500' }],
+				'caption': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }],
+			},
+			borderRadius: {
+				'sr-sm': '4px',
+				'sr-md': '8px',
+				'sr-lg': '12px',
+				'sr-full': '9999px',
+			},
+			boxShadow: {
+				'ambient-hover': '0 2px 8px rgba(0,0,0,0.06)',
+				'modal': '0 8px 32px rgba(0,0,0,0.12)',
+			},
+			transitionTimingFunction: {
+				'ease-out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
 			},
 		},
 	},

@@ -2,10 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-.smooth-restaurant-admin {
-	@apply p-6 bg-white rounded shadow;
+/* Smooth Restaurant Admin Shell Styles */
 
-	h1 {
-		@apply mb-4;
+/* CSS Custom Properties for theming */
+:root {
+	--sr-bg: #f8fafc;
+	--sr-surface: #f1f5f9;
+	--sr-border: #e2e8f0;
+	--sr-text: #0f172a;
+	--sr-text-secondary: #64748b;
+	--sr-hover: #f1f5f9;
+	--sr-active: #e2e8f0;
+	--sr-disabled: #cbd5e1;
+	--sr-scrollbar-thumb: #94a3b8;
+	--sr-scrollbar-thumb-hover: #64748b;
+}
+
+[data-theme="dark"] {
+	--sr-bg: #0f172a;
+	--sr-surface: #1e293b;
+	--sr-border: #334155;
+	--sr-text: #f8fafc;
+	--sr-text-secondary: #94a3b8;
+	--sr-hover: #1e293b;
+	--sr-active: #334155;
+	--sr-disabled: #475569;
+	--sr-scrollbar-thumb: #475569;
+	--sr-scrollbar-thumb-hover: #64748b;
+}
+
+html.wp-toolbar {
+	padding-top: 0 !important;
+}
+
+#wpadminbar,
+#adminmenumain,
+#wpfooter,
+#screen-meta,
+#screen-meta-links {
+	display: none !important;
+}
+
+#wpcontent,
+#wpbody-content {
+	margin-left: 0 !important;
+	padding-left: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+#wpbody {
+	padding-top: 0 !important;
+}
+
+.wrap {
+	margin: 0 !important;
+}
+
+.smooth-restaurant-admin {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	color: var(--sr-text);
+	background-color: var(--sr-bg);
+	min-height: 100vh;
+	width: 100%;
+	overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+.sr-scrollbar-thin {
+	scrollbar-width: thin;
+	scrollbar-color: var(--sr-scrollbar-thumb) transparent;
+}
+
+.sr-scrollbar-thin::-webkit-scrollbar {
+	width: 6px;
+}
+
+.sr-scrollbar-thin::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.sr-scrollbar-thin::-webkit-scrollbar-thumb {
+	background-color: var(--sr-scrollbar-thumb);
+	border-radius: 9999px;
+}
+
+.sr-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+	background-color: var(--sr-scrollbar-thumb-hover);
+}
+
+/* Focus ring utility */
+.sr-focus-ring:focus-visible {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.35);
+	transition: box-shadow 150ms ease-out;
+}
+
+/* Screen-reader-only utility */
+.sr-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+.sr-sr-only:focus {
+	position: static;
+	width: auto;
+	height: auto;
+	padding: inherit;
+	margin: inherit;
+	overflow: visible;
+	clip: auto;
+	white-space: normal;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
 	}
 }

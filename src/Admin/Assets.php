@@ -61,7 +61,7 @@ class Assets {
 
 		wp_enqueue_style(
 			'smooth-restaurant-admin',
-			SR_PLUGIN_URL . 'assets/build/admin/style.css',
+			SR_PLUGIN_URL . 'assets/build/admin/style-index.css',
 			array(),
 			$asset['version']
 		);
@@ -91,7 +91,6 @@ class Assets {
 	 * @return bool
 	 */
 	private function is_plugin_page( string $hook ): bool {
-		return str_starts_with( $hook, 'toplevel_page_' . $this->menu_slug )
-			|| str_starts_with( $hook, 'smooth-restaurant_page_' );
+		return str_starts_with( $hook, 'toplevel_page_' . $this->menu_slug );
 	}
 }
