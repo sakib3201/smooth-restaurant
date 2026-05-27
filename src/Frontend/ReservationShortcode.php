@@ -37,19 +37,27 @@ class ReservationShortcode {
 			'redirect' => '',
 		), $atts, 'smooth_reservation' );
 
+		$asset_file = SR_PLUGIN_DIR . 'assets/build/frontend/index.asset.php';
+		$asset      = file_exists( $asset_file )
+			? require $asset_file
+			: array(
+				'dependencies' => array(),
+				'version'      => SR_VERSION,
+			);
+
 		wp_enqueue_script(
 			'smooth-restaurant-reservation-form',
-			SR_PLUGIN_URL . 'assets/build/frontend/reservation-form.js',
-			array(),
-			SR_VERSION,
+			SR_PLUGIN_URL . 'assets/build/frontend/index.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 
 		wp_enqueue_style(
 			'smooth-restaurant-reservation-form',
-			SR_PLUGIN_URL . 'assets/build/frontend/reservation-form.css',
+			SR_PLUGIN_URL . 'assets/build/frontend/style-index.css',
 			array(),
-			SR_VERSION
+			$asset['version']
 		);
 
 		wp_localize_script( 'smooth-restaurant-reservation-form', 'srReservation', array(
@@ -76,97 +84,112 @@ class ReservationShortcode {
 
 		ob_start();
 		?>
-		<div class="sr-reservation-form-wrapper sr-max-w-lg sr-mx-auto sr-p-6" data-redirect="<?php echo esc_attr( $atts['redirect'] ); ?>">
-			<form id="sr-reservation-form" class="sr-space-y-4" novalidate>
-				<input type="hidden" name="website" value="" tabindex="-1" autocomplete="off" />
-
-				<div class="sr-grid sr-grid-cols-2 sr-gap-4">
-					<div>
-						<label for="sr-reservation-date" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-							<?php esc_html_e( 'Date', 'smooth-restaurant' ); ?> *
-						</label>
-						<input type="date" id="sr-reservation-date" name="reservation_date" required
-							class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm"
-							min="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>" />
-					</div>
-					<div>
-						<label for="sr-party-size" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-							<?php esc_html_e( 'Party Size', 'smooth-restaurant' ); ?> *
-						</label>
-						<select id="sr-party-size" name="party_size" required
-							class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm">
-							<?php for ( $i = 1; $i <= 20; $i++ ) : ?>
-								<option value="<?php echo esc_attr( (string) $i ); ?>"><?php echo esc_html( (string) $i ); ?></option>
-							<?php endfor; ?>
-						</select>
-					</div>
+		<div class="sr-reservation-form-wrapper" data-redirect="<?php echo esc_attr( $atts['redirect'] ); ?>">
+			<div class="sr-form-card">
+				<div class="sr-form-header">
+					<h2><?php esc_html_e( 'Book a Table', 'smooth-restaurant' ); ?></h2>
+					<p><?php esc_html_e( 'Reserve your spot and we will confirm shortly.', 'smooth-restaurant' ); ?></p>
 				</div>
 
-				<div>
-					<label for="sr-time-slot" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-						<?php esc_html_e( 'Time', 'smooth-restaurant' ); ?> *
-					</label>
-					<select id="sr-time-slot" name="time" required disabled
-						class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm">
-						<option value=""><?php esc_html_e( 'Select a date first', 'smooth-restaurant' ); ?></option>
-					</select>
-				</div>
+				<div class="sr-form-body">
+					<form id="sr-reservation-form" novalidate>
+						<input type="hidden" name="website" value="" tabindex="-1" autocomplete="off" />
 
-				<div>
-					<label for="sr-customer-name" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-						<?php esc_html_e( 'Name', 'smooth-restaurant' ); ?> *
-					</label>
-					<input type="text" id="sr-customer-name" name="customer_name" required
-						class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm" />
-				</div>
+						<div class="sr-form-grid">
+							<div class="sr-form-field">
+								<label for="sr-reservation-date">
+									<?php esc_html_e( 'Date', 'smooth-restaurant' ); ?>
+									<span class="sr-required">*</span>
+								</label>
+								<input type="date" id="sr-reservation-date" name="reservation_date" required
+									min="<?php echo esc_attr( gmdate( 'Y-m-d' ) ); ?>" />
+							</div>
 
-				<div>
-					<label for="sr-customer-phone" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-						<?php esc_html_e( 'Phone', 'smooth-restaurant' ); ?> *
-					</label>
-					<input type="tel" id="sr-customer-phone" name="customer_phone" required
-						class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm" />
-				</div>
+							<div class="sr-form-field">
+								<label for="sr-party-size">
+									<?php esc_html_e( 'Party Size', 'smooth-restaurant' ); ?>
+									<span class="sr-required">*</span>
+								</label>
+								<select id="sr-party-size" name="party_size" required>
+									<?php for ( $i = 1; $i <= 20; $i++ ) : ?>
+										<option value="<?php echo esc_attr( (string) $i ); ?>"><?php echo esc_html( (string) $i ); ?></option>
+									<?php endfor; ?>
+								</select>
+							</div>
 
-				<div>
-					<label for="sr-customer-email" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-						<?php esc_html_e( 'Email (optional)', 'smooth-restaurant' ); ?>
-					</label>
-					<input type="email" id="sr-customer-email" name="customer_email"
-						class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm" />
-				</div>
+							<div class="sr-form-field sr-full-width">
+								<label for="sr-time-slot">
+									<?php esc_html_e( 'Time', 'smooth-restaurant' ); ?>
+									<span class="sr-required">*</span>
+								</label>
+								<select id="sr-time-slot" name="time" required disabled>
+									<option value=""><?php esc_html_e( 'Select a date first', 'smooth-restaurant' ); ?></option>
+								</select>
+							</div>
 
-				<div>
-					<label for="sr-special-requests" class="sr-block sr-text-sm sr-font-medium sr-text-gray-700">
-						<?php esc_html_e( 'Special Requests', 'smooth-restaurant' ); ?>
-					</label>
-					<textarea id="sr-special-requests" name="special_requests" rows="3"
-						class="sr-mt-1 sr-block sr-w-full sr-rounded-md sr-border-gray-300 sr-shadow-sm focus:sr-border-indigo-500 focus:sr-ring-indigo-500 sm:sr-text-sm"></textarea>
-				</div>
+							<div class="sr-form-field sr-full-width">
+								<label for="sr-customer-name">
+									<?php esc_html_e( 'Name', 'smooth-restaurant' ); ?>
+									<span class="sr-required">*</span>
+								</label>
+								<input type="text" id="sr-customer-name" name="customer_name" required
+									placeholder="<?php esc_attr_e( 'Your full name', 'smooth-restaurant' ); ?>" />
+							</div>
 
-				<div id="sr-reservation-errors" class="sr-hidden sr-rounded-md sr-bg-red-50 sr-p-4">
-					<div class="sr-flex">
-						<div class="sr-ml-3">
-							<h3 class="sr-text-sm sr-font-medium sr-text-red-800"><?php esc_html_e( 'Please fix the following errors:', 'smooth-restaurant' ); ?></h3>
-							<ul class="sr-mt-2 sr-text-sm sr-text-red-700" role="list"></ul>
+							<div class="sr-form-field">
+								<label for="sr-customer-phone">
+									<?php esc_html_e( 'Phone', 'smooth-restaurant' ); ?>
+									<span class="sr-required">*</span>
+								</label>
+								<input type="tel" id="sr-customer-phone" name="customer_phone" required
+									placeholder="<?php esc_attr_e( 'Phone number', 'smooth-restaurant' ); ?>" />
+							</div>
+
+							<div class="sr-form-field">
+								<label for="sr-customer-email">
+									<?php esc_html_e( 'Email', 'smooth-restaurant' ); ?>
+								</label>
+								<input type="email" id="sr-customer-email" name="customer_email"
+									placeholder="<?php esc_attr_e( 'Optional email', 'smooth-restaurant' ); ?>" />
+							</div>
+
+							<div class="sr-form-field sr-full-width">
+								<label for="sr-special-requests">
+									<?php esc_html_e( 'Special Requests', 'smooth-restaurant' ); ?>
+								</label>
+								<textarea id="sr-special-requests" name="special_requests" rows="3"
+									placeholder="<?php esc_attr_e( 'Dietary restrictions, seating preferences, etc.', 'smooth-restaurant' ); ?>"></textarea>
+							</div>
 						</div>
-					</div>
-				</div>
 
-				<div id="sr-reservation-success" class="sr-hidden sr-rounded-md sr-bg-green-50 sr-p-4">
-					<div class="sr-flex">
-						<div class="sr-ml-3">
-							<h3 class="sr-text-sm sr-font-medium sr-text-green-800"><?php esc_html_e( 'Reservation Received', 'smooth-restaurant' ); ?></h3>
-							<p class="sr-mt-2 sr-text-sm sr-text-green-700"><?php esc_html_e( 'Thank you! We will confirm your reservation shortly.', 'smooth-restaurant' ); ?></p>
+						<div id="sr-reservation-errors" class="sr-alert sr-alert-error sr-hidden sr-mt-5">
+							<svg class="sr-alert-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+							</svg>
+							<div class="sr-alert-content">
+								<h3><?php esc_html_e( 'Please fix the following errors:', 'smooth-restaurant' ); ?></h3>
+								<ul role="list"></ul>
+							</div>
 						</div>
-					</div>
-				</div>
 
-				<button type="submit" id="sr-submit-reservation"
-					class="sr-inline-flex sr-justify-center sr-rounded-md sr-border sr-border-transparent sr-bg-indigo-600 sr-py-2 sr-px-4 sr-text-sm sr-font-medium sr-text-white sr-shadow-sm hover:sr-bg-indigo-700 focus:sr-outline-none focus:sr-ring-2 focus:sr-ring-indigo-500 focus:sr-ring-offset-2">
-					<?php esc_html_e( 'Request Reservation', 'smooth-restaurant' ); ?>
-				</button>
-			</form>
+						<div id="sr-reservation-success" class="sr-alert sr-alert-success sr-hidden sr-mt-5">
+							<svg class="sr-alert-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+							</svg>
+							<div class="sr-alert-content">
+								<h3><?php esc_html_e( 'Reservation Received', 'smooth-restaurant' ); ?></h3>
+								<p><?php esc_html_e( 'Thank you! We will confirm your reservation shortly.', 'smooth-restaurant' ); ?></p>
+							</div>
+						</div>
+
+						<div class="sr-mt-6">
+							<button type="submit" id="sr-submit-reservation" class="sr-submit-btn">
+								<?php esc_html_e( 'Request Reservation', 'smooth-restaurant' ); ?>
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 		<?php
 		return ob_get_clean();

@@ -51,10 +51,15 @@ class Assets {
 				'version'      => SR_VERSION,
 			);
 
+		$dependencies = array_merge(
+			$asset['dependencies'],
+			array( 'wp-api-fetch' )
+		);
+
 		wp_enqueue_script(
 			'smooth-restaurant-admin',
 			SR_PLUGIN_URL . 'assets/build/admin/index.js',
-			$asset['dependencies'],
+			$dependencies,
 			$asset['version'],
 			true
 		);

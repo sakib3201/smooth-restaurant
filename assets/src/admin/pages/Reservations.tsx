@@ -112,7 +112,7 @@ function apiFetch<T>( url: string, options?: RequestInit ): Promise<T> {
 			'X-WP-Nonce': ( window as any ).smoothRestaurantAdmin?.restNonce || '',
 			...( options?.headers || {} ),
 		},
-		credentials: 'same-origin',
+		credentials: 'include',
 	} ).then( async ( res ) => {
 		if ( ! res.ok ) {
 			let err: ApiError = { message: __( 'Request failed.', 'smooth-restaurant' ) };

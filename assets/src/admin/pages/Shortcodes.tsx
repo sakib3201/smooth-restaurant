@@ -53,10 +53,46 @@ export const Shortcodes = () => {
 	const [ copiedTag, setCopiedTag ] = useState<string | null>( null );
 
 	const copyToClipboard = useCallback( ( text: string ) => {
-		navigator.clipboard.writeText( text ).then( () => {
+		const doCopy = () => {
 			setCopiedTag( text );
 			setTimeout( () => setCopiedTag( null ), 2000 );
-		} );
+		};
+
+		if ( navigator.clipboard && window.isSecureContext ) {
+			navigator.clipboard.writeText( text ).then( doCopy ).catch( () => {
+				// Fallback for non-secure contexts.
+				const textarea = document.createElement( 'textarea' );
+				textarea.value = text;
+				textarea.style.position = 'fixed';
+				textarea.style.left = '-9999px';
+				document.body.appendChild( textarea );
+				textarea.focus();
+				textarea.select();
+				try {
+					document.execCommand( 'copy' );
+					doCopy();
+				} catch {
+					// Silently fail.
+				}
+				document.body.removeChild( textarea );
+			} );
+		} else {
+			// Fallback for browsers without clipboard API.
+			const textarea = document.createElement( 'textarea' );
+			textarea.value = text;
+			textarea.style.position = 'fixed';
+			textarea.style.left = '-9999px';
+			document.body.appendChild( textarea );
+			textarea.focus();
+			textarea.select();
+			try {
+				document.execCommand( 'copy' );
+				doCopy();
+			} catch {
+				// Silently fail.
+			}
+			document.body.removeChild( textarea );
+		}
 	}, [] );
 
 	return (

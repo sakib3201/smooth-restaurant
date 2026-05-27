@@ -1,6 +1,7 @@
 /**
  * Reservation form frontend logic.
  */
+import './style.scss';
 
 interface SRLabels {
 	selectDate: string;
