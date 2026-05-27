@@ -68,7 +68,7 @@ class Schema {
 		}
 
 		// Future upgrades:
-		// if (version_compare($current_version, '0.2.0', '<')) {
+		// if ( version_compare( $current_version, '0.2.0', '<' ) ) {
 		// self::upgrade_to_020();
 		// }
 
@@ -91,7 +91,6 @@ class Schema {
 	 * @return void
 	 */
 	private static function upgrade_to_010(): void {
-		// Initial schema setup is handled during activation.
-		// This routine exists for future database changes (custom tables, etc.).
+		\SmoothRestaurant\Database\Migration::create_reservations_table();
 	}
 }

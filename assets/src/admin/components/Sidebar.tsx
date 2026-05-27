@@ -1,17 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { __ } from '@wordpress/i18n';
 import { cn } from '../lib/utils';
 import { routes } from '../config/routes';
+import { Button } from '@/admin/components/ui/button';
 import {
-	DashboardIcon,
-	MenuItemsIcon,
-	OrdersIcon,
-	ReservationsIcon,
-	SettingsIcon,
-	LogoIcon,
-	WordPressIcon,
-} from './icons';
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/admin/components/ui/tooltip';
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+} from '@/admin/components/ui/sheet';
+import { Separator } from '@/admin/components/ui/separator';
+import {
+	LayoutDashboard,
+	UtensilsCrossed,
+	ShoppingBag,
+	CalendarDays,
+	Settings,
+	Code,
+	ChefHat,
+	ArrowLeftToLine,
+} from 'lucide-react';
 
 interface SidebarProps {
 	collapsed: boolean;
@@ -20,11 +35,12 @@ interface SidebarProps {
 }
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-	'/': DashboardIcon,
-	'/menu-items': MenuItemsIcon,
-	'/orders': OrdersIcon,
-	'/reservations': ReservationsIcon,
-	'/settings': SettingsIcon,
+	'/': LayoutDashboard,
+	'/menu-items': UtensilsCrossed,
+	'/orders': ShoppingBag,
+	'/reservations': CalendarDays,
+	'/settings': Settings,
+	'/shortcodes': Code,
 };
 
 export const Sidebar = ( { collapsed, mobileOpen, onMobileClose }: SidebarProps ) => {
@@ -76,102 +92,115 @@ export const Sidebar = ( { collapsed, mobileOpen, onMobileClose }: SidebarProps 
 		return () => document.removeEventListener( 'keydown', handleEscape );
 	}, [ mobileOpen, onMobileClose ] );
 
-	const handleNavClick = ( path: string ) => {
+	const handleNavClick = useCallback( ( path: string ) => {
 		navigate( path );
 		onMobileClose();
-	};
+	}, [ navigate, onMobileClose ] );
+
+	const navContent = (
+		<>
+			{/* Logo */}
+			<div className={ cn(
+				'sr-flex sr-items-center sr-border-b sr-border-sr-border sr-shrink-0',
+				collapsed ? 'lg:sr-justify-center sr-h-14 sr-px-2' : 'sr-h-14 sr-px-4'
+			) }>
+				<div className="sr-flex sr-items-center sr-gap-2 sr-min-w-0">
+					<div className="sr-flex sr-size-8 sr-shrink-0 sr-items-center sr-justify-center sr-rounded-sr-md sr-bg-sr-primary">
+						<ChefHat className="sr-text-white" />
+					</div>
+					{ ! collapsed && (
+						<span className="sr-truncate sr-whitespace-nowrap sr-text-body sr-font-semibold sr-text-sr-text sr-transition-opacity sr-duration-200 sr-ease-out-expo">
+							{ __( 'Smooth Restaurant', 'smooth-restaurant' ) }
+						</span>
+					) }
+				</div>
+			</div>
+
+			{/* Navigation */}
+			<nav className="sr-flex-1 sr-overflow-y-auto sr-scrollbar-thin sr-px-2 sr-py-4">
+				<ul className="sr-flex sr-flex-col sr-gap-1">
+					{ routes.map( ( route, index ) => {
+						const isActive = location.pathname === route.path;
+						const Icon = iconMap[ route.path ];
+						return (
+							<li key={ route.path }>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											ref={ index === 0 ? firstItemRef : undefined }
+											variant={ isActive ? 'secondary' : 'ghost' }
+											size={ collapsed ? 'icon' : 'default' }
+											className={ cn(
+												'sr-w-full sr-justify-start sr-gap-3 sr-min-h-[44px]',
+												collapsed && 'lg:sr-justify-center lg:sr-px-0'
+											) }
+											aria-current={ isActive ? 'page' : undefined }
+											onClick={ () => handleNavClick( route.path ) }
+										>
+											<span aria-hidden="true">
+												{ Icon ? <Icon /> : <span className="sr-size-5" /> }
+											</span>
+											{ ! collapsed && (
+												<span className="sr-truncate sr-whitespace-nowrap sr-transition-opacity sr-duration-200 sr-ease-out-expo">{ route.label }</span>
+											) }
+										</Button>
+									</TooltipTrigger>
+									{ collapsed && (
+										<TooltipContent side="right">{ route.label }</TooltipContent>
+									) }
+								</Tooltip>
+							</li>
+						);
+					} ) }
+				</ul>
+			</nav>
+
+			<Separator className="sr-bg-sr-border" />
+
+			{/* Back to WordPress */}
+			<div className="sr-shrink-0 sr-py-3 sr-px-2">
+				<a
+					href="/wp-admin"
+					className={ cn(
+						'sr-flex sr-items-center sr-gap-3 sr-px-3 sr-py-2.5 sr-rounded-sr-md sr-text-label sr-text-sr-text-secondary hover:sr-bg-sr-hover sr-transition-colors sr-duration-150 sr-ease-out-expo sr-focus-ring sr-min-h-[44px]',
+						collapsed ? 'lg:sr-justify-center' : ''
+					) }
+					aria-label={ __( 'Back to WordPress Dashboard', 'smooth-restaurant' ) }
+				>
+					<span className="sr-shrink-0 sr-flex sr-items-center sr-justify-center sr-text-sr-text-secondary" aria-hidden="true">
+						<ArrowLeftToLine />
+					</span>
+					{ ! collapsed && (
+						<span className="sr-truncate sr-whitespace-nowrap sr-transition-opacity sr-duration-200 sr-ease-out-expo">{ __( 'Back to WordPress', 'smooth-restaurant' ) }</span>
+					) }
+				</a>
+			</div>
+		</>
+	);
 
 	return (
 		<>
-			{/* Mobile overlay */}
-			{ mobileOpen && (
-				<div
-					className="sr-fixed sr-inset-0 sr-bg-black/30 sr-z-40 lg:sr-hidden sr-transition-opacity sr-duration-200 sr-ease-out-expo"
-					onClick={ onMobileClose }
-					aria-hidden="true"
-				/>
-			) }
-
-			{/* Sidebar */}
+			{/* Desktop sidebar */}
 			<aside
 				ref={ sidebarRef }
 				className={ cn(
-					'sr-fixed sr-top-0 sr-left-0 sr-h-full sr-bg-sr-surface sr-border-r sr-border-sr-border sr-z-50 sr-flex sr-flex-col sr-transition-all sr-duration-300 sr-ease-out-expo',
-					collapsed ? 'lg:sr-w-16' : 'lg:sr-w-60',
-					mobileOpen ? 'sr-translate-x-0' : '-sr-translate-x-full md:sr-translate-x-0',
-					mobileOpen && ! collapsed ? 'sr-w-60' : '',
-					mobileOpen && collapsed ? 'sr-w-16' : ''
+					'sr-fixed sr-top-0 sr-left-0 sr-h-full sr-bg-sr-surface sr-border-r sr-border-sr-border sr-z-50 sr-hidden md:sr-flex sr-flex-col sr-transition-all sr-duration-300 sr-ease-out-expo',
+					collapsed ? 'md:sr-w-16' : 'md:sr-w-60'
 				) }
 				aria-label={ __( 'Main navigation', 'smooth-restaurant' ) }
 			>
-				{/* Logo */}
-				<div className={ cn(
-					'sr-flex sr-items-center sr-border-b sr-border-sr-border sr-shrink-0',
-					collapsed ? 'lg:sr-justify-center sr-h-14 sr-px-2' : 'sr-h-14 sr-px-4'
-				) }>
-					<div className="sr-flex sr-items-center sr-gap-2 sr-min-w-0">
-						<div className="sr-w-8 sr-h-8 sr-rounded-sr-md sr-bg-sr-primary sr-flex sr-items-center sr-justify-center sr-shrink-0">
-							<LogoIcon />
-						</div>
-						{ ! collapsed && (
-							<span className="sr-font-semibold sr-text-sr-text sr-text-body sr-truncate sr-whitespace-nowrap sr-transition-opacity sr-duration-200 sr-ease-out-expo">
-								{ __( 'Smooth Restaurant', 'smooth-restaurant' ) }
-							</span>
-						) }
-					</div>
-				</div>
-
-				{/* Navigation */}
-				<nav className="sr-flex-1 sr-py-4 sr-px-2 sr-overflow-y-auto sr-scrollbar-thin">
-					<ul className="sr-space-y-1">
-						{ routes.map( ( route, index ) => {
-							const isActive = location.pathname === route.path;
-							const Icon = iconMap[ route.path ];
-							return (
-								<li key={ route.path }>
-									<button
-										ref={ index === 0 ? firstItemRef : undefined }
-										onClick={ () => handleNavClick( route.path ) }
-										className={ cn(
-											'sr-w-full sr-flex sr-items-center sr-gap-3 sr-px-3 sr-py-2.5 sr-rounded-sr-md sr-text-label sr-font-medium sr-transition-all sr-duration-150 sr-ease-out-expo sr-focus-ring sr-min-h-[44px]',
-											isActive
-												? 'sr-bg-sr-primary/10 sr-text-sr-primary'
-												: 'sr-text-sr-text-secondary hover:sr-bg-sr-bg hover:sr-text-sr-text'
-										) }
-										aria-current={ isActive ? 'page' : undefined }
-									>
-										<span className="sr-shrink-0 sr-flex sr-items-center sr-justify-center" aria-hidden="true">
-											{ Icon ? <Icon /> : <span className="sr-w-5 sr-h-5" /> }
-										</span>
-										{ ! collapsed && (
-											<span className="sr-truncate sr-whitespace-nowrap sr-transition-opacity sr-duration-200 sr-ease-out-expo">{ route.label }</span>
-										) }
-									</button>
-								</li>
-							);
-						} ) }
-					</ul>
-				</nav>
-
-				{/* Back to WordPress */}
-				<div className="sr-shrink-0 sr-py-3 sr-px-2 sr-border-t sr-border-sr-border">
-					<a
-						href="/wp-admin"
-						className={ cn(
-							'sr-flex sr-items-center sr-gap-3 sr-px-3 sr-py-2.5 sr-rounded-sr-md sr-text-label sr-text-sr-text-secondary hover:sr-bg-sr-bg hover:sr-text-sr-text sr-transition-colors sr-duration-150 sr-ease-out-expo sr-focus-ring sr-min-h-[44px]',
-							collapsed ? 'lg:sr-justify-center' : ''
-						) }
-						aria-label={ __( 'Back to WordPress Dashboard', 'smooth-restaurant' ) }
-					>
-						<span className="sr-shrink-0 sr-flex sr-items-center sr-justify-center sr-text-sr-text-secondary" aria-hidden="true">
-							<WordPressIcon />
-						</span>
-						{ ! collapsed && (
-							<span className="sr-truncate sr-whitespace-nowrap sr-transition-opacity sr-duration-200 sr-ease-out-expo">{ __( 'Back to WordPress', 'smooth-restaurant' ) }</span>
-						) }
-					</a>
-				</div>
+				<TooltipProvider delay={ 200 }>{ navContent }</TooltipProvider>
 			</aside>
+
+			{/* Mobile sheet */}
+			<Sheet open={ mobileOpen } onOpenChange={ onMobileClose }>
+				<SheetContent side="left" className="sr-w-60 sr-p-0 sr-bg-sr-surface sr-border-sr-border">
+					<SheetHeader className="sr-sr-only">
+						<SheetTitle>{ __( 'Navigation', 'smooth-restaurant' ) }</SheetTitle>
+					</SheetHeader>
+					<div className="sr-flex sr-flex-col sr-h-full">{ navContent }</div>
+				</SheetContent>
+			</Sheet>
 		</>
 	);
 };

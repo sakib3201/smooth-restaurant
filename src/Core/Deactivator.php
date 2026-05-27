@@ -44,6 +44,7 @@ class Deactivator {
 			if ( false !== $timestamp ) {
 				wp_unschedule_event( $timestamp, $hook );
 			}
+			wp_clear_scheduled_hook( $hook );
 		}
 	}
 

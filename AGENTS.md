@@ -18,11 +18,12 @@
   - `build:blocks` from `assets/src/blocks` → `assets/build/blocks`
 - `npm run i18n` — generates `.pot` and `.json` translation files under `languages/`.
 - Tailwind CSS is used with prefix `sr-` and custom color `sr-admin`. Config: `tailwind.config.js` / `postcss.config.js`.
-- TypeScript path aliases (also mapped in Jest):
+- TypeScript path aliases (also mapped in Jest and webpack):
   - `@/admin/*` → `assets/src/admin/*`
   - `@/frontend/*` → `assets/src/frontend/*`
   - `@/shared/*` → `assets/src/shared/*`
   - `@/blocks/*` → `assets/src/blocks/*`
+- **shadcn/ui** — initialized under `assets/src/admin/components/ui/`. Uses `@base-ui/react` primitives with `base-nova` style. CSS variables defined in `assets/css/admin-global.scss`. Component alias: `@/admin/components/ui/*`.
 
 ## Testing
 

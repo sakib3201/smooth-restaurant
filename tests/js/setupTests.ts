@@ -11,3 +11,18 @@ jest.mock( '@wordpress/i18n', () => ( {
 	sprintf: ( format: string, ...args: unknown[] ) =>
 		format.replace( /%s/g, () => String( args.shift() ) ),
 } ) );
+
+// Provide minimal matchMedia for jsdom
+Object.defineProperty( window, 'matchMedia', {
+	writable: true,
+	value: jest.fn().mockImplementation( ( query: string ) => ( {
+		matches: false,
+		media: query,
+		onchange: null,
+		addListener: jest.fn(),
+		removeListener: jest.fn(),
+		addEventListener: jest.fn(),
+		removeEventListener: jest.fn(),
+		dispatchEvent: jest.fn(),
+	} ) ),
+} );

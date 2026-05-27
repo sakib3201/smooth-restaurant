@@ -21,7 +21,7 @@
       "@/shared/*": ["assets/src/shared/*"],
       "@/blocks/*": ["assets/src/blocks/*"]
     },
-    "types": ["node", "react", "react-dom"]
+    "types": ["node", "react", "react-dom", "jest", "@testing-library/jest-dom"]
   },
   "include": [
     "assets/src/**/*",

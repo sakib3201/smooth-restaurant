@@ -12,11 +12,13 @@ const MenuItems = lazy( () => import( '../pages/MenuItems' ).then( m => ( { defa
 const Orders = lazy( () => import( '../pages/Orders' ).then( m => ( { default: m.Orders } ) ) );
 const Reservations = lazy( () => import( '../pages/Reservations' ).then( m => ( { default: m.Reservations } ) ) );
 const Settings = lazy( () => import( '../pages/Settings' ).then( m => ( { default: m.Settings } ) ) );
+const Shortcodes = lazy( () => import( '../pages/Shortcodes' ).then( m => ( { default: m.Shortcodes } ) ) );
 
 export const routes: RouteConfig[] = [
 	{ path: '/', label: __( 'Dashboard', 'smooth-restaurant' ), component: Dashboard },
 	{ path: '/menu-items', label: __( 'Menu Items', 'smooth-restaurant' ), component: MenuItems },
 	{ path: '/orders', label: __( 'Orders', 'smooth-restaurant' ), component: Orders },
 	{ path: '/reservations', label: __( 'Reservations', 'smooth-restaurant' ), component: Reservations },
+	{ path: '/shortcodes', label: __( 'Shortcodes', 'smooth-restaurant' ), component: Shortcodes },
 	{ path: '/settings', label: __( 'Settings', 'smooth-restaurant' ), component: Settings },
 ];

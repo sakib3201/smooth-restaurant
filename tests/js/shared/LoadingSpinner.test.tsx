@@ -53,13 +53,13 @@ describe( 'LoadingSpinner', () => {
 	it( 'applies default size', () => {
 		render( <LoadingSpinner /> );
 		const spinner = screen.getByTestId( 'loading-spinner' );
-		expect( spinner ).toHaveStyle( { width: 24, height: 24 } );
+		expect( spinner ).toHaveStyle( { width: '24px', height: '24px' } );
 	} );
 
 	it( 'applies custom size and className', () => {
 		render( <LoadingSpinner size={ 48 } className="custom-class" /> );
 		const spinner = screen.getByTestId( 'loading-spinner' );
-		expect( spinner ).toHaveStyle( { width: 48, height: 48 } );
+		expect( spinner ).toHaveStyle( { width: '48px', height: '48px' } );
 		expect( spinner ).toHaveClass( 'custom-class' );
 	} );
 } );

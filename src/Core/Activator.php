@@ -30,8 +30,11 @@ class Activator {
 	 */
 	public static function activate(): void {
 		self::set_default_options();
+		\SmoothRestaurant\Reservation\Settings::seed_defaults();
 		self::create_roles();
 		self::set_schema_version();
+		\SmoothRestaurant\Database\Migration::create_reservations_table();
+		self::schedule_cron_events();
 
 		// Flush rewrite rules so CPT/taxonomy endpoints are available immediately.
 		flush_rewrite_rules();
@@ -50,7 +53,6 @@ class Activator {
 			'smooth_restaurant_thousand_separator'   => ',',
 			'smooth_restaurant_date_format'          => 'Y-m-d',
 			'smooth_restaurant_time_format'          => 'H:i',
-			'smooth_restaurant_reservation_interval' => 30,
 			'smooth_restaurant_order_prefix'         => 'SR-',
 			'smooth_restaurant_enable_online_orders' => 'yes',
 		);
@@ -82,11 +84,9 @@ class Activator {
 				'publish_smooth_restaurant_menu_items'     => true,
 				'read_smooth_restaurant_menu_item'         => true,
 				'delete_smooth_restaurant_menu_items'      => true,
-				'edit_smooth_restaurant_reservations'      => true,
-				'edit_others_smooth_restaurant_reservations' => true,
-				'publish_smooth_restaurant_reservations'   => true,
-				'read_smooth_restaurant_reservation'       => true,
-				'delete_smooth_restaurant_reservations'    => true,
+				'sr_view_reservations'                     => true,
+				'sr_edit_reservations'                     => true,
+				'sr_delete_reservations'                   => true,
 			)
 		);
 
@@ -104,6 +104,7 @@ class Activator {
 				'read_smooth_restaurant_order'         => true,
 				'edit_smooth_restaurant_orders'        => true,
 				'edit_others_smooth_restaurant_orders' => true,
+				'sr_view_reservations'                 => true,
 			)
 		);
 
@@ -124,6 +125,9 @@ class Activator {
 				'read_smooth_restaurant_order'         => true,
 				'delete_smooth_restaurant_orders'      => true,
 				'manage_smooth_restaurant_settings'    => true,
+				'sr_view_reservations'                 => true,
+				'sr_edit_reservations'                 => true,
+				'sr_delete_reservations'               => true,
 			)
 		);
 
@@ -155,6 +159,23 @@ class Activator {
 				$admin->add_cap( $cap );
 			}
 		}
+
+		// Ensure existing roles get new reservation capabilities on re-activation.
+		$roles_to_update = array( 'smooth_restaurant_staff', 'smooth_restaurant_kitchen', 'smooth_restaurant_manager' );
+		foreach ( $roles_to_update as $role_name ) {
+			$role = get_role( $role_name );
+			if ( ! $role instanceof \WP_Role ) {
+				continue;
+			}
+			if ( in_array( $role_name, array( 'smooth_restaurant_staff', 'smooth_restaurant_manager' ), true ) ) {
+				$role->add_cap( 'sr_view_reservations' );
+				$role->add_cap( 'sr_edit_reservations' );
+				$role->add_cap( 'sr_delete_reservations' );
+			}
+			if ( 'smooth_restaurant_kitchen' === $role_name ) {
+				$role->add_cap( 'sr_view_reservations' );
+			}
+		}
 	}
 
 	/**
@@ -164,5 +185,28 @@ class Activator {
 	 */
 	private static function set_schema_version(): void {
 		update_option( 'smooth_restaurant_db_version', self::SCHEMA_VERSION );
+	}
+
+	/**
+	 * Schedule custom cron events.
+	 *
+	 * @return void
+	 */
+	private static function schedule_cron_events(): void {
+		if ( ! wp_next_scheduled( 'smooth_restaurant_hourly_cleanup' ) ) {
+			wp_schedule_event( time(), 'hourly', 'smooth_restaurant_hourly_cleanup' );
+		}
+
+		if ( ! wp_next_scheduled( 'smooth_restaurant_daily_report' ) ) {
+			wp_schedule_event( time(), 'daily', 'smooth_restaurant_daily_report' );
+		}
+
+		if ( ! wp_next_scheduled( 'smooth_restaurant_process_pending_orders' ) ) {
+			wp_schedule_event( time(), 'hourly', 'smooth_restaurant_process_pending_orders' );
+		}
+
+		if ( ! wp_next_scheduled( 'smooth_restaurant_reservation_reminders' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'smooth_restaurant_reservation_reminders' );
+		}
 	}
 }

@@ -64,11 +64,11 @@ final class Plugin {
 	private function registerProviders(): void {
 		$providers = array(
 			\SmoothRestaurant\Providers\CoreProvider::class,
+			\SmoothRestaurant\Providers\ReservationProvider::class,
 			// Future providers will be added here:
 			// \SmoothRestaurant\Providers\DatabaseProvider::class,
 			// \SmoothRestaurant\Providers\MenuProvider::class,
 			// \SmoothRestaurant\Providers\OrderProvider::class,
-			// \SmoothRestaurant\Providers\ReservationProvider::class,
 			// \SmoothRestaurant\Providers\AssetProvider::class,
 			// \SmoothRestaurant\Providers\RouteProvider::class,
 			// \SmoothRestaurant\Providers\AdminProvider::class,

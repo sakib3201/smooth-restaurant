@@ -132,3 +132,10 @@ export const MoonIcon = ( { className, style }: IconProps ) => (
 		<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
 	</svg>
 );
+
+export const ShortcodeIcon = ( { className }: IconProps ) => (
+	<svg { ...svgProps } className={ className }>
+		<path d="M16 18l6-6-6-6" />
+		<path d="M8 6l-6 6 6 6" />
+	</svg>
+);

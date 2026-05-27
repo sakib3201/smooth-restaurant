@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { Footer } from './Footer';
@@ -10,6 +10,18 @@ interface LayoutProps {
 export const Layout = ( { children }: LayoutProps ) => {
 	const [ sidebarCollapsed, setSidebarCollapsed ] = useState( false );
 	const [ mobileMenuOpen, setMobileMenuOpen ] = useState( false );
+
+	const handleSidebarToggle = useCallback( () => {
+		setSidebarCollapsed( ( prev ) => ! prev );
+	}, [] );
+
+	const handleMobileMenuToggle = useCallback( () => {
+		setMobileMenuOpen( ( prev ) => ! prev );
+	}, [] );
+
+	const handleMobileClose = useCallback( () => {
+		setMobileMenuOpen( false );
+	}, [] );
 
 	return (
 		<div className="sr-flex sr-min-h-screen sr-bg-sr-bg">
@@ -25,7 +37,7 @@ export const Layout = ( { children }: LayoutProps ) => {
 			<Sidebar
 				collapsed={ sidebarCollapsed }
 				mobileOpen={ mobileMenuOpen }
-				onMobileClose={ () => setMobileMenuOpen( false ) }
+				onMobileClose={ handleMobileClose }
 			/>
 
 			{/* Main content area */}
@@ -34,8 +46,8 @@ export const Layout = ( { children }: LayoutProps ) => {
 			>
 				<Header
 					sidebarCollapsed={ sidebarCollapsed }
-					onSidebarToggle={ () => setSidebarCollapsed( ! sidebarCollapsed ) }
-					onMobileMenuToggle={ () => setMobileMenuOpen( ! mobileMenuOpen ) }
+					onSidebarToggle={ handleSidebarToggle }
+					onMobileMenuToggle={ handleMobileMenuToggle }
 				/>
 
 				<main id="smooth-restaurant-main" className="sr-flex-1 sr-overflow-y-auto sr-scrollbar-thin" tabIndex={ -1 }>

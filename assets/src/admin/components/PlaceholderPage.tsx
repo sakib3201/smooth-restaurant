@@ -1,4 +1,10 @@
 import { __ } from '@wordpress/i18n';
+import {
+	Empty,
+	EmptyHeader,
+	EmptyTitle,
+	EmptyDescription,
+} from '@/admin/components/ui/empty';
 
 interface PlaceholderPageProps {
 	title: string;
@@ -7,9 +13,11 @@ interface PlaceholderPageProps {
 
 export const PlaceholderPage = ( { title, description }: PlaceholderPageProps ) => {
 	return (
-		<div className="sr-py-8 sr-max-w-[65ch]">
-			<h2 className="sr-text-headline sr-text-sr-text sr-mb-4">{ title }</h2>
-			<p className="sr-text-body sr-text-sr-text-secondary">{ description }</p>
-		</div>
+		<Empty className="sr-py-8">
+			<EmptyHeader>
+				<EmptyTitle>{ title }</EmptyTitle>
+				<EmptyDescription>{ description }</EmptyDescription>
+			</EmptyHeader>
+		</Empty>
 	);
 };

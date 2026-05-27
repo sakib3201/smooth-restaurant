@@ -9,3 +9,15 @@
 		@apply mb-2;
 	}
 }
+
+.sr-reservation-form-wrapper {
+	input,
+	select,
+	textarea {
+		@apply border-gray-300 focus:border-indigo-500 focus:ring-indigo-500;
+	}
+
+	button[type="submit"] {
+		@apply w-full sm:w-auto;
+	}
+}
