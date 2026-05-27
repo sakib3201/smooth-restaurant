@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { App } from './App';
 import { ThemeProvider } from './hooks/useTheme';
 import './style.scss';
@@ -13,10 +13,10 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	}
 	const root = createRoot( container );
 	root.render(
-		<BrowserRouter>
+		<HashRouter>
 			<ThemeProvider>
 				<App />
 			</ThemeProvider>
-		</BrowserRouter>
+		</HashRouter>
 	);
 } );

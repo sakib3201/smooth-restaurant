@@ -29,7 +29,7 @@ function DialogOverlay({
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "sr-fixed sr-inset-0 sr-isolate sr-z-50 sr-bg-black/10 sr-duration-100 supports-backdrop-filter:sr-backdrop-blur-xs data-open:sr-animate-in data-open:sr-fade-in-0 data-closed:sr-animate-out data-closed:sr-fade-out-0",
         className
       )}
       {...props}
@@ -51,7 +51,7 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "sr-fixed sr-top-1/2 sr-left-1/2 sr-z-50 sr-grid sr-w-full sr-max-w-[calc(100%-2rem)] -sr-translate-x-1/2 -sr-translate-y-1/2 sr-gap-4 sr-rounded-xl sr-bg-popover sr-p-4 sr-text-sm sr-text-popover-foreground sr-ring-1 sr-ring-foreground/10 sr-duration-100 sr-outline-none sm:sr-max-w-sm data-open:sr-animate-in data-open:sr-fade-in-0 data-open:sr-zoom-in-95 data-closed:sr-animate-out data-closed:sr-fade-out-0 data-closed:sr-zoom-out-95",
           className
         )}
         {...props}
@@ -63,14 +63,14 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-2 right-2"
+                className="sr-absolute sr-top-2 sr-right-2"
                 size="icon-sm"
               />
             }
           >
             <XIcon
             />
-            <span className="sr-only">Close</span>
+            <span className="sr-sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Popup>
@@ -82,7 +82,7 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn("sr-flex sr-flex-col sr-gap-2", className)}
       {...props}
     />
   )
@@ -100,7 +100,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "-sr-mx-4 -sr-mb-4 sr-flex sr-flex-col-reverse sr-gap-2 sr-rounded-b-xl sr-border-t sr-bg-muted/50 sr-p-4 sm:sr-flex-row sm:sr-justify-end",
         className
       )}
       {...props}
@@ -120,7 +120,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "font-heading text-base leading-none font-medium",
+        "sr-font-heading sr-text-base sr-leading-none sr-font-medium",
         className
       )}
       {...props}
@@ -136,7 +136,7 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn(
-        "text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
+        "sr-text-sm sr-text-muted-foreground *:[a]:sr-underline *:[a]:sr-underline-offset-3 *:[a:hover]:sr-text-foreground",
         className
       )}
       {...props}

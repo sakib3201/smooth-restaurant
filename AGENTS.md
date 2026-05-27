@@ -74,6 +74,7 @@ All workflows are `workflow_dispatch` only:
 - `src/Core/Plugin.php` — singleton bootstrap.
 - `src/Core/Container.php` — DI container.
 - `src/Providers/CoreProvider.php` — only active provider.
+- `assets/src/admin/index.tsx` — admin React entrypoint. Uses `HashRouter` so refreshes stay inside the plugin admin page.
 - `assets/src/blocks/menu-item/block.json` — example Gutenberg block.
 - `phpunit.xml.dist` — two test suites: Unit / Integration.
 - `phpstan.neon.dist` — level 8, scans `src/`, `tests/`, `smooth-restaurant.php`, `uninstall.php`.

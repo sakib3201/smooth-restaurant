@@ -9,7 +9,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       type={type}
       data-slot="input"
       className={cn(
-        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        "sr-h-8 sr-w-full sr-min-w-0 sr-rounded-lg sr-border sr-border-input sr-bg-transparent sr-px-2.5 sr-py-1 sr-text-base sr-transition-colors sr-outline-none file:sr-inline-flex file:sr-h-6 file:sr-border-0 file:sr-bg-transparent file:sr-text-sm file:sr-font-medium file:sr-text-foreground placeholder:sr-text-muted-foreground focus-visible:sr-border-ring focus-visible:sr-ring-3 focus-visible:sr-ring-ring/50 disabled:sr-pointer-events-none disabled:sr-cursor-not-allowed disabled:sr-bg-input/50 disabled:sr-opacity-50 aria-invalid:sr-border-destructive aria-invalid:sr-ring-3 aria-invalid:sr-ring-destructive/20 md:sr-text-sm dark:sr-bg-input/30 dark:disabled:sr-bg-input/80 dark:aria-invalid:sr-border-destructive/50 dark:aria-invalid:sr-ring-destructive/40",
         className
       )}
       {...props}

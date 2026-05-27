@@ -5,20 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/admin/lib/utils"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge sr-inline-flex sr-h-5 sr-w-fit sr-shrink-0 sr-items-center sr-justify-center sr-gap-1 sr-overflow-hidden sr-rounded-4xl sr-border sr-border-transparent sr-px-2 sr-py-0.5 sr-text-xs sr-font-medium sr-whitespace-nowrap sr-transition-all focus-visible:sr-border-ring focus-visible:sr-ring-[3px] focus-visible:sr-ring-ring/50 has-data-[icon=inline-end]:sr-pr-1.5 has-data-[icon=inline-start]:sr-pl-1.5 aria-invalid:sr-border-destructive aria-invalid:sr-ring-destructive/20 dark:aria-invalid:sr-ring-destructive/40 [&>svg]:sr-pointer-events-none [&>svg]:sr-size-3!",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default: "sr-bg-primary sr-text-primary-foreground [a]:hover:sr-bg-primary/80",
         secondary:
-          "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
+          "sr-bg-secondary sr-text-secondary-foreground [a]:hover:sr-bg-secondary/80",
         destructive:
-          "bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20",
+          "sr-bg-destructive/10 sr-text-destructive focus-visible:sr-ring-destructive/20 dark:sr-bg-destructive/20 dark:focus-visible:sr-ring-destructive/40 [a]:hover:sr-bg-destructive/20",
         outline:
-          "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
+          "sr-border-border sr-text-foreground [a]:hover:sr-bg-muted [a]:hover:sr-text-muted-foreground",
         ghost:
-          "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:sr-bg-muted hover:sr-text-muted-foreground dark:hover:sr-bg-muted/50",
+        link: "sr-text-primary sr-underline-offset-4 hover:sr-underline",
       },
     },
     defaultVariants: {

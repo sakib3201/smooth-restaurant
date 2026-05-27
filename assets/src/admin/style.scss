@@ -4,8 +4,9 @@
 
 /* Smooth Restaurant Admin Shell Styles */
 
-/* CSS Custom Properties for theming */
+/* CSS Custom Properties for theming — mapped to shadcn + project tokens */
 :root {
+	/* Project tokens */
 	--sr-bg: #f8fafc;
 	--sr-surface: #f1f5f9;
 	--sr-border: #e2e8f0;
@@ -16,9 +17,40 @@
 	--sr-disabled: #cbd5e1;
 	--sr-scrollbar-thumb: #94a3b8;
 	--sr-scrollbar-thumb-hover: #64748b;
+
+	/* shadcn tokens mapped to project palette */
+	--background: #f8fafc;
+	--foreground: #0f172a;
+	--card: #f8fafc;
+	--card-foreground: #0f172a;
+	--popover: #f8fafc;
+	--popover-foreground: #0f172a;
+	--primary: #1e40af;
+	--primary-foreground: #ffffff;
+	--secondary: #f1f5f9;
+	--secondary-foreground: #0f172a;
+	--muted: #f1f5f9;
+	--muted-foreground: #64748b;
+	--accent: #f1f5f9;
+	--accent-foreground: #0f172a;
+	--destructive: #b91c1c;
+	--destructive-foreground: #ffffff;
+	--border: #e2e8f0;
+	--input: #e2e8f0;
+	--ring: #1e40af;
+	--radius: 0.5rem;
+	--sidebar: #f1f5f9;
+	--sidebar-foreground: #0f172a;
+	--sidebar-primary: #1e40af;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #f1f5f9;
+	--sidebar-accent-foreground: #0f172a;
+	--sidebar-border: #e2e8f0;
+	--sidebar-ring: #1e40af;
 }
 
 [data-theme="dark"] {
+	/* Project tokens dark */
 	--sr-bg: #0f172a;
 	--sr-surface: #1e293b;
 	--sr-border: #334155;
@@ -29,8 +61,38 @@
 	--sr-disabled: #475569;
 	--sr-scrollbar-thumb: #475569;
 	--sr-scrollbar-thumb-hover: #64748b;
+
+	/* shadcn tokens dark */
+	--background: #0f172a;
+	--foreground: #f8fafc;
+	--card: #1e293b;
+	--card-foreground: #f8fafc;
+	--popover: #1e293b;
+	--popover-foreground: #f8fafc;
+	--primary: #3b82f6;
+	--primary-foreground: #0f172a;
+	--secondary: #334155;
+	--secondary-foreground: #f8fafc;
+	--muted: #334155;
+	--muted-foreground: #94a3b8;
+	--accent: #334155;
+	--accent-foreground: #f8fafc;
+	--destructive: #ef4444;
+	--destructive-foreground: #0f172a;
+	--border: #334155;
+	--input: #334155;
+	--ring: #3b82f6;
+	--sidebar: #1e293b;
+	--sidebar-foreground: #f8fafc;
+	--sidebar-primary: #3b82f6;
+	--sidebar-primary-foreground: #0f172a;
+	--sidebar-accent: #334155;
+	--sidebar-accent-foreground: #f8fafc;
+	--sidebar-border: #334155;
+	--sidebar-ring: #3b82f6;
 }
 
+/* WordPress admin frame reset */
 html.wp-toolbar {
 	padding-top: 0 !important;
 }
@@ -56,6 +118,17 @@ html.wp-toolbar {
 
 .wrap {
 	margin: 0 !important;
+}
+
+/* Base layer for shadcn components */
+@layer base {
+	* {
+		border-color: var(--border);
+	}
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
+	}
 }
 
 .smooth-restaurant-admin {
