@@ -15,10 +15,10 @@ aliases:
 > [!abstract] What this is
 > The build-toward doc for **Smooth Restaurant — [[01-vision-problem|The restaurant operating system for WordPress]]**.
 > Pillars: **Sell → Schedule → Operate → Optimize** (see [[09-whitespace-gaps]]).
-> Locked: successor to WPCafe (full suite: menu, ordering, reservations), **STANDALONE — no WooCommerce dependency**, 100 web vitals, agency/developer bar (docs, API, headless). If it doesn't serve [[03-personas-jtbd|owner / staff / diner / agency]], it doesn't ship.
+> Locked: independent product under smoothplugins.com (no Arraytics/WPCafe affiliation) — full suite (menu, ordering, reservations), **STANDALONE — no WooCommerce dependency**, 100 web vitals, agency/developer bar (docs, API, headless). If it doesn't serve [[03-personas-jtbd|owner / staff / diner / agency]], it doesn't ship.
 
 > [!success] North-star (proposed to close [[01-vision-problem#North-star]])
-> For owners who lose money to phone chaos, slow pages, and 5-plugin maze, Smooth Restaurant is the restaurant operating system for WordPress that gets menu live in <1 day and diners paid in <60s — unlike WPCafe, Orderable, GloriaFood — with no commission, no hardware, you own everything, at WordPress speed.
+> For owners who lose money to phone chaos, slow pages, and 5-plugin maze, Smooth Restaurant is the restaurant operating system for WordPress that gets menu live in <1 day and diners paid in <60s — unlike WPCafe, Orderable, GloriaFood — with no commission, no hardware, you own everything, at highest speed.
 
 ## 1. Product principles
 
@@ -114,14 +114,11 @@ flowchart LR
 
 | # | Screen | Ideal experience | Free / Pro | Empty / first-run |
 |---|--------|------------------|------------|-------------------|
-| A1 | Setup wizard | 4 steps, progress saved, skip-anytime: 1) business + hours, 2) menu import/create, 3) fulfillment (pickup/delivery/dine-in) + zones, 4) payments + test order. Pre-fills timezone, currency, default prep-time 15m. | Free | First-run: checklist card on Dashboard with % complete; "Import from WPCafe / GloriaFood / CSV" CTA. Empty: no menu → illustration + 2 buttons: `Import` / `Start from template` (pizza, café, cloud kitchen). |
+| A1 | Setup wizard | 4 steps, progress saved, skip-anytime: 1) business + hours, 2) menu import/create, 3) fulfillment (pickup/delivery/dine-in) + zones, 4) payments + test order. Pre-fills timezone, currency, default prep-time 15m. | Free | First-run: checklist card on Dashboard with % complete; "Import your menu — paste a URL, drop a PDF or photo (**AI, M3**), or CSV (**M3**)" CTA. Empty: no menu → illustration + 2 buttons: `Import` / `Start from template` (pizza, café, cloud kitchen). **In M1 (first pilots) entry is manual** — the AI import ships in M3. |
 | A2 | Menu builder (block-editor-native) | Gutenberg blocks: `Menu Section`, `Menu Item`, `Add-on Group`. Drag/reorder, inline price + photo, variations (size/spice) + add-ons inline. Autosave, revision-safe. No shortcode soup. No Elementor required (optional compat widget only). | Free (variations & add-ons Free — weapon vs Orderable, see [[12-competitor-deep-dive]]) | Empty category: ghost items + "Add your first dish" + AI-import hint. First item: inline tip "Add-ons lift AOV 12% — add extra cheese? (Pro bumps later)". |
 | A3 | Hours / availability + fulfillment | Weekly hours + holidays + ASAP/scheduled toggle + lead-time + preorder-days in one grid. Delivery zones: drawn polygon + distance-fee fallback. Live validation: "Kitchen closes 22:00 but slot offers 22:30 — fix?" | Free (date slots, ASAP, holidays Free; max-orders-per-slot + capacity-aware = Pro) | Empty zones: map placeholder + "Draw first zone". No hours set: banner "You are closed to diners until hours are set". |
 | A4 | Payments | Native: Stripe, PayPal, wallets (Apple/Google Pay), COD/cash, pay-at-table. Test-mode toggle, webhook health badge. No Woo install. | Free core gateways; Pro: deposits, tips, saved split logic | Empty: "Connect Stripe (2 min)" + COD fallback so owner can go live without gateway. |
 | A5 | Go-live + QR kit | One click: publish menu page, print-ready QR cards (per table + storefront), share link + `?table=T4` deep links. Diagnostics check: assets 0KB elsewhere, cache warm, email deliverable. | Free: QR view + print; Pro: table sessions, floor plan | First-run confetti + "Send yourself a test order" + Dashboard checklist ticks to 100%. |
-
-> [!tip] WPCafe migration
-> Free one-click importer (menus, cats, prices, add-ons, hours) — steals installed base. Dry-run preview, idempotent, rollback. See [[12-competitor-deep-dive#Unified feature list — tier + effort|importer]].
 
 ### (b) Diner — QR / menu → cart → checkout → pay in <60s on mobile [Free core]
 
@@ -165,10 +162,13 @@ Empty / edge states (diner):
 
 ## 4. Design system notes
 
+> [!success] Canonical system locked 2026-09-06 in [[17-ui-ux-design]]
+> Feel (calm neutral ops-tool), Herb & Charcoal tokens, inherit+system type, split density, subtle motion, strict token contract. The bullets below are the implementation-facing summary — **17 is authoritative** on look-and-feel.
+
 - **Mobile-first, accessible:** min 44px targets, AA contrast, full keyboard + screen-reader flow for checkout and KDS, `prefers-reduced-motion` respected, RTL + WPML/Polylang strings from day 1 (WPCafe scar: bad i18n).
 - **Block-editor-native menu builder:** `menu-grid`, `menu-item`, `reservation-form`, `order-status` blocks with `theme.json` tokens; works in any FSE theme; **no Elementor dependency** (optional thin compat layer only, never required). Server-rendered HTML, hydrated islands — no SPA shell.
-- **Tokens:** `--smooth-*` CSS vars inherit theme fonts; dark KDS theme + light FOH theme; print stylesheet for receipts/QR cards.
-- **Patterns:** bottom-sheet (diner), queue cards (staff), agenda (reservations), insight callouts (owner). One icon set, one empty-state illustration style, one toast system.
+- **Tokens:** `--smooth-*` CSS vars (full table in [[17-ui-ux-design#2. Color + tokens]]); diner flows inherit theme fonts, admin/queue/KDS use the OS system stack — **zero webfonts shipped**; dark KDS theme + light FOH theme; print stylesheet for receipts/QR cards.
+- **Patterns:** bottom-sheet (diner), queue cards (staff), agenda (reservations), insight callouts (owner). One SVG icon set, one empty-state illustration style, one toast system.
 - **Agency kit:** Storybook-style pattern previews, `smooth_*` hooks documented per screen in SRS, REST `/smooth/v1/*` + webhooks, headless menu JSON + Next.js starter (see [[06-technical-architecture#Agency / developer bar]]). Docs Free / API extras Pro.
 - **No nagware:** Pro upsells appear contextually once (e.g., floor plan empty state) with dismiss-forever; never banner-inject in Free flows (anti-Five-Star pain).
 
@@ -230,10 +230,12 @@ Rules: diner opts in for SMS/WhatsApp at checkout (GDPR log); staff sounds mutab
 - Architecture → [[06-technical-architecture]] (shared layer, conditional assets, standalone)
 - Next: SRS per screen + [[07-roadmap-milestones]] exit criteria (menu-live <1 day, order <60s, TTI budgets green).
 
-> [!question] Open decisions for founders
-> - Confirm standalone payments vendor scope (Stripe + PayPal + wallets in V1? COD fallback always?).
-> - Confirm Free generosity line: reservations + QR-view Free, deposits/floor/KDS/margins Pro — matches Five-Star attack?
-> - Migration pricing for WPCafe Pro owners (free importer + discount?).
+> [!success] Founder decisions — CLOSED 2026-09-06
+> - **Payments scope:** Stripe (cards + Apple/Google Pay via Payment Element) + PayPal + COD **day 1**; COD always available so an owner can go live without a gateway.
+> - **Free generosity line:** **Free = take the order** (menu, ordering, pickup, QR view, coupons, dashboard, 86, importer/AI-import). **Pro = run the rush** (capacity-lite slot caps, honest prep-time, sales/product reports, pause/resume, bumps/tips, QR sessions, floor plan, deposits). This is also the upgrade reason for takeaway/cloud-kitchen, the highest-WTP segment.
+> - **Migration:** competitor importer ships **Free in M3** with a switch campaign ([[10-marketing-plan]] step 5) — external switch, no "own upgrade" path.
+> - **Onboarding gap:** CSV + competitor importer are **deferred out of M1**; **AI menu import (URL / PDF / photo → structured menu)** ships in **M3** and is the thing that actually defends "menu live <1 day" (A1/A2 above).
+> - **Wave names:** A1–A5 map to [[07-roadmap-milestones]] M1/M3 — anything marked "M3" or "M5" here is not in the first pilot build.
 
 ## 9. External references
 

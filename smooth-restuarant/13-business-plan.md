@@ -25,7 +25,7 @@ aliases:
 
 ### 1a. Starting facts (sourced)
 
-- WP competitor install bands (sourced, [[02-market-competitors]] + [[12-competitor-deep-dive]]): Five Star Reservations 10K+, GloriaFood 7K+, Orderable 5K+, WPCafe (own) 5K+, Five Star Menu 5K+ → **~32K+ known WP restaurant-plugin installs** (bands are floors; true number higher).
+- WP competitor install bands (sourced, [[02-market-competitors]] + [[12-competitor-deep-dive]]): Five Star Reservations 10K+, GloriaFood 7K+, Orderable 5K+, WPCafe (Arraytics external, no affiliation) 5K+, Five Star Menu 5K+ → **~32K+ known WP restaurant-plugin installs** (bands are floors; true number higher).
 - Price anchors (sourced): Orderable Pro **$149/yr**; Five Star Premium 1-site **€167** / 5-site **€247** / Ultimate **€297/yr**; GloriaFood POS **$49/mo/location**, online payments $29/mo; Square **$0 / $49 / $149 per location/mo** + processing 2.6%+15¢ in-person / 3.3%+30¢ online; Square KDS $20–30/device/mo, MarketMan inventory $99/mo/location.
 - Positioning (locked): "restaurant operating system for WordPress" — [[09-whitespace-gaps]] pillars Sell → Schedule → Operate → Optimize.
 
@@ -42,7 +42,7 @@ aliases:
 
 ### 1d. SOM (serviceable obtainable market, 3 years)
 
-- **ASSUMPTION:** Smooth reaches **30K free active installs by end of Year 3** (~today's combined mid-tier: credible if importer + wp.org SEO in [[10-marketing-plan]] work, and Arraytics cross-sells WPCafe 5K base).
+- **ASSUMPTION:** Smooth reaches **30K free active installs by end of Year 3** (~today's combined mid-tier: credible if importer + wp.org SEO in [[10-marketing-plan]] work).
 - At 1–3% free→paid conversion (**ASSUMPTION**, WP benchmark cited in [[05-business-model-gtm]]), that is **300–900 paying sites**; base case below uses **2% → 600 payers**.
 - SOM revenue: 600 × ~$149 ARPU ≈ **~$90K/yr license run-rate at Y3 base case** (upside §3 to ~$200K+ with tier mix + add-ons). SOM is a foothold, not a ceiling — expansion comes from multi-location ARPU and agency seats (§5).
 
@@ -74,28 +74,38 @@ flowchart LR
 | Y3 upside (3% conv, $189 ARPU w/ add-ons) | 30K | 480 + renew | $189 | $90.7K | $55K | **~$146K** |
 | Y3 downside (1% conv, churn 50%) | 30K | 160 + ~80 renew | $129 | $20.6K | $12K | **~$33K** |
 
-- Add-on/SMS revenue (Y2+): **ASSUMPTION: +10–15% on top of license** (Twilio pass-through + margin; WhatsApp/SMS notifications are Pro per [[04-feature-map]]). Not in table — pure upside.
-- Migration-service revenue (Y1–Y2): **ASSUMPTION: 20 white-glove migrations × $199 ≈ $4K one-off** — lead-gen, not a line of business.
+- SMS/WhatsApp revenue: **none (locked 2026-09-06)** — restaurant uses own credentials and pays own provider; 0% resale/margin for us. WhatsApp/SMS notification *feature* is Pro+ per [[04-feature-map]], but the channel costs nothing to us at any volume.
+- Migration-concierge revenue (Y1–Y2): **ASSUMPTION: 20 white-glove migrations × $199 ≈ $4K one-off** — optional paid labor service (locked 2026-09-06), lead-gen, not a line of business.
 
 ## 3. Cost structure
 
-### Team (fully-loaded, **ASSUMPTION** bands for BD/Dhaka-hybrid team)
+### Team — SOLO + AI (locked 2026-09-06)
 
-| Role | When | Cost ASSUMPTION |
-|------|------|-----------------|
-| 1× founding engineer (full-time) | M1→ | $24–36K/yr |
-| 1× 2nd engineer / perf + checkout | MVP→ (contract→FT) | $18–30K/yr |
-| 0.5× designer (contract) | MVP + launch sprints | $6–10K/yr |
-| 0.5× support + docs (shared w/ Arraytics) | Pilot→ | $6–9K/yr |
-| Founder (product/GTM, sweat) | always | $0 cash |
-| **Cash burn run-rate** | **MVP→Y1** | **~$3–4K/mo (~$36–48K/yr)** |
-| Y2–Y3 (+1 support, +0.5 growth/SEO) | scale | **~$60–85K/yr** |
+> [!success] Reality, not aspiration
+> Smooth is a **solo-founder company**: the founder is product, engineer, support and GTM. No 2nd engineer, no designer, no support hire — **1–2 interns** for misc work only (QA passes, docs drafts, demo sites, content). The capacity multiplier is **AI agents** (see [[16-technical-details#13.8 AI-assisted development model]]).
+
+| Role | When | Cost (locked 2026-09-06) |
+|------|------|--------------------------|
+| Founder (build + product + GTM + support) | always, **10–15 h/wk** | $0 cash (sweat) |
+| 1–2 interns (misc: QA, docs drafts, demo sites, content) | Pilot→ | ~$0–100/mo total (BD) |
+| AI tooling (CLI coding agents + ops automation) | always | ~$20–100/mo |
+| **Cash burn run-rate** | **M1→launch** | **<$100/mo (~$1.2K/yr)** |
+| Y2–Y3 (interns + tools + optional contract design/QA) | scale | **~$150–400/mo (~$2–5K/yr)** |
+
+> [!warning] The old plan assumed a team
+> The previous version budgeted 1 FT engineer + 2nd engineer + 0.5 designer + 0.5 support ≈ $36–48K/yr. **Retired 2026-09-06.** Consequence: **cash break-even is now trivial; the binding constraint is founder hours, not money** (§4).
+
+### Capacity model — the load-bearing assumption
+
+- **Founder hours:** 10–15 h/wk (~50 h/mo, ~600 h/yr). This, not cash, sets the timeline — which is why [[07-roadmap-milestones]] is now **hour-budgeted** instead of date-budgeted.
+- **AI multiplier (ASSUMPTION, must be measured):** CLI coding agents running milestone-sized tasks (founder reviews at PR level) are assumed to raise throughput substantially versus hand-written work. **First checkpoint: after the first 40 h of M1.** If measured throughput is materially below plan, re-scope M3 — do not re-date the launch first.
+- **AI for operations (locked 2026-09-06):** support triage + draft replies, docs generation from DocBlocks, marketing/SEO content, and QA/code review. This is how one person covers support, docs and distribution at 10–15 h/wk.
 
 ### Support load (prices the freemium tax)
 
 - **ASSUMPTION:** 2% of free actives file a ticket/yr; 15 min avg handle; Pro tickets 3× rate but priority SLA.
-- At 10K actives: ~200 free tickets + ~120 Pro tickets/yr ≈ **~80 hrs/yr (~0.05 FTE)** — absorbable. At 30K: **~0.15 FTE** → dedicated 0.5 support hire justified (matches hiring row above).
-- Lever: onboarding wizard + importer + diagnostics (Pro) per [[08-risks-open-questions]] cut tickets **ASSUMPTION: 30%** — invest once, save forever.
+- At 10K actives: ~200 free tickets + ~120 Pro tickets/yr ≈ **~80 hrs/yr (~0.05 FTE)** — absorbable solo. At 30K: **~0.15 FTE** → covered by **AI-drafted replies + intern triage**, not a hire (see §6).
+- Lever: onboarding wizard + AI menu import + diagnostics (Pro) per [[08-risks-open-questions]] cut tickets **ASSUMPTION: 30%**; **AI drafts first responses** (founder approves), which is the difference between 80 h/yr being absorbable or fatal at 10–15 h/wk.
 
 ### Infra + payment-adjacent costs (standalone consequences)
 
@@ -104,26 +114,34 @@ flowchart LR
 | Standalone checkout (native Stripe/PayPal SDKs) | dev cost only, **0% platform fee to us** | PCI via hosted fields/redirect — **never touch raw PAN** (§6) |
 | Demo hosting + update infra + telemetry | **ASSUMPTION: $100–250/mo** | scales with demos, not tenants (self-hosted plugin) |
 | Stripe fees | **borne by restaurant** (2.9%+30¢ typical, **ASSUMPTION**) | we take no cut — wedge vs GloriaFood/Square |
-| SMS/WhatsApp (Twilio) | pass-through + **ASSUMPTION: 20–30% margin** | Pro-gated; abuse caps required |
+| SMS/WhatsApp (Twilio, restaurant-owned) | $0 for us — restaurant pays its own provider from own keys | Pro+ channel; abuse caps required; no margin, no billing infra |
 | Email deliverability (SES/Postmark) | **ASSUMPTION: $20–80/mo** | Five Star's 1★ deliverability pain is our lesson ([[12-competitor-deep-dive]]) |
-| i18n/L10n (WPML/Poly + translators) | **ASSUMPTION: $2–4K one-off + $1K/yr** | day-1 requirement after WPCafe 1★s |
+| i18n/L10n (WPML/Poly + translators) | **ASSUMPTION: $2–4K one-off + $1K/yr** | day-1 requirement (competitor 1★ lesson) |
 
 ## 4. Break-even sketch
 
-- Y1 cost **ASSUMPTION: ~$45K** vs revenue ~$8K → **~–$37K** (funded by Arraytics services / WPCafe cash flow — §9).
-- Y2 cost ~$65K vs ~$36K → **~–$29K**.
-- Y3 base cost ~$80K vs ~$89K → **roughly break-even in Y3 (ASSUMPTION)**; upside case profitable (~+$60K); downside needs +1 yr runway.
-- Unit break-even: at $159 ARPU and 75% renewal (**ASSUMPTION**), **~450–500 active payers** cover an $80K/yr team. At 2% conversion that needs **~23–25K free installs** — the reason Y3's 30K target is the plan's load-bearing number.
+### Recomputed for solo (locked 2026-09-06)
 
-> [!question] Break-even sensitivity
-> If conversion is 1% not 2%, break-even slips to **~Y4–Y5** or needs ARPU ≥$220 (agency tiers). Pilot conversion data (Wave 2, [[07-roadmap-milestones]]) is the highest-value measurement in this plan.
+- Burn is now **~$1.2K/yr**, so **cash break-even ≈ 10–15 paying sites (~$1.5–2.2K revenue)** — effectively immediate and *not* the real constraint.
+- The break-even that matters is **founder-time break-even**: revenue that justifies 10–15 h/wk of work. **ASSUMPTION: ~300–400 active payers (~$45–60K/yr ARR)** replaces the old "$80K/yr team" line.
+- At 2% conversion, 300–400 payers needs **~15–20K free installs** — still inside the Y3 30K target, so the load-bearing number is unchanged; the *cash* risk has essentially disappeared.
+- Downside: runway is **personal savings** (§9), so the binding risk is **months of build time**, not dollars.
+
+| Year | Revenue (§2) | Cost (solo) | Cash result |
+|------|--------------|-------------|-------------|
+| Y1 | ~$8K | ~$1.2K | **+~$7K** |
+| Y2 | ~$36K | ~$2K | **+~$34K** |
+| Y3 base | ~$89K | ~$3K | **+~$86K** |
+
+> [!question] The sensitivity that actually matters
+> With burn <$100/mo, the old cash question is dead. The live question is **payer count vs founder hours**: at 1% conversion instead of 2%, reaching 300–400 payers takes roughly twice as long, and everything is gated by build throughput. **Willingness-to-pay (M2, [[07-roadmap-milestones]]) is the highest-value measurement in this plan** — at n=3 it is a directional signal, not a rate.
 
 ```mermaid
 flowchart LR
-    Y1["Y1: –$37K<br/>4K installs · 60 payers"] --> Y2["Y2: –$29K<br/>14K installs · 242 payers"]
-    Y2 --> Y3["Y3: ≈ break-even<br/>30K installs · ~500 payers"]
-    Y3 -.->|1% conv| DOWN["Downside: –$47K<br/>needs Y4 or ARPU $220+"]
-    Y3 -.->|3% conv| UP["Upside: +$60K<br/>self-funded moat squad"]
+    Y1["Y1: cash +~$7K<br/>4K installs · 60 payers"] --> Y2["Y2: cash +~$34K<br/>14K installs · 242 payers"]
+    Y2 --> Y3["Y3: cash +~$86K<br/>30K installs · ~500 payers"]
+    Y1 -.->|real constraint| H["Founder hours 10–15 h/wk<br/>≈600 h/yr → 11–15 mo of build"]
+    Y3 -.->|1% conv| DOWN["Time-break-even slips<br/>300 payers needs 15–20K installs"]
 ```
 
 ## 5. Pricing tiers recommendation (with anchoring)
@@ -132,43 +150,46 @@ Anchors (sourced): Orderable Pro $149/1-site · Five Star 1-site €167, 5-site 
 
 | Tier | Price (recommend) | Gets (maps to [[12-competitor-deep-dive]] tier list) | Anchor logic |
 |------|-------------------|------------------------------------------------------|--------------|
-| **Free** | $0 | Menu builder, variations/add-ons (!), pickup+delivery, block checkout, slots/ASAP, reservations-lite + email, QR menu view, order dashboard, coupons, drawn delivery zones, manual 86, competitor importer | More generous than Orderable free (we weaponize paywalled variations) + GloriaFood parity; buys reviews + installs |
-| **Pro Single** | **$149/yr / 1 site** | Everything in Free + QR table sessions, floor plan-lite, deposits + reminders (email), custom statuses + notifications, bumps/tipping, receipt builder, pause/resume, capacity-lite (max orders/slot) | **Price-match Orderable** — removes price from the decision; win on standalone speed + working QR |
-| **Pro Plus** | **$249/yr / 3 sites** | Single × 3 + floor plan full, SMS/WhatsApp pack (metered), advanced delivery rules, analytics suite | Undercuts Five Star 5-site €247 while adding ops depth; targets 2–10 location groups ([[03-personas-jtbd]]) |
-| **Pro Agency** | **$499/yr / 25 sites + white-label + API/headless** | All + multisite, white-label, API extras, staging/dev, priority Slack | Five Star proves agencies pay ("most popular" = 5-site); 1 agency ≈ 10–25 installs ([[10-marketing-plan]] step 7) |
-| Launch LTD (optional, 14-day window) | $299 one-time / 1 site, no renewal, 1-yr support | Cash + launch reviews; cap at **ASSUMPTION: 200 units** | Cash vs support-debt tradeoff in [[05-business-model-gtm]] — cap + sunset kills the debt |
+| **Free** | $0 | Menu builder, variations/add-ons (!), pickup + delivery, block checkout, slots/ASAP, reservations-lite + email, QR menu view, order dashboard + basic sales/order list, coupons **(M3)**, drawn delivery zones **(M3)**, manual 86, **AI menu import (M3)**, competitor importer **(M3)** | More generous than Orderable free (we weaponize paywalled variations) + GloriaFood parity; buys reviews + installs. **Free = take the order** |
+| **Pro Single** | **$149/yr / 1 site** | Everything in Free + QR table sessions, floor plan-lite, deposits + reminders (email), custom statuses + notifications, bumps/tipping, receipt builder, pause/resume, **capacity-lite slot caps, honest prep-time estimate, basic sales + product reports** | **Price-match Orderable** — removes price from the decision; win on standalone speed + working QR. **Pro = run the rush** (this is the upgrade reason for takeaway/cloud-kitchen, the highest-WTP segment) |
+| **Pro Plus** | **$249/yr / 3 sites** | Single × 3 + floor plan full, SMS/WhatsApp notifications (BYO credentials — no resale), advanced delivery rules, analytics suite | Undercuts Five Star 5-site €247 while adding ops depth; targets 2–10 location groups ([[03-personas-jtbd]]) |
+| **Pro Agency** | **$499/yr / 25 sites** (+ white-label + API/headless **in M5**) | All + multisite, staging/dev, **best-effort priority support**; white-label + API extras ship in **M5 (V2b)** | Five Star proves agencies pay ("most popular" = 5-site); 1 agency ≈ 10–25 installs ([[10-marketing-plan]] step 7). **At launch this is 25 single-location sites** — multi-location ships in M5 |
+| Launch LTD (optional, 14-day window) | $299 one-time / 1 site, no renewal, **NO support included** (docs + wp.org forum only; paid support separate) | Cash + launch reviews; cap at **ASSUMPTION: 200 units** (~$60K gross) | Support debt removed — a lifetime support promise is unaffordable as a solo founder (locked 2026-09-06) |
 
 - No-commission pledge (all tiers) = wedge vs GloriaFood/Square cut; say it on pricing page verbatim.
 - Money-back: 14-day, no questions (matches Five Star guarantee; lowers standalone-checkout trust hurdle).
-- Add-ons (metered, not tiers): SMS/WhatsApp credits, migration concierge $199. KDS/offline + recipe/food-cost stay **in-Pro** (moat, §10) — never separate plugins.
+- **No paid plugin add-ons (locked 2026-09-06)** — all feature tiers bundled in-Pro. SMS/WhatsApp: restaurant **brings its own Twilio/WhatsApp credentials** and pays its own provider (no credit bundles, no margin for us — we keep 0% of message revenue). Migration concierge: optional **white-glove labor service $199** (not an add-on; lead-gen). KDS/offline + recipe/food-cost stay **in-Pro** (moat, §10) — never separate plugins.
 
 ## 6. Team / hiring roadmap
 
-| Phase (→ [[07-roadmap-milestones]]) | Team | Hiring trigger |
-|------|------|----------------|
-| R&D lock → MVP (now–W1) | Founder + 1 FT eng + 0.5 designer | — |
-| MVP → Pilot (3 restaurants) | + 0.5 support/docs (Arraytics-shared) | pilot signed |
-| V2 ops (QR, kitchen, zones) | 2nd eng (contract→FT) | **>2K installs OR support >10 tickets/wk (ASSUMPTION)** |
-| Launch (wp.org + Pro) | +0.5 growth/SEO | 5K installs |
-| Scale (Y2–Y3) | +0.5–1 support, +contract perf/QA per release | 15K installs / 300 payers |
-| Never before PMF | No dedicated sales, no POS-hardware team, no SaaS-ops team | non-goals in [[01-vision-problem]] |
+| Phase (→ [[07-roadmap-milestones]]) | Team | Trigger |
+|------|------|---------|
+| M0 → M1 money path | Founder only (10–15 h/wk) + AI agents | — |
+| M2 Pilot (3 real-user sites) | **+ 1 intern** (QA, docs drafts, demo sites) | first real user site live |
+| M3 Launch engine | Founder + 1–2 interns + AI agents | pilot WTP signal (≥2 of 3 say "yes, $149") |
+| M4 Launch | Founder + intern on support triage (AI drafts replies) | 500 installs |
+| M5 V2b + scale | **Consider a contract dev only if revenue already covers it** | **≥300 payers (~$45K ARR)** |
+| Never before PMF | No full-time hires, no sales team, no POS-hardware team, no SaaS-ops team | non-goals in [[01-vision-problem]] |
+
+> [!warning] Retired 2026-09-06
+> The old triggers (">2K installs → 2nd eng", "backlog >48h → support hire") are void: there is no 2nd engineer and no support hire. Capacity questions are now answered by **AI agents + interns**, and the only hiring gate is **≥300 payers**.
 
 ## 7. Legal / compliance checklist
 
 - [ ] **Payments / PCI:** Stripe Elements / Payment Element + PayPal JS SDK only; **SAQ-A posture — no card data touches our servers**; confirm with Stripe docs at build. COD/wallet copy must disclose restaurant-held risk.
-- [ ] **Licensing:** GPL-compatible for wp.org (Free); Pro split-key + EDD/LemonSqueezy terms; no encrypted/obfuscated Pro code that violates GPL expectations of agencies.
-- [ ] **Privacy/GDPR:** DPA for any telemetry; cookie/order-data retention settings; data-export + erasure (diners + restaurants); sub-processor list (Stripe, Twilio, email vendor); EU demo region if storing PII.
-- [ ] **Taxes:** VAT/GST on plugin sales (vendor-of-record e.g. LemonSqueezy/Freemius handles **ASSUMPTION** — confirm); restaurant food-tax display is config, not advice.
+- [ ] **Licensing:** GPL-compatible for wp.org (Free); Pro via **EDD + Stripe (locked 2026-09-06)**; no encrypted/obfuscated Pro code that violates GPL expectations of agencies.
+- [ ] **Privacy/GDPR:** DPA for any telemetry; cookie/order-data retention settings; data-export + erasure (diners + restaurants); sub-processor list (Stripe, PayPal, email vendor); SMS/WhatsApp sent via **restaurant-owned credentials** → restaurant remains controller, Smooth is processor (document in ToS + setup); EU demo region if storing PII.
+- [ ] **Taxes:** VAT/GST on plugin sales self-handled via **EDD + Stripe (locked 2026-09-06)**; restaurant food-tax display is config, not advice.
 - [ ] **Food/ops liability:** ToS disclaims allergen, 86-accuracy, prep-time-estimate reliance; KDS/offline docs state 24-h recovery limits (cf. Square offline 24h).
 - [ ] **Trademarks/content:** "Smooth Restaurant" clearance search; demo food images licensed; importer must not copy competitor code — menu *data* only.
 - [ ] **Consumer/regulatory:** no-show deposit + card-hold copy reviewed (PSD2/SCA in EU, card-network rules); SMS/WhatsApp opt-in + sender registration (10DLC/BSP).
 
 ## 8. Support ops plan
 
-- Tiers: Free → forum/wp.org (48–72h best-effort, **ASSUMPTION**); Pro → ticket desk (24h weekday SLA) + Agency → priority/Slack (12h).
+- Tiers (**relaxed 2026-09-06 for solo reality**): Free → wp.org forum, **best-effort 72–96h**; Pro → ticket desk, **48h weekday**; Agency → **best-effort priority** (no 12h/Slack commitment until real support capacity exists). Under-promise, over-deliver — a missed SLA is how a 5% 1★ rate is born.
 - Self-serve first: onboarding wizard (<1 day to menu live), importer with dry-run report, perf diagnostics page (free — doubles as 1★-defense evidence), docs + hooks/API reference (agency mandate, [[01-vision-problem]]).
 - Triage tags: `checkout-money` (P0) > `ordering-down` (P0) > `reservation` (P1) > `how-to` (P2); money-path bugs get hotfix lane.
-- Staffing math: §3 — 0.5 FTE covers to ~30K installs given 30% deflection (**ASSUMPTION**); re-hire trigger: backlog >48h for 2 consecutive weeks.
+- Staffing math: §3 — ~0.15 FTE at 30K installs, covered by **AI-drafted replies + intern triage** (founder approves), not a hire. Escalation trigger: backlog >96h for 2 consecutive weeks → intern hours increase, then consider contract support funded by revenue.
 - Anti-nagware rule (from Five Star 1★s): zero upsell interstitials in order path; Pro nudges only on Pro-feature doors + one ROI line ("37 orders today — auto-control capacity?").
 
 ## 9. KPI dashboard
@@ -176,6 +197,7 @@ Anchors (sourced): Orderable Pro $149/1-site · Five Star 1-site €167, 5-site 
 | Layer | Metric | Target (**ASSUMPTION** unless noted) | Source |
 |-------|--------|--------------------------------------|--------|
 | Acquisition | wp.org installs/wk; listing CVR | 150–300/wk by Y2; CVR ≥5% | wp.org stats |
+| **Pilot (M2)** | **willingness-to-pay: "would you pay $149 today?"** | **≥2 of 3 pilots yes** (directional, n=3 — not a rate) | founder interviews |
 | **Activation (north star)** | **install → first REAL order ≤14d** | **≥12%** | telemetry + [[10-marketing-plan]] |
 | Setup | menu live ≤1 day; importer success | ≥40% menus live in 24h; importer ≥80% dry-run pass | telemetry |
 | Conversion | free → Pro | 1.5% Y1 → 2% Y2+ (benchmark 1–3%, [[05-business-model-gtm]]) | store |
@@ -187,9 +209,9 @@ Anchors (sourced): Orderable Pro $149/1-site · Five Star 1-site €167, 5-site 
 
 ## 10. Funding / bootstrapping stance (recommendation)
 
-- **Recommendation: bootstrap via Arraytics (no outside capital through Y2).** Reasons: (a) costs are fundable from services/WPCafe (~$45–65K/yr, §3); (b) WP-plugin outcomes ($30–150K ARR Y3) don't clear VC thresholds — raising now misprices the company; (c) wp.org distribution is earned, not bought.
-- Revisit funding **only if** Y2 hits: ≥10K installs + ≥2% conversion + NPS ≥50 (**ASSUMPTION** gates) — then a small angel round to hire KDS/offline + food-cost squad (the XL moat bets, [[09-whitespace-gaps]]).
-- LTD cap (200 units × $299 ≈ $60K gross, **ASSUMPTION**) is the optional non-dilutive bridge — sunset on schedule regardless.
+- **Recommendation: bootstrap on personal savings (no outside capital, by default ever).** Reasons: (a) burn is **<$100/mo (~$1.2K/yr)** — the company is founder-fundable indefinitely; (b) WP-plugin outcomes ($30–150K ARR Y3) don't clear VC thresholds — raising now misprices the company; (c) wp.org distribution is earned, not bought. **LOCKED 2026-09-06** (corrected: previous version said "bootstrap via smoothplugins.com"; the actual source is **personal savings**).
+- Revisit outside capital **only if** Y2 hits ≥10K installs + ≥2% conversion + NPS ≥50 **and** the binding constraint is provably cash rather than founder hours — then a small angel round to fund a contract team for the XL moat bets (KDS/offline, food-cost), [[09-whitespace-gaps]].
+- LTD cap (200 × $299 ≈ $60K gross, **ASSUMPTION**) is the optional non-dilutive bridge — **no support included**, sunset on schedule regardless.
 
 ## 11. Moat / defensibility
 
@@ -206,22 +228,26 @@ Anchors (sourced): Orderable Pro $149/1-site · Five Star 1-site €167, 5-site 
 | Orderable ($149 anchor) | Match QR/capacity polish; fix Woo-checkout threads | Ship block-native + scheduling-that-works first; "migrate in an afternoon" guide + importer |
 | Five Star (reservations king, 10K) | Bundle ordering deeper; agency-tier push | Generous free reservations + deposits in Pro; Agency $499 undercuts 5-site €247 |
 | GloriaFood (stale 17 mo) | Reboot or sunset WP bridge; push POS $49/mo | Attack staleness in comparisons; ownership + maintained-codebase narrative |
-| WPCafe (own) | Sunset / merge / maintain? | Decide per [[08-risks-open-questions]] #1 + #6: importer + upgrade-credit path; never compete with ourselves publicly |
+| WPCafe (external) | Ship "migrate in an afternoon" + importer | Generous free reservations + switch discount; Agency $499 undercuts 5-site €247 |
 | Square/Toast | Ignore WP downmarket; raise SMB prices | ROI pages: "Toast ops vocabulary, zero hardware rent" — [[12-competitor-deep-dive]] §5 |
 | RestroFood / DineKit / Libre Bite | Ship offline/CRM fast (gap closing) | Speed to capacity-aware + auto-86 (XL bets); perf budgets as review-bait |
 
-## Founder inputs still needed
+## Founder inputs — locked 2026-09-06 (updated: solo + AI reality)
 
-- [ ] Confirm TAM/SAM assumptions (15M venues? 60% with site? 40% WP?) or supply house figures
-- [ ] Approve pricing: $149 / $249 / $499 + capped $299 LTD — or set your numbers
-- [ ] Approve break-even hiring triggers (>2K installs → 2nd eng; backlog >48h × 2wk → support)
-- [ ] Name the 3 pilot restaurants (→ [[07-roadmap-milestones]] Wave 2) + testimonial rights
-- [ ] Decide WPCafe fate (sunset / sibling / merge) + upgrade-credit % (→ [[08-risks-open-questions]] #1, #6)
-- [ ] Choose payments vendor-of-record (LemonSqueezy vs Freemius vs EDD+Stripe) for tax handling
-- [ ] Set activation target (proposed: 12% install→real-order ≤14d) + telemetry consent copy (GDPR)
-- [ ] Confirm bootstrap stance (no raise thru Y2) + LTD cap (200 units?) and sunset date
-- [ ] Approve support SLAs (Free 48–72h / Pro 24h / Agency 12h) and no-nagware rule
-- [ ] Sign the STANDALONE lock above (no Woo dependency) — or reopen D1 explicitly
+- [x] Confirm TAM/SAM assumptions — keep 15M / 60% / 40% as working ASSUMPTIONs (directional only)
+- [x] Approve pricing: $149 / $249 / $499 + capped $299 LTD (200 units) — APPROVED
+- [x] Capacity triggers **replaced 2026-09-06**: **≥300 payers (~$45K ARR)** is the only gate for paid help; interns can join from M2. The old triggers (>2K installs → 2nd eng; backlog >48h → support hire) are void
+- [x] Pilot restaurants — DEFERRED 2026-09-06: recruit from first real customers/users, no pre-named pilots
+- [x] WPCafe fate — LOCKED: external competitor, no affiliation; switch campaign + importer (no own-upgrade path)
+- [x] Payments vendor-of-record — LOCKED: EDD + Stripe (self-run, founder handles VAT/GST)
+- [x] Activation target 12% install→real-order ≤14d + telemetry consent copy (GDPR) — APPROVED
+- [x] Bootstrap stance (no raise by default; personal savings fund it) + LTD cap 200 units — APPROVED
+- [x] Support SLAs **relaxed for solo** (Free best-effort 72–96h / Pro 48h weekday / Agency best-effort priority) + no-nagware rule — APPROVED
+- [x] STANDALONE lock (no Woo dependency) — LOCKED
+- [x] **Solo + AI operating model (locked 2026-09-06):** founder is the only engineer at **10–15 h/wk**; 1–2 interns for misc only; **CLI coding agents run milestone-sized tasks, founder reviews at PR level**; AI also used for support triage, docs generation, marketing/SEO content and QA. Burn **<$100/mo** (Bangladesh). Money-path safety = **tests + checklist**, not a human 2nd reviewer.
+- [x] **Wave 1 scope cut (locked 2026-09-06):** no competitor importer, no CSV, no delivery/zones in Wave 1 (pickup + QR dine-in only); pilots enter menus by hand.
+- [x] **Launch honesty (locked 2026-09-06):** multi-location ships in M5 (V2b) — Plus/Agency sell single-location site counts until then; Jan 1, 2027 is a **symbolic quality-first target**, not a commitment.
+- [x] **Pro = "run the rush" (locked 2026-09-06):** capacity-lite slot caps, honest prep-time, basic sales/product reports, pause/resume, bumps/tips are the upgrade reason — including for takeaway/cloud-kitchen, the highest-WTP segment whose core needs are all Free.
 - Detail: [[15-standalone-strategy]] (payments, ledger, importer, risks)
 
 ## Sources

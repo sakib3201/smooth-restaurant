@@ -50,4 +50,4 @@ Code architecture, code standards, database design — decided before developmen
 4. Scale an existing solution
 5. New solution to an existing problem
 
-> Smooth = primarily **#1 + #2 + #5**: better-in-every-sense successor, specialized on performance + agency-friendliness.
+> Smooth = primarily **#1 + #2 + #5**: better-in-every-sense independent rival, specialized on performance + agency-friendliness.

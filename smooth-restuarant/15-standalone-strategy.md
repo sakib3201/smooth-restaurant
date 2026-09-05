@@ -13,7 +13,8 @@ aliases:
 
 > [!abstract] Locked thesis
 > [[06-technical-architecture|D1]] is **LOCKED: standalone-native**. No WooCommerce dependency. Everything — cart, checkout, payments, orders, notifications — is built from scratch for a performance + reliability edge.
-> This note is the cost/benefit, scope delta, data model, payments plan, migration story, and phased build order for that decision. Read with [[04-feature-map]], [[06-technical-architecture]], [[07-roadmap-milestones]], and [[12-competitor-deep-dive]].
+> [!success] Implementation moved
+> Why-standalone narrative stays here. All build specs (C1–C12, payments, storage, schema, importer, R1–R6, phases) are now canonical in **[[16-technical-details]]** — edit there.
 
 > [!success] Founder lock — D1 native
 > Standalone wins because competitors' #1 complaint cluster is Woo-induced: Orderable breaks on Woo updates + block-checkout incompatibility, WPCafe inherits Woo bloat + unconditional assets. Square/Toast prove deep ops is the moat, but with hardware + processing lock-in. Smooth takes the fourth path: **WordPress-native ops depth, no Woo, no hardware, no commission.**
@@ -25,7 +26,7 @@ aliases:
 
 | Win | Mechanism | Evidence |
 |-----|-----------|----------|
-| **Performance** | No Woo + no Woo cart/checkout/session overhead. Conditional assets only (`smooth_should_load()` gate from day 1). Cached menu/availability, no per-cart N+1. Target: 0 KB on non-Smooth pages, <150 KB public JS+CSS on Smooth pages. | WPCafe scar: ~820K JS + 475K CSS unconditional; BE1/BE2/BE5/BE12 N+1 fixes were retrofits — see [[WPCafe]]. Smooth starts clean per [[04-feature-map#Scope guardrails]]. |
+| **Performance** | No Woo + no Woo cart/checkout/session overhead. Conditional assets only (`smooth_should_load()` gate from day 1). Cached menu/availability, no per-cart N+1. Target: **0 KB on non-Smooth pages; per-surface budgets in [[16-technical-details#7. Performance budgets]]** (≤80 KB max gz). | WPCafe scar (external): ~820K JS + 475K CSS unconditional; BE1/BE2/BE5/BE12 N+1 fixes were retrofits — see [[WPCafe]]. Smooth starts clean per [[04-feature-map#Scope guardrails]]. |
 | **No breakage-on-update** | Woo major/minor updates are the top Orderable support-forum thread (timeslot bugs, cart AJAX glitches, block-checkout incompatibility). Standalone removes the entire failure surface: no WC version matrix, no HPOS compat shim, no fragment API drift. | [[12-competitor-deep-dive#2. Orderable — the execution benchmark]] |
 | **No Woo bloat** | Woo installs ~40+ tables, scheduled actions, admin columns, marketing nags, onboarding wizards — even for a restaurant that only needs menu → cart → pay → kitchen. Standalone installs 6–8 lean tables, one cron group, one capability map. | GloriaFood users praise "simple"; Five Star users hate nagware — [[12-competitor-deep-dive#Top pain themes]] |
 | **Block-checkout-native** | Checkout is a Gutenberg block (`smooth/checkout`) from day 1, not a shortcode fighting Woo Blocks. Mobile-first, <60s order per [[04-feature-map#V1 slice]]. Express wallets (Apple Pay / Google Pay via Stripe Payment Element) inline, no Woo Blocks bridge plugin. | Orderable's #1 complaint thread = Woo block-checkout incompatibility |
@@ -45,7 +46,7 @@ aliases:
 | C4 | **Payment integrations** | Stripe (PaymentIntents + Payment Element + Express wallets), PayPal (Checkout Orders API), COD / Pay-at-counter. Test mode + live mode key pairs, webhook handlers. See §3 | PCI SAQ-A only — never touch PAN. Details §3 |
 | C5 | **Order storage** | Custom tables `smooth_orders` + `smooth_order_items` + `smooth_transactions` (ledger). Not CPT. See §4 / D4 | WPCafe BE5 (revenue N+1) + BE11 (invoice double-scan) prove postmeta doesn't scale to 50k+ rows |
 | C6 | **Scheduled-order engine** | ASAP vs scheduled, lead-time, preorder-days cap, holiday blackouts, capacity cap per slot, pause/resume per service. Slot matrix memoized per request | Orderable's recurring pain = timeslot bugs. This is the #1 correctness investment after payments |
-| C7 | **Notification queue** | Async queue table (`smooth_notifications`) + Action Scheduler or own cron worker: order confirm, status change, reservation confirm/reminder, admin live view. Email day 1 (wp_mail + SMTP hint); SMS/WhatsApp Pro via provider abstraction | WPCafe BE4 lesson: all provider calls `blocking => false`, non-blocking, retried with backoff |
+| C7 | **Notification queue** | Async queue table (`smooth_notifications`) + Action Scheduler or own cron worker: order confirm, status change, reservation confirm/reminder, admin live view. Email day 1 (wp_mail + SMTP hint); SMS/WhatsApp Pro+ via provider abstraction on **restaurant-owned credentials (BYO — locked 2026-09-06)** | WPCafe BE4 lesson: all provider calls `blocking => false`, non-blocking, retried with backoff |
 | C8 | **Order dashboard + statuses** | Custom statuses (`pending → confirmed → preparing → ready → completed / cancelled / refunded`), live view (polling day 1, websocket later), receipt print, capability-gated (`smooth_manage_orders`) | GloriaFood lacks admin control — this is a steal-gap per [[12-competitor-deep-dive]] |
 | C9 | **Refunds / voids / reconciliation** | Refund via gateway API + ledger reversal entry (never delete), daily reconciliation report (gateway payouts vs ledger), void-before-capture for auth-capture flow | Payments bugs are money bugs — §8 |
 | C10 | **Importer from Woo rivals** | Map Woo products/variations/coupons → native menu items/modifiers/coupons. Sources: Orderable (Woo products + `_orderable_*` meta), WPCafe (Woo products + `wpc_*` meta), FoodBook/others (generic Woo product fallback). Dry-run + idempotent re-run | See §7 migration story. This is the distribution weapon — [[12-competitor-deep-dive]] lists it Free/M |
@@ -135,18 +136,21 @@ CPT is rejected as source of truth because: postmeta is EAV (one row per field �
 Free (must demo "menu live in 1 day, order in <60s, book in 3 taps"):
 
 - [ ] Menu builder (categories, items, images, prices) + variations & add-ons (weaponized Free per [[12-competitor-deep-dive]])
-- [ ] Native cart + block checkout (pickup/delivery/QR-dine-in), ASAP + scheduled, lead time + holidays + opening hours
+- [ ] Native cart + block checkout (**pickup + QR dine-in at M1; delivery + zones → M3**), ASAP + scheduled, lead time + holidays + opening hours
 - [ ] Payments: Stripe + PayPal + COD, test mode, idempotent webhooks
 - [ ] Order dashboard + live view + print, statuses through `ready/completed`
 - [ ] Reservations (3-tap) + email confirm (deposits/reminders → Pro)
-- [ ] QR menu view (ordering session → Pro if D6 says so — see §10)
-- [ ] Coupons basic, delivery zones + distance fees, 86 flag, pause/resume per service
-- [ ] Competitor importer (Orderable/WPCafe/FoodBook Woo-map) + CSV menu import
-- [ ] Conditional assets + cached menu/config + system-status diagnostics
+- [ ] QR menu view (Free); **QR table sessions → Pro Single, built in Wave 1 MVP** (QR-first lock 2026-09-06, D6)
+- [ ] 86 flag; **coupons → M3**; **pause/resume → Pro (M3)**
+- [ ] Conditional assets + cached menu/config + minimal health badge (full diagnostics → M3)
+
+> [!warning] Deferred out of M1 (locked 2026-09-06)
+> Competitor importer, CSV import, **AI menu import** (URL/PDF/photo → structured menu, ships **M3**), delivery zones + distance fees (**M3**). **Pilots enter menus by hand** — the "menu live <1 day" claim is defended by AI menu import at M3, not by CSV in M1.
 
 Pro V1 (first paid gate, right after pilot):
 
-- [ ] QR table sessions + visual floor plan, deposits + reminders (SMS/WhatsApp/email), custom statuses + driver notifications, order bumps + tips, receipt builder, time-slot caps (capacity-aware), multi-location, advanced analytics
+- [ ] QR table sessions + visual floor plan, deposits + reminders (SMS/WhatsApp/email, **BYO credentials**), custom statuses + driver notifications, order bumps + tips, receipt builder, **pause/resume**, **capacity-lite slot caps + honest prep-time + basic sales/product reports** (the Pro "run the rush" value → **M3**)
+- [ ] **Kitchen-load capacity throttle, KDS-lite, multi-location, advanced analytics + margins → M5 (V2b)** — explicitly not at launch; launch is sold honestly as single-location
 
 Deliberately NOT in MVP: subscriptions, split checks, multi-currency, Terminal hardware, MarketMan-style ingredient costing (all §9 later).
 
@@ -240,7 +244,7 @@ erDiagram
 | Source | What we read | Map to native | Gotchas |
 |--------|--------------|---------------|---------|
 | **Orderable** (Woo) | `product` CPT + `product_variation`, `_orderable_*` meta (slots, lead time, location), Woo coupons | Items + modifier groups + slot rules + coupons; slot caps → native slot engine (flag static-cap vs capacity-aware) | Timeslot semantics differ — import as draft rules + admin review screen, never silent |
-| **WPCafe** (own, Woo) | `product` CPT + `wpc_*` meta, food-menu shortcode config, location taxonomy, reservation CPT | Same as above + reservation history + location taxonomy → `LOCATION` rows | WPCafe shortcode soup → Gutenberg blocks need a layout-mapping pass; QR sessions are broken in WPCafe so no session import — start fresh |
+| **WPCafe** (external competitor, Woo) | `product` CPT + `wpc_*` meta, food-menu shortcode config, location taxonomy, reservation CPT | Same as above + reservation history + location taxonomy → `LOCATION` rows | Shortcode soup → Gutenberg blocks need a layout-mapping pass; QR sessions broken in WPCafe so no session import — start fresh |
 | **FoodBook / generic Woo food** | `product` CPT + `product_cat`, variations, Woo coupons/shipping zones | Generic fallback mapper (name/price/image/desc/variation) + zone → delivery-zone draft | Unknown meta namespaced under `smooth_import_raw` JSON for manual fix-up |
 | Woo order history (optional, Pro) | `shop_order` + `woocommerce_order_items` | Read-only `smooth_orders` with `migrated_from='woo:<id>'`, no ledger replay (mark `mode='imported'`, exclude from reconciliation) | Never re-charge; never re-fire webhooks on imported rows |
 
@@ -264,9 +268,14 @@ Importer UX: source auto-detect → dry-run preview (counts + 5 sample rows + wa
 
 | Phase | Ships native | Explicitly deferred |
 |-------|--------------|---------------------|
-| **Wave 1 — MVP** (→ pilot per [[07-roadmap-milestones]]) | Cart/checkout/totals, Stripe + PayPal + COD, custom-table orders/ledger, ASAP+scheduled+lead-time+holidays, email queue, dashboard+print, reservations Free, importer Free, diagnostics | — |
-| **V2 ops** (Pro engine) | QR sessions (D6), floor plan, deposits (auth-capture), reminders SMS/WhatsApp, custom statuses, bumps/tips, receipt builder, slot caps, multi-location, capacity-aware throttle | Subscriptions, split payments, multi-currency |
-| **Later (P2)** | Gift cards, marketing automation, offline-first KDS, ingredient auto-86 + costing, behavior CRM | POS hardware / Terminal, delivery-fleet tracking, SaaS-hosted version (all per [[07-roadmap-milestones#What we deliberately defer]]) |
+> Canonical table lives in **[[16-technical-details#12. Phased build]]**. Summary:
+
+| Milestone | Ships native | Hours | Deferred |
+|-----------|--------------|-------|----------|
+| **M1 Money path** (Wave 1 MVP, QR-first) | Cart/checkout/totals, Stripe + PayPal + COD, custom-table orders/ledger, ASAP+scheduled+lead-time+holidays, email queue, dashboard+print, reservations-lite, **QR table sessions (D6 — Pro feature, built in this wave)**, security, telemetry | 250–350 h | Importer, CSV, AI menu import, delivery/zones, coupons, diagnostics |
+| **M3 Launch engine** (V2a) | QR hardening, floor plan, deposits (auth-capture), reminders SMS/WhatsApp (BYO), custom statuses, bumps/tips, receipt builder, capacity-lite + prep-time + reports, coupons, delivery zones, AI menu import + importer, diagnostics | 200–300 h | Subscriptions, split payments, multi-currency |
+| **M5 V2b** (post-launch) | KDS-lite, capacity-aware throttle, multi-location, advanced analytics + margins | 200–300 h | — |
+| **Later (P2)** | Gift cards, marketing automation, offline-first KDS, ingredient auto-86 + costing, behavior CRM | — | POS hardware / Terminal, delivery-fleet tracking, SaaS-hosted (all per [[07-roadmap-milestones#What we deliberately defer]]) |
 
 ## 10. Decision log — recommended picks
 
@@ -278,9 +287,9 @@ Importer UX: source auto-detect → dry-run preview (counts + 5 sample rows + wa
 | D6 | QR sessions? | **table-token + `smooth_table_sessions` row with TTL (not transient)** | Transients evict under object-cache pressure and lose paid sessions; a real row gives expiry, single-active-session-per-table, and an audit trail for dine-in orders. |
 
 > [!todo] Sign-off
-> - [ ] Founder signs D1/D4/D5/D6 picks (this note) → unblocks [[06-technical-architecture#Decision log]] TODOs
-> - [ ] Tech lead approves `Totals::calculate()` fixture list + ledger schema before Wave 1 code
-> - [ ] Pilot criteria updated in [[07-roadmap-milestones#Wave detail]]: "real Stripe test payment + real COD order + real booking, zero Woo installed"
+> - [x] Founder signs D1/D4/D5/D6 picks (this note) → unblocks [[06-technical-architecture#Decision log]] TODOs — LOCKED 2026-09-05 standalone-native (see [[06-technical-architecture#Decision log]] + README)
+> - [ ] Founder (solo — no tech lead exists) signs off the `Totals::calculate()` fixture list + ledger schema before M1 code. **The fixtures *are* the review:** no money path ships without golden-fixture totals tests, webhook-replay, double-click and offline-retry E2E ([[16-technical-details#13.8 AI-assisted development model]])
+> - [x] Pilot criteria updated in [[07-roadmap-milestones#Wave detail]]: "real Stripe test payment + real COD order + real booking, zero Woo installed"
 
 ## Links
 

@@ -11,6 +11,11 @@ aliases:
 
 > [!abstract] Funnel, not posts. North metric: **free install → first successful restaurant order**.
 
+> [!success] Launch-year focus (locked 2026-09-06 — solo, 10–15 h/wk)
+> Of these 10 steps, the founder actively works **1, 2, 4, 5**:
+> **1** Win wp.org search · **2** Free genuinely useful · **4** 20–50 SEO pages (**AI-drafted, founder-edited**) · **5** Switch campaigns + importer.
+> Deferred / AI-assisted with minimal founder time: 3, 6, 7, 8, 9, 10. **Step 5 is gated on the importer shipping in M3** ([[07-roadmap-milestones]]).
+
 ## Steps
 
 | # | Action | Stage | Why |

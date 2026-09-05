@@ -53,4 +53,4 @@ flowchart LR
 ## Positioning
 
 > **"The restaurant operating system for WordPress — not just an ordering plugin."**
-> Pillars: **Sell → Schedule → Operate → Optimize.**
+> Pillars: **Sell → Schedule → Operate → Optimize** (Schedule = capacity-aware ordering + reservations; aligns with [[13-business-plan]] and [[14-ideal-product]]).

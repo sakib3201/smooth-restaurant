@@ -19,7 +19,7 @@ aliases:
 |---|---------|-------|----------|------------|----------|-------------|--------|
 | 1 | GloriaFood (`menu-ordering-reservations`, Oracle) | WP + SaaS | 7,000 | 88 (54) | 7% (4) | 2025-04-14 ⚠️ stale ~17 mo | biggest free suite, going stale |
 | 2 | Orderable (Liquid Web/Nexcess) | WP | 5,000 | 92 (40) | 8% (3) | 2026-05-08 | polished ordering, Pro $149/yr |
-| 3 | WPCafe (Arraytics, own) | WP | 5,000 | 92 (109) | 8% (9) | 2026-08-31 | broadest suite, bug/perf complaints |
+| 3 | WPCafe (Arraytics, external — founder ex-team, no affiliation) | WP | 5,000 | 92 (109) | 8% (9) | 2026-08-31 | broadest suite, bug/perf complaints |
 | 4 | Five Star Reservations (Rustaurius) | WP | 10,000 | 94 (211) | 5% (10) | 2026-08-20 | reservations king, upsell anger |
 | 5 | Five Star Menu (Rustaurius) | WP | 5,000 | 92 (107) | 7% (8) | 2026-08-20 | menu+ordering, Stripe/PayPal in core |
 | ref | Toast / Square | SaaS | — | — | — | — | ops depth WP can't touch; $$ + lock-in |
@@ -55,11 +55,11 @@ quadrantChart
 - **Pain (support forum, live):** timeslot/scheduling bugs recurring; **Woo block-checkout incompatibility**; mobile-view issues; breaks on Woo updates; add-button/cart AJAX glitches; multi-location issues; one security (broken access control) thread; users begging for temporary-hours + live order view improvements.
 - **Gap to steal:** scheduling that actually works, block-checkout-native, update-proof Woo integration, capacity-aware slots (theirs is a static cap).
 
-## 3. WPCafe (own) — broadest, heaviest
+## 3. WPCafe (external competitor) — broadest, heaviest
 
 - **Pricing:** free on wp.org; Pro via themewinter.com (verify tiers): menu layout packs, one-page checkout, live notification + tipping, reservation styles, locations, Elementor widgets, multivendor.
 - **Praised:** feature breadth, freelancer-friendly, fast support responses.
-- **Pain (1★ reviews):** "too many bugs", fatal errors, **QR ordering does not work**, no translation / bad English, pro-purchase regret ("stay away", "waste of money"). Internal: ~820K JS + 475K CSS unconditional (see `WPCafe/WPCafe.md`).
+- **Pain (1★ reviews):** "too many bugs", fatal errors, **QR ordering does not work**, no translation / bad English, pro-purchase regret ("stay away", "waste of money"). Tech: ~820K JS + 475K CSS unconditional (see `WPCafe/WPCafe.md` — prior-work reference only).
 - **Gap to steal:** literally the Smooth thesis — same breadth, working QR, i18n from day 1, 0 KB on non-Smooth pages.
 
 ## 4. Five Star Reservations — distribution king, upsell resentment
@@ -92,7 +92,7 @@ quadrantChart
 | Delivery zones (drawn) + distance fees | Free | M | GloriaFood/Orderable prove value |
 | Out-of-stock / 86 flag (manual) | Free | S | ops credibility, cheap |
 | Competitor importer (menu/cats/prices/add-ons) | Free | M | steal 1,000s of installed sites |
-| Time slots + max orders per slot | Pro | M | Orderable's cap, but capacity-aware = ours |
+| Time slots + max orders per slot (capacity-lite → **M3**) | Pro | M | Orderable's cap, but capacity-aware = ours |
 | QR table ordering + table sessions | Pro | L | WPCafe's broken promise — ship working |
 | Visual floor plan | Pro | L | proven gap |
 | Deposits + reminders (SMS/WhatsApp/email) | Pro | M | anti-no-show revenue (Five Star €-model) |
@@ -100,9 +100,9 @@ quadrantChart
 | Order bumps / upsells + tipping | Pro | S–M | AOV lift, proven $149 bundle |
 | Receipt builder (kitchen/delivery/packing) | Pro | M | ops depth |
 | Pause/resume ordering (per service) | Pro | S | kitchen chaos valve, cheap + loved |
-| Multi-location + branch menus/hours | Pro | L | ARPU + agency channel |
-| Capacity-aware ordering (kitchen load throttles) | Pro | XL | **unique — nobody has it** |
-| Live prep-time from kitchen load | Pro | L | **unique** |
+| Multi-location + branch menus/hours | Pro | L | ARPU + agency channel — **ships M5, not at launch** (tiers sell site counts until then) |
+| Capacity-aware ordering (kitchen load throttles → **M5**) | Pro | XL | **unique — nobody has it**; capacity-*lite* caps ship M3 |
+| Live prep-time from kitchen load (estimate → **M3**, load-based → **M5**) | Pro | L | **unique** |
 | Ingredient → auto-86 + recipe costing + margin | Pro | XL | **unique; Square charges $99/mo via MarketMan** |
 | Unified timeline (book→seat→order→paid) | Pro | XL | **unique** |
 | Offline-first KDS/queue + auto-recovery | Pro | XL | **unique in WP; Toast has it at $$$** |
@@ -113,7 +113,7 @@ quadrantChart
 ## USP (post-research, final)
 
 > **The restaurant operating system for WordPress — Sell → Schedule → Operate → Optimize.**
-> Free gets you online (menu, ordering, reservations, QR). Pro runs you better (capacity, kitchen, floor, margins, multi-branch). No commission, no hardware, you own everything — at WordPress speed.
+> Free gets you online (menu, ordering, reservations, QR). Pro runs you better (capacity, kitchen, floor, margins, multi-branch). No commission, no hardware, you own everything — at highest speed.
 
 ## Top pain themes (frequency across sources)
 

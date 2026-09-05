@@ -9,6 +9,9 @@ aliases:
 
 # 06 — Technical Architecture (decisions, not code)
 
+> [!success] Canonical home moved
+> Implementation detail now lives in **[[16-technical-details]]** (decisions, storage, payments, budgets, risks, phases). This note keeps the shape diagram + decision picks below for quick reference — edit details in 16.
+
 > [!abstract] Goal
 > Lock the build split early: free vs pro, Woo or lite, blocks vs shortcodes.
 > Lessons from WPCafe (`WPCafe/WPCafe.md`): no shared layer = duplication tax; unconditional assets = perf tax. Smooth starts clean.
@@ -19,7 +22,7 @@ aliases:
 graph TD
     subgraph FREE["smooth-restaurant (free)"]
         F1["Boot: single service provider"]
-        F2["CPT: menu / location / reservation"]
+        F2["Custom tables (menu/orders/reservations)<br/>+ optional CPT mirror"]
         F3["Blocks: menu-grid, reservation-form"]
         F4["Conditional assets only"]
     end
@@ -49,15 +52,16 @@ Perf target: 100 web vitals; 50k users on 1 CPU / 4GB RAM.
 
 ## Decision log (founder + tech lead sign-off)
 
-| # | Decision | Options | Pick | Why |
-|---|----------|---------|------|-----|
-| D1 | WooCommerce? | required / optional / lite-native | **native-standalone — LOCKED 2026-09-05** | kills Woo-update breakage + block-checkout fights; see [[15-standalone-strategy]] |
-| D2 | Free/Pro split | shared-layer vs fork | shared-layer (recommended) | avoid WPCafe duplication |
-| D3 | Builders | Gutenberg-first / Elementor / both | **Gutenberg-first, no Elementor dependency** | block-native checkout + menu; see [[14-ideal-product#4. Design system notes]] |
-| D4 | Reservations storage | CPT / custom tables | **custom tables (all transactional)** | postmeta N+1 failed at WPCafe scale; see [[15-standalone-strategy#4. Storage]] |
-| D5 | Payments | Woo gateway vs direct Stripe | **direct Stripe + PayPal + COD, SAQ-A** | own checkout UX; see [[15-standalone-strategy#3. Payment strategy without Woo]] |
-| D6 | QR sessions | table-token + transient vs order-type | **table-token + `smooth_table_sessions` row + TTL** | transients evict; see [[15-standalone-strategy#10. Decision log]] |
-| D7 | i18n / RTL / HPOS | must from day 1? | **i18n/RTL day 1; HPOS n/a (no Woo)** | WPCafe 1★ translation pain; HPOS irrelevant standalone |
+| #   | Decision             | Options                               | Pick                                                | Why                                                                               |
+| --- | -------------------- | ------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| D1  | WooCommerce?         | required / optional / lite-native     | **native-standalone — LOCKED 2026-09-05**           | kills Woo-update breakage + block-checkout fights; see [[15-standalone-strategy]] |
+| D2  | Free/Pro split       | shared-layer vs fork                  | shared-layer                                        | avoid WPCafe duplication                                                          |
+| D3  | Builders             | Gutenberg-first / Elementor / both    | **Gutenberg-first, no Elementor dependency**        | block-native checkout + menu; see [[14-ideal-product#4. Design system notes]]     |
+| D4  | Reservations storage | CPT / custom tables                   | **custom tables (all transactional)**               | postmeta N+1 failed at WPCafe scale; see [[15-standalone-strategy#4. Storage]]    |
+| D5  | Payments             | Woo gateway vs direct Stripe          | **direct Stripe + PayPal + COD, SAQ-A**             | own checkout UX; see [[15-standalone-strategy#3. Payment strategy without Woo]]   |
+| D6  | QR sessions          | table-token + transient vs order-type | **table-token + `smooth_table_sessions` row + TTL** | transients evict; see [[15-standalone-strategy#10. Decision log]]                 |
+| D7  | i18n / RTL / HPOS    | must from day 1?                      | **i18n/RTL day 1; HPOS n/a (no Woo)**               | WPCafe 1★ translation pain; HPOS irrelevant standalone                            |
+| D8  | Compat floor         | WP/PHP minimums                      | **WP 6.8+ / PHP 8.2+ / multisite**                  | locked 2026-09-06; full log incl. rationale in [[16-technical-details#1. Decision log]] |
 
 ## Request flow (happy path)
 
@@ -65,7 +69,7 @@ Perf target: 100 web vitals; 50k users on 1 CPU / 4GB RAM.
 sequenceDiagram
     participant D as Diner
     participant WP as WordPress + Smooth
-    participant DB as DB (CPT/tables)
+    participant DB as DB (custom tables)
     participant PAY as Payment
     participant K as Kitchen (print/KDS)
     D->>WP: Menu / reserve / QR order
@@ -76,15 +80,15 @@ sequenceDiagram
     WP->>D: Confirm + status
 ```
 
-> [!warning] Perf budgets (WPCafe scar tissue)
+> [!warning] Perf budgets (WPCafe scar tissue — per-screen budgets in [[14-ideal-product#5. Performance budgets per screen]])
 > - No global enqueues — `smooth_should_load()` gate from day 1
-> - Public JS+CSS budget: **TODO: e.g. <150KB** on non-Smooth pages = 0KB
+> - Public JS+CSS budget: **0KB** on non-Smooth pages; ≤50KB menu, ≤80KB checkout total (gz)
 > - No per-cart N+1 (memoize rules/slots per request)
 > - Webhooks `blocking => false`, idempotent migrations with version guard
 
-## Compatibility & NFRs (TODO)
+## Compatibility & NFRs (locked 2026-09-05 from whiteboard + founder input)
 
-- [ ] WP min / PHP min / HPOS / multisite
-- [ ] Security: capability checks, nonces, SSRF-safe webhooks, rate-limit booking endpoints
-- [ ] Accessibility + mobile-first (diner is on phone)
-- [ ] Telemetry (opt-in): activation → menu-live → first-order funnel
+- [x] WP min -> 6.8 / PHP min -> 8.2, multisite -> Supported (locked 2026-09-06)
+- [x] Security: capability checks, nonces, SSRF-safe webhooks, rate-limit booking endpoints
+- [x] Accessibility + mobile-first (diner is on phone) — AA, 44px targets, RTL/i18n day 1
+- [x] Telemetry (opt-in): activation → menu-live → first-order funnel
