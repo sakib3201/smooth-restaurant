@@ -92,3 +92,13 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Linear (source of truth)
+
+This project is driven from Linear via the `linear` MCP server (`linear_*` tools). Workflow rules:
+
+- **Linear leads, the board mirrors.** Milestones/issues live in Linear; agents sync issue state and post progress comments back with `linear_*` tools. Local OpenSpec changes and kanban boards are ephemeral execution state.
+- **No build starts without a short spec** attached to the Linear issue. Pull the issue + spec before writing code; link every subtask back to its parent issue.
+- **Branch/worktree per issue**; max 2 in flight. Open a worktree with `git worktree add .worktrees/<issue-slug> -b <issue-slug>`.
+- **On completion:** archive the OpenSpec change, then update the Linear issue status + comment with test evidence (gates green: `composer quality`, `npm run test:js`, `npm run test:e2e`).
+- **Money-path rules:** ledger is append-only (refunds are new rows); totals/ledger/webhook/migration changes require matching tests in the same PR.
