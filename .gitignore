@@ -71,5 +71,8 @@ coverage.xml
 .graphify_*
 graphify_*
 
+# Git worktrees
+/.worktrees/
+
 # OpenCode plugins
 .opencode/plugins/

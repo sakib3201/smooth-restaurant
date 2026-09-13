@@ -1,11 +1,11 @@
-const path = require( 'path' );
-
 module.exports = {
 	...require( '@wordpress/scripts/config/jest-unit.config' ),
 	testEnvironment: 'jsdom',
-	setupFilesAfterEnv: [
-		'<rootDir>/tests/js/setupTests.ts',
+	testPathIgnorePatterns: [
+		'<rootDir>/node_modules/',
+		'<rootDir>/.worktrees/',
 	],
+	setupFilesAfterEnv: [ '<rootDir>/tests/js/setupTests.ts' ],
 	moduleNameMapper: {
 		'^@/admin/(.*)$': '<rootDir>/assets/src/admin/$1',
 		'^@/frontend/(.*)$': '<rootDir>/assets/src/frontend/$1',
@@ -15,5 +15,6 @@ module.exports = {
 	transform: {
 		'^.+\\.tsx?$': 'ts-jest',
 	},
+	passWithNoTests: true,
 	coverageDirectory: '<rootDir>/coverage/js',
 };

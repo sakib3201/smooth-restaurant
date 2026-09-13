@@ -49,6 +49,9 @@
     <rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
         <severity>0</severity>
     </rule>
+    <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames">
+        <severity>0</severity>
+    </rule>
 
     <!-- Disable function/method naming rules for PSR-4 classes -->
     <rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">

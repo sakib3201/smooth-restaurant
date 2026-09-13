@@ -15,7 +15,6 @@ module.exports = {
 	},
 	entry: {
 		index: path.resolve( __dirname, 'assets/src/admin/index.tsx' ),
-		reservations: path.resolve( __dirname, 'assets/src/admin/reservations.ts' ),
 	},
 	output: {
 		...defaultConfig.output,

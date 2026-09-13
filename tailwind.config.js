@@ -1,10 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: [
-		'./assets/src/**/*.{js,jsx,ts,tsx}',
-	],
+	content: [ './assets/src/**/*.{js,jsx,ts,tsx}' ],
 	theme: {
-			extend: {
+		extend: {
 			colors: {
 				// Primary: Deep Navy Blue
 				'sr-primary': '#1e40af',
@@ -53,7 +51,8 @@ module.exports = {
 				sidebar: 'var(--sidebar)',
 				'sidebar-foreground': 'var(--sidebar-foreground)',
 				'sidebar-primary': 'var(--sidebar-primary)',
-				'sidebar-primary-foreground': 'var(--sidebar-primary-foreground)',
+				'sidebar-primary-foreground':
+					'var(--sidebar-primary-foreground)',
 				'sidebar-accent': 'var(--sidebar-accent)',
 				'sidebar-accent-foreground': 'var(--sidebar-accent-foreground)',
 				'sidebar-border': 'var(--sidebar-border)',
@@ -73,12 +72,36 @@ module.exports = {
 				],
 			},
 			fontSize: {
-				'display': ['1.5rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '600' }],
-				'headline': ['1.25rem', { lineHeight: '1.3', letterSpacing: '-0.005em', fontWeight: '600' }],
-				'title': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],
-				'body': ['1rem', { lineHeight: '1.5', fontWeight: '400' }],
-				'label': ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '500' }],
-				'caption': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }],
+				display: [
+					'1.5rem',
+					{
+						lineHeight: '1.2',
+						letterSpacing: '-0.01em',
+						fontWeight: '600',
+					},
+				],
+				headline: [
+					'1.25rem',
+					{
+						lineHeight: '1.3',
+						letterSpacing: '-0.005em',
+						fontWeight: '600',
+					},
+				],
+				title: [ '1.125rem', { lineHeight: '1.4', fontWeight: '600' } ],
+				body: [ '1rem', { lineHeight: '1.5', fontWeight: '400' } ],
+				label: [
+					'0.75rem',
+					{
+						lineHeight: '1.4',
+						letterSpacing: '0.01em',
+						fontWeight: '500',
+					},
+				],
+				caption: [
+					'0.875rem',
+					{ lineHeight: '1.5', fontWeight: '400' },
+				],
 			},
 			borderRadius: {
 				'sr-sm': '4px',
@@ -88,15 +111,13 @@ module.exports = {
 			},
 			boxShadow: {
 				'ambient-hover': '0 2px 8px rgba(0,0,0,0.06)',
-				'modal': '0 8px 32px rgba(0,0,0,0.12)',
+				modal: '0 8px 32px rgba(0,0,0,0.12)',
 			},
 			transitionTimingFunction: {
 				'ease-out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
 			},
 		},
 	},
-	plugins: [
-		require('@tailwindcss/forms'),
-	],
+	plugins: [ require( '@tailwindcss/forms' ) ],
 	prefix: 'sr-',
 };

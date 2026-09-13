@@ -65,12 +65,11 @@ register_activation_hook(__FILE__, [\SmoothRestaurant\Core\Activator::class, 'ac
 // Deactivation hook
 register_deactivation_hook(__FILE__, [\SmoothRestaurant\Core\Deactivator::class, 'deactivate']);
 
-// Boot the plugin and check schema version
+// Boot the plugin
 add_action(
 	"plugins_loaded",
 	function (): void {
 		\SmoothRestaurant\Core\Plugin::instance()->boot();
-		\SmoothRestaurant\Core\Schema::update();
 	},
 	10,
 );

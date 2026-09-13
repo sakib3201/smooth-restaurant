@@ -1,13 +1,15 @@
 # Agent Notes — Smooth Restaurant
 
 > WordPress plugin (restaurant management). PHP 8.1+, WP 6.4+, Node 20+, npm 10+.
+>
+> **Rebuild status (2026-09-14):** this branch was reset to a clean harness — skills, tooling, test scaffolding and docs only. All implementation is being rebuilt ground-up, driven by the Linear project (see below).
 
 ## Architecture
 
 - **Entrypoint**: `smooth-restaurant.php` — defines `SR_VERSION`, `SR_PLUGIN_DIR`, `SR_PLUGIN_URL`, `SR_PLUGIN_BASENAME`, registers activation/deactivation hooks, and boots `SmoothRestaurant\Core\Plugin::instance()->boot()` on `plugins_loaded`.
 - **DI container**: `src/Core/Container.php` — lightweight auto-wiring container. Service providers extend `ServiceProvider` and are registered in `Plugin::registerProviders()`.
 - **Namespace**: `SmoothRestaurant\` under `src/` (PSR-4 autoloaded via Composer and a custom `spl_autoload_register` fallback in the main file).
-- **Current providers**: only `CoreProvider` is wired; it registers `AdminMenu`, `Admin\Assets`, and `Frontend\Shortcode`.
+- **Current providers**: none wired yet. Rebuild issues add providers under `src/Providers/` and register them in `Plugin::registerProviders()`.
 
 ## Build & Dev
 
@@ -23,7 +25,7 @@
   - `@/frontend/*` → `assets/src/frontend/*`
   - `@/shared/*` → `assets/src/shared/*`
   - `@/blocks/*` → `assets/src/blocks/*`
-- **shadcn/ui** — initialized under `assets/src/admin/components/ui/`. Uses `@base-ui/react` primitives with `base-nova` style. CSS variables defined in `assets/css/admin-global.scss`. Component alias: `@/admin/components/ui/*`.
+- **shadcn/ui** — rebuild issues re-initialize components under `assets/src/admin/components/ui/` using `@base-ui/react` primitives with `base-nova` style. CSS variables live in `assets/css/admin-global.scss`. Component alias: `@/admin/components/ui/*`.
 
 ## Testing
 
@@ -73,12 +75,11 @@ All workflows are `workflow_dispatch` only:
 - `smooth-restaurant.php` — main plugin file (also scanned by PHPStan).
 - `src/Core/Plugin.php` — singleton bootstrap.
 - `src/Core/Container.php` — DI container.
-- `src/Providers/CoreProvider.php` — only active provider.
-- `assets/src/admin/index.tsx` — admin React entrypoint. Uses `HashRouter` so refreshes stay inside the plugin admin page.
-- `assets/src/blocks/menu-item/block.json` — example Gutenberg block.
+- `assets/src/admin/index.tsx` — admin entrypoint placeholder (rebuild issue replaces it).
+- `assets/src/frontend/index.ts` — frontend entrypoint placeholder (rebuild issue replaces it).
 - `phpunit.xml.dist` — two test suites: Unit / Integration.
 - `phpstan.neon.dist` — level 8, scans `src/`, `tests/`, `smooth-restaurant.php`, `uninstall.php`.
-- `jest.config.js` — extends `@wordpress/scripts/config/jest-unit.config`, adds path aliases and `ts-jest`.
+- `jest.config.js` — extends `@wordpress/scripts/config/jest-unit.config`, adds path aliases, `ts-jest` and `passWithNoTests`.
 
 ## graphify
 

@@ -8,7 +8,7 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * @see https://playwright.dev/docs/test-configuration
  */
-export default defineConfig({
+export default defineConfig( {
 	// Test directory
 	testDir: './tests/e2e',
 
@@ -16,7 +16,7 @@ export default defineConfig({
 	fullyParallel: false,
 
 	// Fail the build on CI if you accidentally left test.only in the source code
-	forbidOnly: !!process.env.CI,
+	forbidOnly: !! process.env.CI,
 
 	// Retry on CI only
 	retries: process.env.CI ? 2 : 0,
@@ -25,10 +25,7 @@ export default defineConfig({
 	workers: 1,
 
 	// Reporter to use
-	reporter: [
-		['list'],
-		['html', { open: 'never' }],
-	],
+	reporter: [ [ 'list' ], [ 'html', { open: 'never' } ] ],
 
 	// Shared settings for all the projects below
 	use: {
@@ -43,18 +40,18 @@ export default defineConfig({
 	},
 
 	// Global setup / teardown for wp-env lifecycle
-	globalSetup: require.resolve('./tests/e2e/fixtures/index.ts'),
-	globalTeardown: require.resolve('./tests/e2e/fixtures/index.ts'),
+	globalSetup: require.resolve( './tests/e2e/fixtures/index.ts' ),
+	globalTeardown: require.resolve( './tests/e2e/fixtures/index.ts' ),
 
 	// Configure projects for major browsers
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
+			use: { ...devices[ 'Desktop Chrome' ] },
 		},
 		{
 			name: 'chromium-mobile',
-			use: { ...devices['Pixel 5'] },
+			use: { ...devices[ 'Pixel 5' ] },
 		},
 	],
-});
+} );

@@ -1,5 +1,4 @@
-import type { FullConfig } from '@playwright/test';
-
+/* eslint-disable no-console */
 /**
  * WordPress E2E global setup and teardown.
  *
@@ -7,11 +6,11 @@ import type { FullConfig } from '@playwright/test';
  * Falls back gracefully when Docker is not available.
  */
 
-async function globalSetup( config: FullConfig ): Promise<void> {
+async function globalSetup(): Promise< void > {
 	console.log( 'Using existing WordPress instance at http://wpt.local' );
 }
 
-async function globalTeardown( config: FullConfig ): Promise<void> {
+async function globalTeardown(): Promise< void > {
 	console.log( 'Tests complete.' );
 }
 

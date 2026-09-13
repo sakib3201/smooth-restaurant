@@ -62,22 +62,7 @@ final class Plugin {
 	 * @return void
 	 */
 	private function registerProviders(): void {
-		$providers = array(
-			\SmoothRestaurant\Providers\CoreProvider::class,
-			\SmoothRestaurant\Providers\ReservationProvider::class,
-			// Future providers will be added here:
-			// \SmoothRestaurant\Providers\DatabaseProvider::class,
-			// \SmoothRestaurant\Providers\MenuProvider::class,
-			// \SmoothRestaurant\Providers\OrderProvider::class,
-			// \SmoothRestaurant\Providers\AssetProvider::class,
-			// \SmoothRestaurant\Providers\RouteProvider::class,
-			// \SmoothRestaurant\Providers\AdminProvider::class,
-			// \SmoothRestaurant\Providers\FrontendProvider::class,
-		);
-
-		foreach ( $providers as $provider ) {
-			$this->container->register( $provider );
-		}
+		// Rebuild issues register their providers here.
 	}
 
 	/**

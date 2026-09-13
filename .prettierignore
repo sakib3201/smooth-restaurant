@@ -1,0 +1,12 @@
+.agents/
+.claude/
+.kimi/
+.opencode/
+.vscode/
+node_modules/
+vendor/
+assets/build/
+openspec/
+.github/
+.impeccable/
+package-lock.json
