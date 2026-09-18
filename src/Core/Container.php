@@ -12,11 +12,22 @@ namespace SmoothRestaurant\Core;
 use ReflectionClass;
 use ReflectionParameter;
 use Closure;
+use RuntimeException;
 
 /**
  * Class Container
  *
  * Lightweight DI container inspired by Laravel's service container.
+ *
+ * Two stores are kept strictly separate:
+ *
+ * - `$instances` holds keyed singleton instances (including test doubles
+ *   pre-registered via `instance()`).
+ * - `$providers` holds the ordered list of registered service providers.
+ *
+ * Explicit closure/singleton bindings resolve without reflection on hot
+ * paths (singletons are memoized after first resolution). Class auto-wiring
+ * via reflection remains available as a boot-time fallback only.
  */
 final class Container {
 
@@ -35,9 +46,16 @@ final class Container {
 	private array $singletons = array();
 
 	/**
-	 * Resolved instances.
+	 * Resolved singleton instances, keyed by abstract.
 	 *
-	 * @var array<int|string, object>
+	 * @var array<string, object>
+	 */
+	private array $instances = array();
+
+	/**
+	 * Registered service providers, in registration order.
+	 *
+	 * @var array<int, ServiceProvider>
 	 */
 	private array $providers = array();
 
@@ -73,14 +91,40 @@ final class Container {
 	}
 
 	/**
+	 * Check whether an abstract has a binding or a stored instance.
+	 *
+	 * @param string $abstract The abstract class or interface.
+	 * @return bool
+	 */
+	public function has( string $abstract ): bool {
+		return isset( $this->bindings[ $abstract ] ) || isset( $this->instances[ $abstract ] );
+	}
+
+	/**
+	 * Pre-register an existing object as the singleton for an abstract.
+	 *
+	 * Used to inject test doubles: subsequent `make()` calls for the
+	 * abstract return this exact object.
+	 *
+	 * @param string $abstract The abstract class or interface.
+	 * @param object $instance The instance to return.
+	 * @return void
+	 */
+	public function instance( string $abstract, object $instance ): void {
+		$this->instances[ $abstract ]  = $instance;
+		$this->singletons[ $abstract ] = true;
+	}
+
+	/**
 	 * Resolve an instance from the container.
 	 *
 	 * @param string $abstract The abstract class or interface.
 	 * @return object
+	 * @throws RuntimeException If the abstract cannot be resolved.
 	 */
 	public function make( string $abstract ): object {
-		if ( isset( $this->singletons[ $abstract ] ) && isset( $this->providers[ $abstract ] ) ) {
-			return $this->providers[ $abstract ];
+		if ( isset( $this->instances[ $abstract ] ) ) {
+			return $this->instances[ $abstract ];
 		}
 
 		$concrete = $this->bindings[ $abstract ] ?? $abstract;
@@ -92,7 +136,7 @@ final class Container {
 		}
 
 		if ( isset( $this->singletons[ $abstract ] ) ) {
-			$this->providers[ $abstract ] = $instance;
+			$this->instances[ $abstract ] = $instance;
 		}
 
 		return $instance;
@@ -101,10 +145,18 @@ final class Container {
 	/**
 	 * Resolve a class instance with automatic dependency injection.
 	 *
+	 * Auto-wiring is a boot-time fallback: prefer explicit
+	 * closure/singleton bindings for services on hot paths.
+	 *
 	 * @param string $class The class name.
 	 * @return object
+	 * @throws RuntimeException If the class does not exist.
 	 */
 	private function resolve( string $class ): object {
+		if ( ! class_exists( $class ) ) {
+			throw new RuntimeException( "Cannot resolve [{$class}]: class does not exist." );
+		}
+
 		$reflector   = new ReflectionClass( $class );
 		$constructor = $reflector->getConstructor();
 
@@ -113,7 +165,7 @@ final class Container {
 		}
 
 		$dependencies = array_map(
-			fn ( ReflectionParameter $param ): mixed => $this->resolveDependency( $param ),
+			fn ( ReflectionParameter $param ): mixed => $this->resolveDependency( $param, $class ),
 			$constructor->getParameters()
 		);
 
@@ -123,11 +175,12 @@ final class Container {
 	/**
 	 * Resolve a single dependency.
 	 *
-	 * @param ReflectionParameter $param The parameter to resolve.
+	 * @param ReflectionParameter $param  The parameter to resolve.
+	 * @param string              $class  The class being resolved, for error context.
 	 * @return mixed
-	 * @throws \RuntimeException If the dependency cannot be resolved.
+	 * @throws RuntimeException If the dependency cannot be resolved.
 	 */
-	private function resolveDependency( ReflectionParameter $param ): mixed {
+	private function resolveDependency( ReflectionParameter $param, string $class ): mixed {
 		$type = $param->getType();
 
 		if ( $type instanceof \ReflectionNamedType && ! $type->isBuiltin() ) {
@@ -138,16 +191,28 @@ final class Container {
 			return $param->getDefaultValue();
 		}
 
-		throw new \RuntimeException( "Cannot resolve dependency: {$param->getName()}" );
+		throw new RuntimeException( "Cannot resolve dependency [{$param->getName()}] for class [{$class}]." );
 	}
 
 	/**
 	 * Register a service provider.
 	 *
+	 * The container itself is bound first so auto-wiring injects this exact
+	 * container into the provider constructor. Registering the same provider
+	 * class twice is a no-op, which keeps repeated `Plugin::boot()` calls safe.
+	 *
 	 * @param string $providerClass The provider class name.
 	 * @return void
 	 */
 	public function register( string $providerClass ): void {
+		foreach ( $this->providers as $registered ) {
+			if ( $registered::class === $providerClass ) {
+				return;
+			}
+		}
+
+		$this->instance( self::class, $this );
+
 		$provider = $this->make( $providerClass );
 
 		if ( $provider instanceof ServiceProvider ) {
@@ -163,10 +228,31 @@ final class Container {
 	 */
 	public function boot(): void {
 		foreach ( $this->providers as $provider ) {
-			if ( $provider instanceof ServiceProvider && ! in_array( $provider, $this->bootedProviders, true ) ) {
+			if ( ! in_array( $provider, $this->bootedProviders, true ) ) {
 				$provider->boot( $this );
 				$this->bootedProviders[] = $provider;
 			}
 		}
+	}
+
+	/**
+	 * Get the registered provider instances, in registration order.
+	 *
+	 * @return array<int, ServiceProvider>
+	 */
+	public function providers(): array {
+		return $this->providers;
+	}
+
+	/**
+	 * Get the class names of registered providers, in registration order.
+	 *
+	 * @return array<int, class-string<ServiceProvider>>
+	 */
+	public function providerClasses(): array {
+		return array_map(
+			static fn ( ServiceProvider $provider ): string => $provider::class,
+			$this->providers
+		);
 	}
 }
