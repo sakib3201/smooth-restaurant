@@ -2,9 +2,9 @@
 Contributors: smoothrestaurant
 Donate link: https://smoothrestaurant.com
 Tags: restaurant, menu, ordering, reservation, food-delivery
-Requires at least: 6.4
+Requires at least: 6.8
 Tested up to: 7.0
-Requires PHP: 8.1
+Requires PHP: 8.2
 Stable tag: 0.1.0
 License: GPL-2.0
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

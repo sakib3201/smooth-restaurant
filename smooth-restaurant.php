@@ -10,8 +10,8 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: smooth-restaurant
  * Domain Path: /languages
- * Requires PHP: 8.1
- * Requires at least: 6.4
+ * Requires PHP: 8.2
+ * Requires at least: 6.8
  *
  * @package SmoothRestaurant
  */
@@ -26,12 +26,12 @@ define("SR_PLUGIN_URL", plugin_dir_url(__FILE__));
 define("SR_PLUGIN_BASENAME", plugin_basename(__FILE__));
 
 // Minimum PHP version check
-if (version_compare(PHP_VERSION, "8.1", "<")) {
+if (version_compare(PHP_VERSION, "8.2", "<")) {
 	add_action("admin_notices", function (): void {
 		echo '<div class="notice notice-error"><p>';
 		printf(
 			esc_html__(
-				"Smooth Restaurant requires PHP 8.1 or higher. You are running %s.",
+				"Smooth Restaurant requires PHP 8.2 or higher. You are running %s.",
 				"smooth-restaurant",
 			),
 			esc_html(PHP_VERSION),

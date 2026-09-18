@@ -1,11 +1,19 @@
 <?xml version="1.0"?>
 <ruleset name="SmoothRestaurant">
-    <description>PHPCS ruleset for Smooth Restaurant plugin.</description>
+    <description>PHPCS ruleset for Smooth Restaurant plugin: PSR-12 base with WordPress-idiomatic seams (hooks, naming, capabilities, nonces, i18n).</description>
 
-    <!-- Standards -->
-    <rule ref="WordPress"/>
-    <rule ref="WordPress-Extra"/>
-    <rule ref="WordPress-Docs"/>
+    <!-- Base: modern OO style, strict types, typed signatures. -->
+    <rule ref="PSR12"/>
+    <rule ref="Generic.PHP.RequireStrictTypes"/>
+
+    <!-- WordPress seams only: hook/filter naming, global prefixes,
+         capability checks, nonces + input sanitization, i18n. -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals"/>
+    <rule ref="WordPress.NamingConventions.ValidHookName"/>
+    <rule ref="WordPress.WP.Capabilities"/>
+    <rule ref="WordPress.Security.NonceVerification"/>
+    <rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+    <rule ref="WordPress.WP.I18n"/>
 
     <!-- Paths to check -->
     <file>src/</file>
@@ -16,79 +24,33 @@
     <exclude-pattern>node_modules/*</exclude-pattern>
     <exclude-pattern>assets/build/*</exclude-pattern>
 
-    <!-- Minimum PHP version -->
-    <config name="testVersion" value="8.1-"/>
+    <!-- Compatibility floor: WP 6.8+ / PHP 8.2+. New code may use PHP 8.2 idioms. -->
+    <config name="testVersion" value="8.2-"/>
 
-    <!-- Namespace prefix for naming conventions -->
-    <config name="prefixes" value="SmoothRestaurant"/>
-
-    <!-- Disable file-naming rules because PSR-4 autoloading uses StudlyCase filenames -->
-    <rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
-        <severity>0</severity>
-    </rule>
+    <!-- Prefixes: SmoothRestaurant\ namespace + smooth_ globals. -->
+    <config name="prefixes" value="smooth,SmoothRestaurant"/>
 
     <!-- Text domain -->
     <config name="text_domain" value="smooth-restaurant"/>
 
-    <!-- Disable reserved keyword parameter warnings for DI container variables -->
-    <rule ref="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.NamingConventions.ValidVariableName.NotSnakeCase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.NamingConventions.ValidVariableName.PropertyNotSnakeCase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase">
-        <severity>0</severity>
-    </rule>
-    <rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable function/method naming rules for PSR-4 classes -->
-    <rule ref="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable Yoda condition rule -->
-    <rule ref="WordPress.PHP.YodaConditions.NotYoda">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable escape output in exception messages -->
-    <rule ref="WordPress.Security.EscapeOutput.ExceptionNotEscaped">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable commented-out code warnings -->
-    <rule ref="Squiz.PHP.CommentedOutCode.Found">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable inline comment end char rule -->
-    <rule ref="Squiz.Commenting.InlineComment.InvalidEndChar">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable unused parameter warnings -->
-    <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.Found">
-        <severity>0</severity>
-    </rule>
-
-    <!-- Disable prefix-all-globals in tests/bootstrap.php -->
-    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
-        <severity>0</severity>
-    </rule>
+    <!-- tests/bootstrap.php defines WP core constants (WP_TESTS_DIR) that
+         cannot carry the plugin prefix; scope the exclusion to that file. -->
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
-        <severity>0</severity>
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+    </rule>
+
+    <!-- Tests follow WordPress PHPUnit idiom: snake_case test_* methods and
+         doubles colocated with their test (including wpdb-shaped method names
+         like get_charset_collate that must mirror the WP API). src/ stays
+         strict PSR-12 per the coding-standards spec. -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 
     <!-- Show progress and colors -->
