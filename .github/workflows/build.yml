@@ -18,7 +18,7 @@ concurrency:
 jobs:
   build:
     name: Build Plugin
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -81,3 +81,8 @@ jobs:
         with:
           name: smooth-restaurant-plugin
           path: dist/smooth-restaurant.zip
+
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: './dist/smooth-restaurant'

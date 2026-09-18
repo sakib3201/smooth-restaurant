@@ -20,7 +20,7 @@ Every workflow under `.github/workflows/` SHALL run on `pull_request` (opened, s
 - **THEN** the workflow runs with identical steps and gates as the PR run
 
 ### Requirement: Required checks block merge
-The quality, php-tests, php-lint, js-lint, js-tests, build, and Plugin Check jobs SHALL be listed as required status checks; a PR with any required check failing SHALL NOT be mergeable.
+The quality, php-tests, php-lint, js-lint, js-tests, asset-budget, and build jobs (build includes the Plugin Check step) SHALL be listed as required status checks; a PR with any required check failing SHALL NOT be mergeable.
 
 #### Scenario: Failing lint blocks merge
 - **WHEN** PHPCS fails on a PR
