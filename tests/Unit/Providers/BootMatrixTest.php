@@ -3,20 +3,20 @@
 /**
  * Boot-matrix smoke test.
  *
- * Verifies the spec boot matrix behaviorally: which providers boot in each
- * request context, and that a non-Smooth frontend request enqueues zero
- * Smooth assets.
+ * Verifies the spec boot matrix behaviorally: context-gated registration
+ * (Plugin::registerProviders() filters by Context::current() before
+ * instantiation) plus in-context boot():
  *
- * - Diner menu (frontend): Core + Menu + Cart + Checkout + Orders +
- *   Payments + Slots + Reservations + Tables + Blocks boot; Admin, Rest,
- *   and Notifications (cron worker) bail.
- * - Admin: Admin boots; diner providers bail.
- * - Cron: Notifications boots; everything else except Core bails.
+ * - Diner menu (frontend): Core + Database + Assets + Menu + Cart +
+ *   Checkout + Orders + Payments + Slots + Reservations + Tables + Blocks
+ *   register; Admin, Rest, and Notifications (cron worker) are excluded.
+ * - Admin: Core + Database + Assets + Admin + Blocks register; diner
+ *   providers, Rest, and Notifications are excluded.
+ * - Cron: Core + Database + Notifications register; everything else is
+ *   excluded.
  * - REST: covered by RestBootTest (REST_REQUEST is a process-global constant).
  *
- * Database/Assets providers are owned by the parallel platform stream: this
- * test tolerates them as either registered (post-merge) or recorded in
- * skippedProviders() (pre-merge), never as a fatal.
+ * A non-Smooth frontend request still enqueues zero Smooth assets.
  *
  * @package SmoothRestaurant
  */
@@ -26,13 +26,16 @@ declare(strict_types=1);
 namespace SmoothRestaurant\Tests\Unit\Providers;
 
 use PHPUnit\Framework\TestCase;
+use SmoothRestaurant\Core\Context;
 use SmoothRestaurant\Core\Plugin;
 use SmoothRestaurant\Core\ServiceProvider;
 use SmoothRestaurant\Providers\AdminProvider;
+use SmoothRestaurant\Providers\AssetsProvider;
 use SmoothRestaurant\Providers\BlocksProvider;
 use SmoothRestaurant\Providers\CartProvider;
 use SmoothRestaurant\Providers\CheckoutProvider;
 use SmoothRestaurant\Providers\CoreProvider;
+use SmoothRestaurant\Providers\DatabaseProvider;
 use SmoothRestaurant\Providers\MenuProvider;
 use SmoothRestaurant\Providers\NotificationsProvider;
 use SmoothRestaurant\Providers\OrdersProvider;
@@ -48,24 +51,6 @@ use SmoothRestaurant\Providers\TablesProvider;
 class BootMatrixTest extends TestCase
 {
     /**
-     * Diner-facing providers expected to boot on a frontend request.
-     *
-     * @var array<int, class-string>
-     */
-    private const DINER_PROVIDERS = array(
-        CoreProvider::class,
-        MenuProvider::class,
-        CartProvider::class,
-        CheckoutProvider::class,
-        OrdersProvider::class,
-        PaymentsProvider::class,
-        SlotsProvider::class,
-        ReservationsProvider::class,
-        TablesProvider::class,
-        BlocksProvider::class,
-    );
-
-    /**
      * Set up a clean plugin singleton and stub state for each test.
      *
      * @return void
@@ -74,6 +59,7 @@ class BootMatrixTest extends TestCase
     {
         parent::setUp();
         Plugin::reset();
+        Context::reset();
         sr_test_reset_stubs();
     }
 
@@ -85,6 +71,7 @@ class BootMatrixTest extends TestCase
     protected function tearDown(): void
     {
         sr_test_reset_stubs();
+        Context::reset();
         Plugin::reset();
         parent::tearDown();
     }
@@ -96,7 +83,7 @@ class BootMatrixTest extends TestCase
      * set (is_admin / doing_cron): a full stub reset would wipe them
      * before boot and every context matrix would read as frontend.
      *
-     * @return array<string, object> Provider instances keyed by class name.
+     * @return array<string, ServiceProvider> Provider instances keyed by class name.
      */
     private function bootFreshPlugin(): array
     {
@@ -117,22 +104,34 @@ class BootMatrixTest extends TestCase
     }
 
     /**
-     * Assert a provider booted (or bailed) in the current scenario.
+     * Assert a provider registered and booted (or bailed) in the scenario.
      *
-     * @param array<string, object> $providers Providers keyed by class.
-     * @param string                $class     Provider class.
-     * @param bool                  $expected  Expected booted() value.
+     * @param array<string, ServiceProvider> $providers Providers keyed by class.
+     * @param string                         $class     Provider class.
+     * @param bool                           $expected  Expected booted() value.
      * @return void
      */
     private function assertBooted(array $providers, string $class, bool $expected): void
     {
         $this->assertArrayHasKey($class, $providers, sprintf('%s should be registered.', $class));
-        assert($providers[ $class ] instanceof ServiceProvider);
         $this->assertSame(
             $expected,
             $providers[ $class ]->booted(),
             sprintf('%s booted() should be %s.', $class, $expected ? 'true' : 'false')
         );
+    }
+
+    /**
+     * Assert a provider was excluded by context-gated registration.
+     *
+     * @param array<string, ServiceProvider> $providers Providers keyed by class.
+     * @param string                         $class     Provider class.
+     * @return void
+     */
+    private function assertExcluded(array $providers, string $class): void
+    {
+        $this->assertArrayNotHasKey($class, $providers, sprintf('%s should be excluded by context.', $class));
+        $this->assertNotContains($class, Plugin::instance()->providerClasses());
     }
 
     /**
@@ -144,13 +143,44 @@ class BootMatrixTest extends TestCase
     {
         $providers = $this->bootFreshPlugin();
 
-        foreach (self::DINER_PROVIDERS as $class) {
+        $this->assertSame(
+            array(
+                CoreProvider::class,
+                DatabaseProvider::class,
+                AssetsProvider::class,
+                MenuProvider::class,
+                CartProvider::class,
+                CheckoutProvider::class,
+                OrdersProvider::class,
+                PaymentsProvider::class,
+                SlotsProvider::class,
+                ReservationsProvider::class,
+                TablesProvider::class,
+                BlocksProvider::class,
+            ),
+            Plugin::instance()->providerClasses()
+        );
+
+        foreach (
+            array(
+                CoreProvider::class,
+                MenuProvider::class,
+                CartProvider::class,
+                CheckoutProvider::class,
+                OrdersProvider::class,
+                PaymentsProvider::class,
+                SlotsProvider::class,
+                ReservationsProvider::class,
+                TablesProvider::class,
+                BlocksProvider::class,
+            ) as $class
+        ) {
             $this->assertBooted($providers, $class, true);
         }
 
-        $this->assertBooted($providers, AdminProvider::class, false);
-        $this->assertBooted($providers, RestProvider::class, false);
-        $this->assertBooted($providers, NotificationsProvider::class, false);
+        $this->assertExcluded($providers, AdminProvider::class);
+        $this->assertExcluded($providers, RestProvider::class);
+        $this->assertExcluded($providers, NotificationsProvider::class);
     }
 
     /**
@@ -175,18 +205,34 @@ class BootMatrixTest extends TestCase
         sr_test_set_flag('is_admin', true);
         $providers = $this->bootFreshPlugin();
 
+        $this->assertSame(
+            array(
+                CoreProvider::class,
+                DatabaseProvider::class,
+                AssetsProvider::class,
+                AdminProvider::class,
+                BlocksProvider::class,
+            ),
+            Plugin::instance()->providerClasses()
+        );
+
         $this->assertBooted($providers, AdminProvider::class, true);
         $this->assertBooted($providers, CoreProvider::class, true);
-        $absent = array( MenuProvider::class, BlocksProvider::class, CartProvider::class );
-        $absent[] = RestProvider::class;
-        $absent[] = NotificationsProvider::class;
-        foreach ($absent as $class) {
-            $this->assertBooted($providers, $class, false);
+
+        foreach (
+            array(
+                MenuProvider::class,
+                CartProvider::class,
+                RestProvider::class,
+                NotificationsProvider::class,
+            ) as $class
+        ) {
+            $this->assertExcluded($providers, $class);
         }
     }
 
     /**
-     * Test the cron matrix: only the Notifications worker boots.
+     * Test the cron matrix: only the Notifications worker registers.
      *
      * @return void
      */
@@ -195,36 +241,28 @@ class BootMatrixTest extends TestCase
         sr_test_set_flag('doing_cron', true);
         $providers = $this->bootFreshPlugin();
 
+        $this->assertSame(
+            array(
+                CoreProvider::class,
+                DatabaseProvider::class,
+                NotificationsProvider::class,
+            ),
+            Plugin::instance()->providerClasses()
+        );
+
         $this->assertBooted($providers, NotificationsProvider::class, true);
         $this->assertBooted($providers, CoreProvider::class, true);
-        $absent = array( MenuProvider::class, AdminProvider::class, RestProvider::class, CartProvider::class );
-        foreach ($absent as $class) {
-            $this->assertBooted($providers, $class, false);
-        }
-    }
-
-    /**
-     * Test that platform-stream providers never fatal the boot.
-     *
-     * @return void
-     */
-    public function test_platform_providers_tolerated_pre_merge(): void
-    {
-        $this->bootFreshPlugin();
-
-        $registered = Plugin::instance()->providerClasses();
-        $skipped    = Plugin::instance()->skippedProviders();
 
         foreach (
             array(
-                'SmoothRestaurant\\Providers\\DatabaseProvider',
-                'SmoothRestaurant\\Providers\\AssetsProvider',
+                MenuProvider::class,
+                CartProvider::class,
+                AdminProvider::class,
+                RestProvider::class,
+                AssetsProvider::class,
             ) as $class
         ) {
-            $this->assertTrue(
-                in_array($class, $registered, true) || array_key_exists($class, $skipped),
-                sprintf('%s should be registered or recorded as skipped, never fatal.', $class)
-            );
+            $this->assertExcluded($providers, $class);
         }
     }
 }

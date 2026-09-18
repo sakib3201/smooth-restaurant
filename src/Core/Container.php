@@ -13,7 +13,7 @@ namespace SmoothRestaurant\Core;
 use ReflectionClass;
 use ReflectionParameter;
 use Closure;
-use RuntimeException;
+use SmoothRestaurant\Exceptions\UnresolvableException;
 
 /**
  * Class Container
@@ -125,7 +125,7 @@ final class Container
      *
      * @param string $abstract The abstract class or interface.
      * @return object
-     * @throws RuntimeException If the abstract cannot be resolved.
+     * @throws UnresolvableException If the abstract cannot be resolved.
      */
     public function make(string $abstract): object
     {
@@ -156,12 +156,12 @@ final class Container
      *
      * @param string $class The class name.
      * @return object
-     * @throws RuntimeException If the class does not exist.
+     * @throws UnresolvableException If the class does not exist.
      */
     private function resolve(string $class): object
     {
         if (! class_exists($class)) {
-            throw new RuntimeException("Cannot resolve [{$class}]: class does not exist.");
+            throw new UnresolvableException("Cannot resolve [{$class}]: class does not exist.");
         }
 
         $reflector   = new ReflectionClass($class);
@@ -185,7 +185,7 @@ final class Container
      * @param ReflectionParameter $param  The parameter to resolve.
      * @param string              $class  The class being resolved, for error context.
      * @return mixed
-     * @throws RuntimeException If the dependency cannot be resolved.
+     * @throws UnresolvableException If the dependency cannot be resolved.
      */
     private function resolveDependency(ReflectionParameter $param, string $class): mixed
     {
@@ -199,7 +199,7 @@ final class Container
             return $param->getDefaultValue();
         }
 
-        throw new RuntimeException("Cannot resolve dependency [{$param->getName()}] for class [{$class}].");
+        throw new UnresolvableException("Cannot resolve dependency [{$param->getName()}] for class [{$class}].");
     }
 
     /**

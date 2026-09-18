@@ -22,6 +22,18 @@ use SmoothRestaurant\Core\ServiceProvider;
 final class RestProvider extends ServiceProvider
 {
     /**
+     * Request contexts this provider participates in.
+     *
+     * Mirrors boot(): REST requests only.
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'rest' );
+    }
+
+    /**
      * Register services with the container.
      *
      * Bind-only: no hooks, no database access, no translation calls.

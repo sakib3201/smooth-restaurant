@@ -22,6 +22,18 @@ use SmoothRestaurant\Core\ServiceProvider;
 final class AdminProvider extends ServiceProvider
 {
     /**
+     * Request contexts this provider participates in.
+     *
+     * Mirrors boot(): admin screens only.
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'admin' );
+    }
+
+    /**
      * Register services with the container.
      *
      * Bind-only: no hooks, no database access, no translation calls.

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Core;
 
+use SmoothRestaurant\Contracts\LoggerInterface;
 use SmoothRestaurant\Providers\AdminProvider;
 use SmoothRestaurant\Providers\AssetsProvider;
 use SmoothRestaurant\Providers\BlocksProvider;
@@ -110,9 +111,12 @@ final class Plugin
      *
      * Builds the Free provider list, passes it through the
      * `smooth_service_providers` filter so Pro can append additive providers,
-     * then validates every entry. Invalid entries are ignored and logged;
-     * removal or reordering of Free providers via the filter is ignored and
-     * the canonical Free list is restored.
+     * then validates every entry exactly once, reusing the verdict at
+     * registration. Invalid entries are ignored and logged; removal or
+     * reordering of Free providers via the filter is ignored and the
+     * canonical Free list is restored. Finally the validated list is
+     * filtered by the current request context (Free list and Pro appends
+     * alike) so providers whose `boot()` would bail are never instantiated.
      *
      * @return void
      */
@@ -156,24 +160,71 @@ final class Plugin
             }
         }
 
-        $final = $free;
+        // Single validation pass: every candidate is validated exactly
+        // once and the verdict is reused at registration below. Free
+        // entries are validated here, so missing platform providers stay
+        // recorded-and-skipped (never fatal), exactly as before.
+        $verdicts = array();
+        $final    = array();
+        foreach ($free as $class) {
+            $valid               = $this->isValidProvider($class);
+            $verdicts[ $class ] = $valid;
+            if ($valid) {
+                $final[] = $class;
+            }
+        }
+
         foreach ($filtered as $candidate) {
             if (in_array($candidate, $free, true)) {
                 continue;
             }
 
-            if ($this->isValidProvider($candidate)) {
-                if (! in_array($candidate, $final, true)) {
-                    $final[] = $candidate;
-                }
+            if (! $this->isValidProvider($candidate)) {
+                continue;
+            }
+
+            if (! is_string($candidate)) {
+                continue;
+            }
+
+            $verdicts[ $candidate ] = true;
+            if (! in_array($candidate, $final, true)) {
+                $final[] = $candidate;
             }
         }
 
+        $context = Context::current();
         foreach ($final as $providerClass) {
-            if ($this->isValidProvider($providerClass, true)) {
-                $this->container->register($providerClass);
+            if (! ($verdicts[ $providerClass ] ?? false)) {
+                continue;
             }
+
+            if (! $this->supportsContext($providerClass, $context)) {
+                $reason = sprintf(
+                    'context-filtered: %s does not participate in the %s context.',
+                    $providerClass,
+                    $context
+                );
+                $this->skippedProviders[ $providerClass ] = $reason;
+                continue;
+            }
+
+            $this->container->register($providerClass);
         }
+    }
+
+    /**
+     * Whether a validated provider participates in the given context.
+     *
+     * @param class-string<ServiceProvider> $providerClass Validated provider class.
+     * @param string                        $context       Current request context.
+     * @return bool
+     */
+    private function supportsContext(string $providerClass, string $context): bool
+    {
+        $contexts = $providerClass::contexts();
+
+        return in_array('all', $contexts, true) || in_array($context, $contexts, true);
     }
 
     /**
@@ -208,17 +259,17 @@ final class Plugin
     /**
      * Validate a single provider entry.
      *
-     * @param mixed $candidate      The entry to validate.
-     * @param bool  $alreadyLogged  Whether invalid entries were already logged for this pass.
+     * Each candidate is validated exactly once per registration; the verdict
+     * is cached by the caller and reused at registration time.
+     *
+     * @param mixed $candidate The entry to validate.
      * @return bool
      */
-    private function isValidProvider(mixed $candidate, bool $alreadyLogged = false): bool
+    private function isValidProvider(mixed $candidate): bool
     {
         if (! is_string($candidate)) {
-            if (! $alreadyLogged) {
-                $reason = 'unknown-class: provider entries must be class-strings.';
-                $this->logSkipped('(non-string:' . gettype($candidate) . ')', $reason);
-            }
+            $reason = 'unknown-class: provider entries must be class-strings.';
+            $this->logSkipped('(non-string:' . gettype($candidate) . ')', $reason);
 
             return false;
         }
@@ -249,7 +300,14 @@ final class Plugin
     }
 
     /**
-     * Record a skipped provider and write it to the error log.
+     * Record a skipped provider and log it.
+     *
+     * Routes through the container logger (`LoggerInterface`, bound by
+     * `CoreProvider`) when one resolves, and falls back to `error_log`
+     * when the container cannot provide it (e.g. validation runs before
+     * `CoreProvider::register()` binds the logger). Context-filtered
+     * providers skip this method: they are recorded in
+     * `skippedProviders()` without per-request log spam.
      *
      * @param string $key    Provider class (or label for non-class entries).
      * @param string $reason Machine-readable reason for skipping.
@@ -258,8 +316,23 @@ final class Plugin
     private function logSkipped(string $key, string $reason): void
     {
         $this->skippedProviders[ $key ] = $reason;
+        $message                         = sprintf('smooth_service_providers: skipping %s: %s', $key, $reason);
+
+        if ($this->container->has(LoggerInterface::class)) {
+            try {
+                $logger = $this->container->make(LoggerInterface::class);
+                if ($logger instanceof LoggerInterface) {
+                    $logger->warning($message);
+
+                    return;
+                }
+            } catch (\Throwable) {
+                // Fall through to the error_log fallback below.
+            }
+        }
+
 		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.ErrorLog -- intentional runtime log for invalid Pro providers.
-        error_log(sprintf('[Smooth Restaurant] smooth_service_providers: skipping %s: %s', $key, $reason));
+        error_log(sprintf('[Smooth Restaurant] %s', $message));
     }
 
     /**

@@ -53,6 +53,27 @@ abstract class ServiceProvider
     private bool $booted = false;
 
     /**
+     * Request contexts this provider participates in.
+     *
+     * `Plugin::registerProviders()` filters the final provider list by
+     * `Context::current()` before instantiation, so providers whose `boot()`
+     * would bail are never constructed. The `'all'` wildcard (the default)
+     * keeps providers like `CoreProvider` and `DatabaseProvider` on every
+     * request; Pro appends without an override inherit it. Values are one
+     * of `admin|rest|cron|frontend|cli`.
+     *
+     * MUST mirror the provider's `boot()` guard: a context listed here must
+     * reach past the early bail, and every context that reaches past the
+     * bail must be listed.
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'all' );
+    }
+
+    /**
      * Constructor.
      *
      * @param Container $container The DI container.

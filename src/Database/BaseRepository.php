@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Database;
 
+use SmoothRestaurant\Exceptions\RepositoryException;
+
 /**
  * Shared base for custom-table repositories.
  *
@@ -78,7 +80,7 @@ abstract class BaseRepository
     /**
      * Create (or update) this repository's table via dbDelta.
      *
-     * @throws \RuntimeException When the WordPress upgrade API is unavailable.
+     * @throws RepositoryException When the WordPress upgrade API is unavailable.
      */
     public function createTable(): void
     {
@@ -90,7 +92,7 @@ abstract class BaseRepository
         }
 
         if (!\function_exists('dbDelta')) {
-            throw new \RuntimeException('WordPress upgrade API (dbDelta) is not available.');
+            throw new RepositoryException('WordPress upgrade API (dbDelta) is not available.');
         }
 
         \dbDelta($this->schema());
@@ -141,18 +143,18 @@ abstract class BaseRepository
     /**
      * Prepare a query through the connection.
      *
-     * @throws \RuntimeException When the connection cannot prepare the query.
+     * @throws RepositoryException When the connection cannot prepare the query.
      */
     protected function prepare(string $query, mixed ...$args): string
     {
         $db = $this->wpdb;
         if (!\method_exists($db, 'prepare')) {
-            throw new \RuntimeException('Database connection does not support prepare().');
+            throw new RepositoryException('Database connection does not support prepare().');
         }
 
         $prepared = $db->prepare($query, ...$args);
         if (!\is_string($prepared)) {
-            throw new \RuntimeException('Database connection failed to prepare the query.');
+            throw new RepositoryException('Database connection failed to prepare the query.');
         }
 
         return $prepared;

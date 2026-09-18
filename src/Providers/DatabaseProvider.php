@@ -20,6 +20,19 @@ use SmoothRestaurant\Database\MigrationRunner;
 final class DatabaseProvider extends ServiceProvider
 {
     /**
+     * Request contexts this provider participates in.
+     *
+     * The migration binding is needed on every request, so it keeps the
+     * 'all' default explicitly (boot itself stays hook-free).
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'all' );
+    }
+
+    /**
      * Bind services with no side effects.
      *
      * @param Container $container The DI container.
