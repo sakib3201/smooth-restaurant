@@ -32,7 +32,7 @@ final class MenuRoutesTest extends TestCase
     private MenuRepository $menus;
 
     /**
-     * Payloads captured from the smooth.menu.saved event.
+     * Payloads captured from the smooth_restaurant_menu_saved event.
      *
      * @var list<array<string, mixed>>
      */
@@ -49,7 +49,7 @@ final class MenuRoutesTest extends TestCase
             new MenuItemRepository($this->db),
             new ModifierRepository($this->db)
         );
-        add_action('smooth.menu.saved', function (array $payload): void {
+        add_action('smooth_restaurant_menu_saved', function (array $payload): void {
             $this->savedEvents[] = $payload;
         });
     }
@@ -278,6 +278,6 @@ final class MenuRoutesTest extends TestCase
 
     public function test_saved_event_name_is_namespaced(): void
     {
-        $this->assertSame('smooth.menu.saved', DomainEvents::MENU_SAVED);
+        $this->assertSame('smooth_restaurant_menu_saved', DomainEvents::MENU_SAVED);
     }
 }

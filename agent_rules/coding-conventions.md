@@ -18,6 +18,9 @@
 - Provider `register()` binds ONLY: no hooks, no DB, no i18n.
   Provider `boot()` hooks ONLY, first line bails outside its context, and
   in-context boots call `markBooted()`. See `src/Providers/AGENTS.md`.
+- Hook and filter names use the `smooth_restaurant_` prefix in underscore
+  style (`smooth_restaurant_menu_saved`), never dotted names. `HOOKS.md`
+  tracks every owned hook.
 - `$wpdb` access lives exclusively in `src/Database/` (guarded by the
   no-postmeta architecture test). Domains stay pure; WP calls in new
   shared code MUST be `function_exists`-guarded for unit context.

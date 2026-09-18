@@ -110,7 +110,7 @@ final class Plugin
      * Register all service providers.
      *
      * Builds the Free provider list, passes it through the
-     * `smooth_service_providers` filter so Pro can append additive providers,
+     * `smooth_restaurant_service_providers` filter so Pro can append additive providers,
      * then validates every entry exactly once, reusing the verdict at
      * registration. Invalid entries are ignored and logged; removal or
      * reordering of Free providers via the filter is ignored and the
@@ -139,18 +139,18 @@ final class Plugin
          *
          * @example
          * add_filter(
-         *     'smooth_service_providers',
+         *     'smooth_restaurant_service_providers',
          *     static function ( array $providers ): array {
          *         $providers[] = MyProProvider::class;
          *         return $providers;
          *     }
          * );
          */
-        $filtered = apply_filters('smooth_service_providers', $free, $this->container);
+        $filtered = apply_filters('smooth_restaurant_service_providers', $free, $this->container);
 
         if (! is_array($filtered)) {
             $reason   = 'filter-must-return-array: falling back to the Free provider list.';
-            $this->logSkipped('smooth_service_providers', $reason);
+            $this->logSkipped('smooth_restaurant_service_providers', $reason);
             $filtered = $free;
         }
 
@@ -316,7 +316,11 @@ final class Plugin
     private function logSkipped(string $key, string $reason): void
     {
         $this->skippedProviders[ $key ] = $reason;
-        $message                         = sprintf('smooth_service_providers: skipping %s: %s', $key, $reason);
+        $message = sprintf(
+            'smooth_restaurant_service_providers: skipping %s: %s',
+            $key,
+            $reason
+        );
 
         if ($this->container->has(LoggerInterface::class)) {
             try {

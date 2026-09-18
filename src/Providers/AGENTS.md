@@ -14,5 +14,5 @@ One provider per M1 domain (`Menu`…`Blocks`) plus `Core`, `Database`,
   `shouldLoad()`/`manifestData()` are memoized per request.
 - `RestProvider::NAMESPACE` is `smooth/v1`; `route()` normalizes paths.
 
-Rules: `../../agent_rules/coding-conventions.md`. Hooks inventory:
-`../../HOOKS.md` (add a row per hook).
+Rules: `../../agent_rules/coding-conventions.md`. Hooks: `smooth_restaurant_`
+prefix, underscore style; inventory: `../../HOOKS.md` (add a row per hook).

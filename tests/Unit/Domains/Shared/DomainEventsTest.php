@@ -41,7 +41,7 @@ class DomainEventsTest extends TestCase
     }
 
     /**
-     * Test that event names use the smooth.* namespace.
+     * Test that event names use the smooth_restaurant_ prefix.
      *
      * @return void
      */
@@ -56,7 +56,7 @@ class DomainEventsTest extends TestCase
             DomainEvents::CART_UPDATED,
             ) as $event
         ) {
-            $this->assertStringStartsWith('smooth.', $event);
+            $this->assertStringStartsWith('smooth_restaurant_', $event);
         }
     }
 

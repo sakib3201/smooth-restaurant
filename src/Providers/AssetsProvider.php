@@ -149,7 +149,7 @@ namespace SmoothRestaurant\Providers {
          * Whether Smooth assets should load on the current request.
          *
          * Memoized per request: block/shortcode scans run once, and the
-         * smooth_should_load filter fires once.
+         * `smooth_restaurant_should_load` filter fires once.
          */
         public function shouldLoad(): bool
         {
@@ -202,7 +202,7 @@ namespace SmoothRestaurant\Providers {
          * @param bool $load Whether Smooth assets should load on this request.
          * @return bool
          *
-         * @example add_filter( 'smooth_should_load', '__return_true' );
+         * @example add_filter( 'smooth_restaurant_should_load', '__return_true' );
          */
         protected function filterLoad(bool $load): bool
         {
@@ -210,7 +210,7 @@ namespace SmoothRestaurant\Providers {
                 return $load;
             }
 
-            return (bool) \apply_filters('smooth_should_load', $load);
+            return (bool) \apply_filters('smooth_restaurant_should_load', $load);
         }
 
         /**
@@ -424,7 +424,7 @@ namespace {
          *
          * Owned by the Assets provider: true on Smooth admin screens and on
          * frontend requests carrying Smooth blocks or shortcodes, false
-         * everywhere else. Overridable via the smooth_should_load filter.
+         * everywhere else. Overridable via the `smooth_restaurant_should_load` filter.
          *
          * @since 0.1.0
          *

@@ -18,7 +18,7 @@ use SmoothRestaurant\Domains\Shared\Money;
  *
  * Covers default step ordering (line, discount, tax, fee), the
  * coupon-exceeds-subtotal floor at zero, and the
- * smooth_checkout_total_steps filter seam.
+ * smooth_restaurant_checkout_total_steps filter seam.
  */
 final class TotalsCalculatorTest extends TestCase
 {
@@ -30,7 +30,7 @@ final class TotalsCalculatorTest extends TestCase
 
     protected function tearDown(): void
     {
-        remove_filter('smooth_checkout_total_steps');
+        remove_filter('smooth_restaurant_checkout_total_steps');
         sr_test_reset_stubs();
         parent::tearDown();
     }
@@ -126,7 +126,7 @@ final class TotalsCalculatorTest extends TestCase
     public function test_steps_are_filterable(): void
     {
         add_filter(
-            'smooth_checkout_total_steps',
+            'smooth_restaurant_checkout_total_steps',
             static fn (array $steps): array => [new FeeStep()]
         );
         $calculator = new TotalsCalculator();
@@ -143,7 +143,7 @@ final class TotalsCalculatorTest extends TestCase
     public function test_filter_ignores_non_step_entries(): void
     {
         add_filter(
-            'smooth_checkout_total_steps',
+            'smooth_restaurant_checkout_total_steps',
             static fn (array $steps): array => ['not-a-step', new FeeStep()]
         );
         $calculator = new TotalsCalculator();

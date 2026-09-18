@@ -51,7 +51,7 @@ class ContextFilterTest extends TestCase
      */
     protected function tearDown(): void
     {
-        remove_filter('smooth_service_providers');
+        remove_filter('smooth_restaurant_service_providers');
         sr_test_reset_stubs();
         Context::reset();
         Plugin::reset();
@@ -161,7 +161,7 @@ class ContextFilterTest extends TestCase
     public function test_context_filtering_applies_to_pro_appends(): void
     {
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_merge($list, array( ContextAdminProProvider::class ))
         );
 
@@ -181,7 +181,7 @@ class ContextFilterTest extends TestCase
     public function test_filtered_pro_provider_registers_in_its_context(): void
     {
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_merge($list, array( ContextAdminProProvider::class ))
         );
         sr_test_set_flag('is_admin', true);

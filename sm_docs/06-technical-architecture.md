@@ -27,7 +27,7 @@ graph TD
         F4["Conditional assets only"]
     end
     subgraph PRO["smooth-restaurant-pro (add-on)"]
-        P1["Extends via filter<br/>smooth_service_providers"]
+        P1["Extends via filter<br/>smooth_restaurant_service_providers"]
         P2["QR tableside · reminders"]
         P3["Coupons · delivery zones"]
         P4["KDS-lite · multi-branch"]

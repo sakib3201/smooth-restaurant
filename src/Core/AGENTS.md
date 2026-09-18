@@ -3,7 +3,7 @@
 Plugin bootstrap and cross-cutting services. No domain logic here.
 
 - `Plugin` — singleton; `registerProviders()` builds the Free list,
-  applies the additive-only `smooth_service_providers` filter, validates
+  applies the additive-only `smooth_restaurant_service_providers` filter, validates
   (class/interface/version floor), restores removals. Invalid entries are
   logged, never fatal.
 - `Container` — split `$instances` vs `$providers`; `bind`/`singleton`/

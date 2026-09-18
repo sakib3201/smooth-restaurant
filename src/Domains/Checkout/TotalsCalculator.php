@@ -14,7 +14,7 @@ use SmoothRestaurant\Domains\Shared\Money;
  * applies to the discounted subtotal and fees stay outside the tax base.
  * Custom pipelines pass their own ordered steps to the constructor; the
  * active step list is filterable at calculation time via the
- * `smooth_checkout_total_steps` filter (entries that do not implement
+ * `smooth_restaurant_checkout_total_steps` filter (entries that do not implement
  * TotalStep are ignored).
  */
 final class TotalsCalculator
@@ -56,7 +56,7 @@ final class TotalsCalculator
     }
 
     /**
-     * Configured steps, before the `smooth_checkout_total_steps` filter.
+     * Configured steps, before the `smooth_restaurant_checkout_total_steps` filter.
      *
      * @return list<TotalStep>
      */
@@ -80,7 +80,7 @@ final class TotalsCalculator
              * @param list<TotalStep>      $steps   Ordered steps to run.
              * @param array<string, mixed> $context Calculation inputs.
              */
-            $filtered = \apply_filters('smooth_checkout_total_steps', $steps, $context);
+            $filtered = \apply_filters('smooth_restaurant_checkout_total_steps', $steps, $context);
             $steps = [];
             if (\is_array($filtered)) {
                 foreach ($filtered as $candidate) {

@@ -20,7 +20,7 @@ aliases:
 | # | Decision | Pick (locked) | Rationale |
 |---|----------|---------------|-----------|
 | D1 | WooCommerce? | **native-standalone — LOCKED 2026-09-05** | Removes #1 complaint surface (Woo-update breakage + block-checkout fights); buys perf story. No Woo-bridge before V3. |
-| D2 | Free/Pro split | shared-layer (additive, no fork) | Avoids duplication tax; Pro extends via `smooth_service_providers` filter. |
+| D2 | Free/Pro split | shared-layer (additive, no fork) | Avoids duplication tax; Pro extends via `smooth_restaurant_service_providers` filter. |
 | D3 | Builders | **Gutenberg-first, no Elementor dep** | Block-native checkout + menu; thin compat layer only. Elementor/Bricks support deferred. |
 | D4 | Storage | **custom tables for all transactional entities** | Postmeta N+1 + unindexed range scans failed at prior-work scale (BE5/BE11). Ledger needs UNIQUE + indexed sums. |
 | D5 | Payments | **direct Stripe (PaymentIntents + Element) + PayPal Orders API + COD, SAQ-A, idempotent webhooks** | Own checkout UX; test/live split + reconciliation day 1. Vendor-of-record for plugin sales: **EDD + Stripe (locked 2026-09-06)**. |
@@ -39,7 +39,7 @@ graph TD
         F4["Conditional assets only"]
     end
     subgraph PRO["smooth-restaurant-pro (add-on)"]
-        P1["Extends via filter<br/>smooth_service_providers"]
+        P1["Extends via filter<br/>smooth_restaurant_service_providers"]
         P2["QR tableside · reminders"]
         P3["Coupons · delivery zones"]
         P4["KDS-lite · multi-branch"]
@@ -139,7 +139,7 @@ Webhook hard gates:
 |---|-----------|--------------|----------------|
 | C1 | Cart + sessions | Server-validated draft order, guest+login, QR attach, 2h abandon TTL, per-request memoize | No PHP sessions |
 | C2 | Checkout + totals | Pickup/delivery/dine-in, slots + lead + holidays, zones, tips/fees/coupons/tax; single pure `Totals::calculate()` | Golden-file fixtures 100+ cases |
-| C3 | Tax / fee engine | One rate/location + one fee stack V1; `smooth_totals_adjustments` filter | Document rounding (line vs total) |
+| C3 | Tax / fee engine | One rate/location + one fee stack V1; `smooth_restaurant_totals_adjustments` filter | Document rounding (line vs total) |
 | C4 | Gateways | §5 | §5 |
 | C5 | Order storage | §4 | §4 |
 | C6 | Scheduled-order engine | ASAP vs scheduled, lead-time, preorder cap, holiday blackout, per-slot cap, pause/resume | Atomic `UPDATE … WHERE remaining > 0`, never read-then-write |
@@ -220,7 +220,7 @@ Append-only ledger; nightly reconcile report (CSV + mismatch notice); every mone
 ### 13.1 Coding standards (locked 2026-09-06)
 
 - PHP: **PSR-12 base + strict types** (`declare(strict_types=1)`), strongly typed signatures everywhere for maintainability + modern PHP perf. WP Plugin Check must pass on every build.
-- WordPress rules only where WP owns the API: **hook/filter naming** (`smooth_*`), capabilities, nonces, i18n functions, options/transient conventions.
+- WordPress rules only where WP owns the API: **hook/filter naming** (`smooth_restaurant_*`, underscore style), capabilities, nonces, i18n functions, options/transient conventions.
 - Balance rule: Laravel-like modernity inside, WP-idiomatic at the seams (hooks, blocks, REST). No PSR vs WP holy wars — pure domain code PSR, integration code WP.
 - JS/CSS: ESLint (wp config) + Prettier; TS where stateful (checkout, queue, KDS); CSS vars `--smooth-*`, no jQuery in public flows.
 - Enforcement: PHPCS (PSR-12 + WP hooks/naming sniff + Plugin Check) in CI; PR fails on violation.
@@ -254,7 +254,7 @@ Append-only ledger; nightly reconcile report (CSV + mismatch notice); every mone
 ### 13.6 Documentation tools & standards (locked 2026-09-06; publishing pipeline 2026-09-06)
 
 - wp.org **readme.txt standard** (contributors, tags, requires WP/PHP, screenshots, changelog discipline) — end-user surface only.
-- Single source of truth = **code**: PHPDoc blocks (`@since`, `@param`, `@return`, `@example`) on every `smooth_*` hook/filter; route `schema` on every `/smooth/v1/*` endpoint. Per-feature SRS adds journey + problem + diagram ([[11-srs-process]]).
+- Single source of truth = **code**: PHPDoc blocks (`@since`, `@param`, `@return`, `@example`) on every `smooth_restaurant_*` hook/filter; route `schema` on every `/smooth/v1/*` endpoint. Per-feature SRS adds journey + problem + diagram ([[11-srs-process]]).
 - CI generation (every tag): DocBlocks → **hooks reference** (`hooks.json` + markdown pages, wp-parser/phpDocumentor) · REST schemas → **`openapi.json`** + webhook event catalog · changelog check (Keep-a-Changelog, upgrade notes required).
 - Publish surfaces (where outside devs find it):
   1. **`smoothplugins.com/docs`** (versioned, SEO-indexed): Guides + auto-generated Hooks/Filters reference + REST/API reference + starters. Canonical answer to "where are the hooks?".

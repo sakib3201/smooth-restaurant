@@ -4,7 +4,7 @@
  * Unit tests for the provider lifecycle.
  *
  * Covers: register() adds no hooks, boot() bails outside its context, and
- * invalid Pro entries via the `smooth_service_providers` filter are skipped
+ * invalid Pro entries via the `smooth_restaurant_service_providers` filter are skipped
  * and logged while boot continues.
  *
  * @package SmoothRestaurant
@@ -48,7 +48,7 @@ class ProviderLifecycleTest extends TestCase
      */
     protected function tearDown(): void
     {
-        remove_filter('smooth_service_providers');
+        remove_filter('smooth_restaurant_service_providers');
         sr_test_reset_stubs();
         Plugin::reset();
         parent::tearDown();
@@ -132,7 +132,7 @@ class ProviderLifecycleTest extends TestCase
     public function test_invalid_pro_entries_skipped_and_logged(): void
     {
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_merge(
                 $list,
                 array(
@@ -165,7 +165,7 @@ class ProviderLifecycleTest extends TestCase
     public function test_valid_pro_provider_registers_and_boots(): void
     {
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_merge($list, array( LifecycleProProvider::class ))
         );
 
@@ -188,7 +188,7 @@ class ProviderLifecycleTest extends TestCase
     public function test_free_provider_removal_is_ignored(): void
     {
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_values(
                 array_filter($list, static fn (string $class): bool => $class !== MenuProvider::class)
             )

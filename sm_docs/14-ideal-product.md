@@ -169,7 +169,7 @@ Empty / edge states (diner):
 - **Block-editor-native menu builder:** `menu-grid`, `menu-item`, `reservation-form`, `order-status` blocks with `theme.json` tokens; works in any FSE theme; **no Elementor dependency** (optional thin compat layer only, never required). Server-rendered HTML, hydrated islands — no SPA shell.
 - **Tokens:** `--smooth-*` CSS vars (full table in [[17-ui-ux-design#2. Color + tokens]]); diner flows inherit theme fonts, admin/queue/KDS use the OS system stack — **zero webfonts shipped**; dark KDS theme + light FOH theme; print stylesheet for receipts/QR cards.
 - **Patterns:** bottom-sheet (diner), queue cards (staff), agenda (reservations), insight callouts (owner). One SVG icon set, one empty-state illustration style, one toast system.
-- **Agency kit:** Storybook-style pattern previews, `smooth_*` hooks documented per screen in SRS, REST `/smooth/v1/*` + webhooks, headless menu JSON + Next.js starter (see [[06-technical-architecture#Agency / developer bar]]). Docs Free / API extras Pro.
+- **Agency kit:** Storybook-style pattern previews, `smooth_restaurant_*` hooks documented per screen in SRS, REST `/smooth/v1/*` + webhooks, headless menu JSON + Next.js starter (see [[06-technical-architecture#Agency / developer bar]]). Docs Free / API extras Pro.
 - **No nagware:** Pro upsells appear contextually once (e.g., floor plan empty state) with dismiss-forever; never banner-inject in Free flows (anti-Five-Star pain).
 
 ## 5. Performance budgets per screen

@@ -33,7 +33,7 @@ The container SHALL separate singleton instances from provider objects, SHALL ex
 
 ### Requirement: Free/Pro provider seam
 
-`Plugin::registerProviders()` SHALL build the Free provider list, pass it through the `smooth_service_providers` filter with the container, validate each entry (class exists, extends `ServiceProvider`, meets version floor), register valid entries, and ignore + log invalid ones. Removal or replacement of Free providers via the filter SHALL be ignored. Pro providers SHALL be additive only.
+`Plugin::registerProviders()` SHALL build the Free provider list, pass it through the `smooth_restaurant_service_providers` filter with the container, validate each entry (class exists, extends `ServiceProvider`, meets version floor), register valid entries, and ignore + log invalid ones. Removal or replacement of Free providers via the filter SHALL be ignored. Pro providers SHALL be additive only.
 
 #### Scenario: Pro adds a provider
 

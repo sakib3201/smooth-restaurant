@@ -23,32 +23,32 @@ final class DomainEvents
     /**
      * Fired after an order row is persisted.
      */
-    public const ORDER_CREATED = 'smooth.order.created';
+    public const ORDER_CREATED = 'smooth_restaurant_order_created';
 
     /**
      * Fired after a payment capture is recorded in the ledger.
      */
-    public const PAYMENT_CAPTURED = 'smooth.payment.captured';
+    public const PAYMENT_CAPTURED = 'smooth_restaurant_payment_captured';
 
     /**
      * Fired after a refund row is appended to the ledger.
      */
-    public const PAYMENT_REFUNDED = 'smooth.payment.refunded';
+    public const PAYMENT_REFUNDED = 'smooth_restaurant_payment_refunded';
 
     /**
      * Fired after a reservation is confirmed.
      */
-    public const RESERVATION_CONFIRMED = 'smooth.reservation.confirmed';
+    public const RESERVATION_CONFIRMED = 'smooth_restaurant_reservation_confirmed';
 
     /**
      * Fired after a cart draft row is created or updated.
      */
-    public const CART_UPDATED = 'smooth.cart.updated';
+    public const CART_UPDATED = 'smooth_restaurant_cart_updated';
 
     /**
      * Fired after a menu row is created or updated.
      */
-    public const MENU_SAVED = 'smooth.menu.saved';
+    public const MENU_SAVED = 'smooth_restaurant_menu_saved';
 
     /**
      * Dispatch a domain event.
@@ -65,7 +65,7 @@ final class DomainEvents
             return;
         }
 
-        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- event names are the smooth.* class constants above.
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- event names are the smooth_restaurant_* class constants above.
         do_action($event, $payload);
     }
 }

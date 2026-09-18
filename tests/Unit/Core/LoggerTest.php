@@ -116,7 +116,7 @@ class LoggerTest extends TestCase
      */
     protected function tearDown(): void
     {
-        remove_filter('smooth_service_providers');
+        remove_filter('smooth_restaurant_service_providers');
         if (is_string($this->previousErrorLog)) {
             ini_set('error_log', $this->previousErrorLog);
         }
@@ -150,7 +150,7 @@ class LoggerTest extends TestCase
         $double = new TestLogger();
         Plugin::instance()->container()->instance(LoggerInterface::class, $double);
         add_filter(
-            'smooth_service_providers',
+            'smooth_restaurant_service_providers',
             static fn (array $list): array => array_merge(
                 $list,
                 array( 'SmoothRestaurant\\DoesNotExist\\MissingProProvider' )

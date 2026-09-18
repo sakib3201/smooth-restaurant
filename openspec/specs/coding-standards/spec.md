@@ -14,11 +14,11 @@ All PHP under `src/` SHALL follow PSR-12 with `declare(strict_types=1)` and stro
 
 ### Requirement: WordPress-idiomatic seams
 
-Hook and filter names SHALL use the `smooth_*` prefix with documented PHPDoc (`@since`, `@param`, `@return`, `@example`); capability checks, nonces, and i18n functions SHALL follow WordPress conventions at every integration seam.
+Hook and filter names SHALL use the `smooth_restaurant_*` prefix in underscore style (never dotted) with documented PHPDoc (`@since`, `@param`, `@return`, `@example`); capability checks, nonces, and i18n functions SHALL follow WordPress conventions at every integration seam.
 
 #### Scenario: Undocumented hook rejected
 
-- **WHEN** a PR adds `apply_filters('smooth_*')` without a DocBlock example
+- **WHEN** a PR adds `apply_filters('smooth_restaurant_*')` without a DocBlock example
 - **THEN** review/CI flags the missing documentation
 
 ### Requirement: Single lint contract in CI
