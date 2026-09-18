@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cart domain service shell.
  *
@@ -16,5 +17,6 @@ namespace SmoothRestaurant\Domains\Cart;
  * Stays dependency-free so providers can bind it in register() with
  * no I/O, hooks, or translation calls.
  */
-final class CartService {
+final class CartService
+{
 }

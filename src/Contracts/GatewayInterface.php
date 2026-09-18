@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Payment gateway contract.
  *
@@ -16,28 +17,28 @@ namespace SmoothRestaurant\Contracts;
  * (e.g. Stripe). Payloads are plain arrays so implementations stay
  * testable without WordPress loaded.
  */
-interface GatewayInterface {
+interface GatewayInterface
+{
+    /**
+     * Gateway identifier (e.g. 'cod', 'stripe').
+     *
+     * @return string
+     */
+    public function id(): string;
 
-	/**
-	 * Gateway identifier (e.g. 'cod', 'stripe').
-	 *
-	 * @return string
-	 */
-	public function id(): string;
+    /**
+     * Charge a payment.
+     *
+     * @param array<string, mixed> $payload Charge payload.
+     * @return array<string, mixed> Result payload.
+     */
+    public function charge(array $payload): array;
 
-	/**
-	 * Charge a payment.
-	 *
-	 * @param array<string, mixed> $payload Charge payload.
-	 * @return array<string, mixed> Result payload.
-	 */
-	public function charge( array $payload ): array;
-
-	/**
-	 * Refund a payment.
-	 *
-	 * @param array<string, mixed> $payload Refund payload.
-	 * @return array<string, mixed> Result payload.
-	 */
-	public function refund( array $payload ): array;
+    /**
+     * Refund a payment.
+     *
+     * @param array<string, mixed> $payload Refund payload.
+     * @return array<string, mixed> Result payload.
+     */
+    public function refund(array $payload): array;
 }

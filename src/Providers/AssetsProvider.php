@@ -161,7 +161,7 @@ namespace SmoothRestaurant\Providers {
                 return false;
             }
 
-            return (bool) \is_admin();
+            return \is_admin();
         }
 
         /**
@@ -230,7 +230,7 @@ namespace SmoothRestaurant\Providers {
                 return false;
             }
 
-            return (bool) \wp_doing_cron();
+            return \wp_doing_cron();
         }
 
         /**

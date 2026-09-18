@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Payments domain service shell.
  *
@@ -17,5 +18,6 @@ namespace SmoothRestaurant\Domains\Payments;
  * Stays dependency-free so providers can bind it in register() with
  * no I/O, hooks, or translation calls.
  */
-final class PaymentService {
+final class PaymentService
+{
 }

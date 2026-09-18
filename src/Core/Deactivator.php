@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin deactivation handler.
  *
@@ -14,14 +15,15 @@ namespace SmoothRestaurant\Core;
  *
  * Handles plugin deactivation tasks. Preserves all data.
  */
-class Deactivator {
-
-	/**
-	 * Deactivate the plugin.
-	 *
-	 * @return void
-	 */
-	public static function deactivate(): void {
-		flush_rewrite_rules();
-	}
+class Deactivator
+{
+    /**
+     * Deactivate the plugin.
+     *
+     * @return void
+     */
+    public static function deactivate(): void
+    {
+        flush_rewrite_rules();
+    }
 }

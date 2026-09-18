@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Menu domain service shell.
  *
@@ -16,5 +17,6 @@ namespace SmoothRestaurant\Domains\Menu;
  * Stays dependency-free so providers can bind it in register() with
  * no I/O, hooks, or translation calls.
  */
-final class MenuService {
+final class MenuService
+{
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Integration test suite bootstrap.
  *

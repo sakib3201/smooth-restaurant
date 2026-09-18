@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Notifications domain service shell.
  *
@@ -17,5 +18,6 @@ namespace SmoothRestaurant\Domains\Notifications;
  * Stays dependency-free so providers can bind it in register() with
  * no I/O, hooks, or translation calls.
  */
-final class NotificationService {
+final class NotificationService
+{
 }

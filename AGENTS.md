@@ -1,15 +1,17 @@
 # Agent Notes — Smooth Restaurant
 
-> WordPress plugin (restaurant management). PHP 8.1+, WP 6.4+, Node 20+, npm 10+.
+> WordPress plugin (restaurant management). PHP 8.2+, WP 6.8+, Node 20+, npm 10+.
 >
 > **Rebuild status (2026-09-14):** this branch was reset to a clean harness — skills, tooling, test scaffolding and docs only. All implementation is being rebuilt ground-up, driven by the Linear project (see below).
+>
+> **Core architecture (2026-09-18, `core-provider-architecture`):** modular monolith, one provider per M1 domain under `src/Providers/` wired in `Plugin::registerProviders()` behind the additive-only `smooth_service_providers` filter; pure domain cores in `src/Domains/`, contracts in `src/Contracts/`, `$wpdb` access confined to `src/Database/` via `BaseRepository`; migrations version-guarded + idempotent (`smooth_db_version`); lint is PSR-12 base + targeted WP sniffs.
 
 ## Architecture
 
 - **Entrypoint**: `smooth-restaurant.php` — defines `SR_VERSION`, `SR_PLUGIN_DIR`, `SR_PLUGIN_URL`, `SR_PLUGIN_BASENAME`, registers activation/deactivation hooks, and boots `SmoothRestaurant\Core\Plugin::instance()->boot()` on `plugins_loaded`.
 - **DI container**: `src/Core/Container.php` — lightweight auto-wiring container. Service providers extend `ServiceProvider` and are registered in `Plugin::registerProviders()`.
 - **Namespace**: `SmoothRestaurant\` under `src/` (PSR-4 autoloaded via Composer and a custom `spl_autoload_register` fallback in the main file).
-- **Current providers**: none wired yet. Rebuild issues add providers under `src/Providers/` and register them in `Plugin::registerProviders()`.
+- **Current providers**: one per M1 domain (`Menu`, `Cart`, `Checkout`, `Orders`, `Payments`, `Slots`, `Reservations`, `Tables`, `Notifications`, `Admin`, `Rest`, `Blocks`) plus `Core`, `Database`, `Assets`. `register()` binds only (no hooks/DB/i18n); `boot()` hooks with context-gated early bail. Pro extends additively via `smooth_service_providers`.
 
 ## Build & Dev
 
@@ -51,7 +53,7 @@
 
 ## Environment
 
-- `.wp-env.json` — PHP 8.1, WP 7.0, plugin mounted at `.`, theme `twentytwentyfour`, ports `8888` / `8889`.
+- `.wp-env.json` — PHP 8.2, WP 6.8, plugin mounted at `.`, theme `twentytwentyfour`, ports `8888` / `8889`.
 - `npm run env:start` / `env:stop` / `env:clean` — `@wordpress/env` wrappers.
 
 ## Release Packaging

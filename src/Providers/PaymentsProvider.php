@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Payments service provider.
  *
@@ -20,42 +21,45 @@ use SmoothRestaurant\Domains\Payments\PaymentService;
  * registration in boot() on diner frontend requests only. Gateways
  * satisfy Contracts\GatewayInterface.
  */
-final class PaymentsProvider extends ServiceProvider {
+final class PaymentsProvider extends ServiceProvider
+{
+    /**
+     * Register services with the container.
+     *
+     * Bind-only: no hooks, no database access, no translation calls.
+     *
+     * @param Container $container The DI container.
+     * @return void
+     */
+    public function register(Container $container): void
+    {
+        $container->singleton(PaymentService::class);
+    }
 
-	/**
-	 * Register services with the container.
-	 *
-	 * Bind-only: no hooks, no database access, no translation calls.
-	 *
-	 * @param Container $container The DI container.
-	 * @return void
-	 */
-	public function register( Container $container ): void {
-		$container->singleton( PaymentService::class );
-	}
+    /**
+     * Boot the provider after all providers are registered.
+     *
+     * @param Container $container The DI container.
+     * @return void
+     */
+    public function boot(Container $container): void
+    {
+        if ($this->isBackendRequest()) {
+            return;
+        }
 
-	/**
-	 * Boot the provider after all providers are registered.
-	 *
-	 * @param Container $container The DI container.
-	 * @return void
-	 */
-	public function boot( Container $container ): void {
-		if ( $this->isBackendRequest() ) {
-			return;
-		}
+        add_action('init', array( $this, 'registerGateways' ));
+        $this->markBooted();
+    }
 
-		add_action( 'init', array( $this, 'registerGateways' ) );
-		$this->markBooted();
-	}
-
-	/**
-	 * Register payment gateways.
-	 *
-	 * Shell: real gateway wiring lands with the payments domain issue.
-	 *
-	 * @return void
-	 */
-	public function registerGateways(): void {
-	}
+    /**
+     * Register payment gateways.
+     *
+     * Shell: real gateway wiring lands with the payments domain issue.
+     *
+     * @return void
+     */
+    public function registerGateways(): void
+    {
+    }
 }

@@ -19,11 +19,7 @@ parameters:
     treatPhpDocTypesAsCertain: false
 
     ignoreErrors:
-        # ReflectionClass accepts string at runtime; class-string is ideal but not enforced here.
-        - message: '#Parameter \#1 \$objectOrClass of class ReflectionClass constructor expects class-string#'
-          path: src/Core/Container.php
-        # PHPUnit static assertions called dynamically are valid in test context.
+        # PHPUnit static assertions called dynamically are valid in test context
+        # (house style uses $this->assert*() throughout the suites).
         - message: '#Dynamic call to static method PHPUnit\\Framework\\Assert::#'
-          paths:
-              - tests/Unit/Core/PluginTest.php
-              - tests/Integration/Core/ContainerTest.php
+          path: tests/*

@@ -228,7 +228,7 @@ Append-only ledger; nightly reconcile report (CSV + mismatch notice); every mone
 ### 13.2 Tooling: local env, build, test (locked 2026-09-06)
 
 - Local: **wp-env (Docker)** — one command up; WP 6.8 + PHP 8.2 matrix + multisite flavor.
-- Build: **Vite** (islands per surface: menu, checkout, queue, KDS, dashboard); hashed assets; `smooth_should_load()` manifest gate.
+- Build: **@wordpress/scripts (webpack)** — entries per surface (menu, checkout, queue, KDS, dashboard) across admin / frontend / blocks bundles; dependency-extraction for `@wordpress/*` externals (`.asset.php`); hashed production assets; `smooth_should_load()` conditional-enqueue gate. **Revised 2026-09-18: Vite rejected — wp-scripts is less pain overall** (official block.json + i18n + editor HMR support, no custom manifest/PHP loader to own, fits solo 10–15 h/wk budget). Revisit `@wordpress/build` when stable; do not re-litigate Vite without new evidence.
 - Tests: **PHPUnit** (unit: `Totals::calculate()` golden fixtures 100+, ledger/state-machine, slot atomicity, webhook replay/double-click) + **Playwright** E2E (QR order, COD + Stripe test payment, booking, offline-retry). Money paths require both.
 - Seed/demo: one-command demo content (café/pizza/takeaway) + QR print fixtures.
 - **AI dev loop (locked 2026-09-06): CLI coding agents (Claude Code / Codex CLI)** run milestone-sized tasks against the repo; founder reviews at PR level. See §13.8.
@@ -264,7 +264,7 @@ Append-only ledger; nightly reconcile report (CSV + mismatch notice); every mone
 - Discovery: Google → docs site; admin contextual links; starter READMEs link back to versioned docs. Docs PR required with every hook/endpoint PR (CI fails if new `apply_filters`/`register_rest_route` lacks DocBlock + example).
 - Internal API workflow: team documents endpoints in **Bruno** (`/api-docs/*.bru` committed in repo); CI validates collections and cross-checks against generated `openapi.json` (route schemas stay authoritative for public output).
 - [x] Site generator shortlist — MIT-licensed only, licenses verified 2026-09-06 (VitePress: vuejs/vitepress MIT · Starlight: withastro/starlight MIT · Scalar: scalar/scalar MIT):
-  - **A. VitePress + Scalar** — guides + hooks reference in VitePress (same Vite toolchain as app build, lightest to run); interactive REST reference via Scalar rendering `openapi.json`.
+  - **A. VitePress + Scalar** — guides + hooks reference in VitePress (lightest to run); interactive REST reference via Scalar rendering `openapi.json`.
   - **B. Astro Starlight + Scalar** — richer docs UX (built-in search, versioned collections, i18n routing matching i18n-day-1 ethos); second toolchain (Astro) to maintain.
   - AI-maintenance (both): file-based markdown in repo — agents add/edit `.md` + DocBlocks + `.bru` files, CI regenerates reference pages + `llms.txt`. No DB-backed docs.
 - [x] Site generator — **LOCKED 2026-09-06: Astro Starlight + Scalar** (both MIT, verified). Guides + hooks reference in Starlight (search, versioned collections, i18n routing); interactive REST reference via Scalar on `openapi.json`. Internal: Bruno collections in repo.

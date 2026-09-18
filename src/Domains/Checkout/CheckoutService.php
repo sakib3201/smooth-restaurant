@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Checkout domain service shell.
  *
@@ -16,5 +17,6 @@ namespace SmoothRestaurant\Domains\Checkout;
  * follow-up issue. Stays dependency-free so providers can bind it in
  * register() with no I/O, hooks, or translation calls.
  */
-final class CheckoutService {
+final class CheckoutService
+{
 }

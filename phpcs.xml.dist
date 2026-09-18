@@ -37,9 +37,26 @@
          cannot carry the plugin prefix; scope the exclusion to that file. -->
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound">
         <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <!-- RestBootTest defines the WP-core REST_REQUEST constant. -->
+        <exclude-pattern>tests/Unit/Providers/RestBootTest.php</exclude-pattern>
     </rule>
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
         <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <!-- BootMatrixTest resets the stub-harness $GLOBALS keys. -->
+        <exclude-pattern>tests/Unit/Providers/BootMatrixTest.php</exclude-pattern>
+    </rule>
+
+    <!-- tests/Support/WpStubs.php redeclares WP-core API names (add_action,
+         apply_filters, is_admin, ...) as lightweight stubs plus the
+         $GLOBALS-based stub harness. Prefixing them would defeat the stub. -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <exclude-pattern>tests/Support/WpStubs.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>tests/Support/WpStubs.php</exclude-pattern>
+        <!-- PHPUnit bootstraps execute by design (autoloader + stubs). -->
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <exclude-pattern>tests/*/bootstrap.php</exclude-pattern>
     </rule>
 
     <!-- Tests follow WordPress PHPUnit idiom: snake_case test_* methods and

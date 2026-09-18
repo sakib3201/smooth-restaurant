@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Testable service for container resolution tests.
  *
@@ -14,30 +15,32 @@ namespace SmoothRestaurant\Core;
  *
  * A simple class with no dependencies that can be resolved by the container.
  */
-class TestableService {
+class TestableService
+{
+    /**
+     * A simple value for testing.
+     *
+     * @var string
+     */
+    private string $value;
 
-	/**
-	 * A simple value for testing.
-	 *
-	 * @var string
-	 */
-	private string $value;
+    /**
+     * Constructor.
+     *
+     * @param string $value A value to store.
+     */
+    public function __construct(string $value = 'default')
+    {
+        $this->value = $value;
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param string $value A value to store.
-	 */
-	public function __construct( string $value = 'default' ) {
-		$this->value = $value;
-	}
-
-	/**
-	 * Get the stored value.
-	 *
-	 * @return string
-	 */
-	public function getValue(): string {
-		return $this->value;
-	}
+    /**
+     * Get the stored value.
+     *
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 }
