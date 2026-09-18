@@ -46,6 +46,11 @@ final class DomainEvents
     public const CART_UPDATED = 'smooth.cart.updated';
 
     /**
+     * Fired after a menu row is created or updated.
+     */
+    public const MENU_SAVED = 'smooth.menu.saved';
+
+    /**
      * Dispatch a domain event.
      *
      * No-op when WordPress is not loaded (unit-test context).

@@ -68,6 +68,21 @@ class MenuRepository extends BaseRepository implements MenuRepositoryInterface
     }
 
     /**
+     * @return array<string, mixed>|null
+     */
+    public function findBySlug(string $slug): ?array
+    {
+        $row = $this->fetchRow(
+            $this->prepare('SELECT * FROM ' . $this->getTable() . ' WHERE slug = %s', $slug)
+        );
+        if (null === $row) {
+            return null;
+        }
+
+        return $this->mapRows([$row])[0];
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     public function paginate(int $page, int $perPage, string $search = '', string $status = 'publish'): array

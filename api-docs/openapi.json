@@ -1,0 +1,271 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Smooth Restaurant API",
+    "version": "0.2.0",
+    "description": "Menu endpoints (smooth/v1). Revision caveat: menu data lives in custom tables, not post content — restoring a post revision does not roll back menu rows. See docs/menu-binding-contract.md."
+  },
+  "servers": [
+    {
+      "url": "{baseUrl}/wp-json/smooth/v1",
+      "variables": {
+        "baseUrl": {
+          "default": "http://localhost:8889"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/menus": {
+      "get": {
+        "summary": "List published menus",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 100, "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Substring matched against name and description."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated menu collection with Cache-Control: public, max-age=60.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MenuCollection" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a menu (requires smooth_manage_menus)",
+        "responses": {
+          "201": {
+            "description": "Created menu row.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Menu" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" }
+        }
+      }
+    },
+    "/menus/{id}": {
+      "get": {
+        "summary": "Get one published menu as a tree",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Menu tree (menu + items + modifiers).",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MenuTree" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "summary": "Update a menu (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated menu row.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Menu" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a menu with its items and modifiers (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletion receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": { "type": "boolean" },
+                        "id": { "type": "integer" }
+                      },
+                      "required": ["deleted", "id"]
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Menu": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string", "enum": ["publish", "draft"] },
+          "sort_order": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "name", "slug", "status"]
+      },
+      "MenuCollection": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Menu" }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "page": { "type": "integer" },
+              "per_page": { "type": "integer" }
+            },
+            "required": ["page", "per_page"]
+          }
+        },
+        "required": ["data", "meta"]
+      },
+      "MenuTree": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "menu": { "$ref": "#/components/schemas/Menu" },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "item": { "type": "object" },
+                    "modifiers": { "type": "array", "items": { "type": "object" } }
+                  },
+                  "required": ["item", "modifiers"]
+                }
+              }
+            },
+            "required": ["menu", "items"]
+          }
+        },
+        "required": ["data"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "integer" }
+            }
+          }
+        },
+        "required": ["code", "message"]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Validation failure (smooth_menu_missing_name).",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Missing or invalid credentials.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Authenticated but lacking smooth_manage_menus.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Unknown id, or not published (smooth_menu_not_found).",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    }
+  }
+}

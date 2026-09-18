@@ -12,12 +12,13 @@ namespace SmoothRestaurant\Providers;
 
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Domains\Menu\MenuRoutes;
 
 /**
  * Class RestProvider
  *
  * Hooks REST route registration in boot() on REST requests only.
- * Shell: route wiring lands with the REST follow-up issue.
+ * Delegates to the domain route controllers (MenuRoutes, …).
  */
 final class RestProvider extends ServiceProvider
 {
@@ -124,11 +125,15 @@ final class RestProvider extends ServiceProvider
     /**
      * Register REST routes.
      *
-     * Shell: real route wiring lands with the REST follow-up issue.
+     * Delegates to the domain route controllers; this provider stays thin.
      *
      * @return void
      */
     public function registerRoutes(): void
     {
+        $routes = $this->container->make(MenuRoutes::class);
+        if ($routes instanceof MenuRoutes) {
+            $routes->register();
+        }
     }
 }

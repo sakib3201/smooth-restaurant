@@ -1,0 +1,70 @@
+info:
+  name: Update menu
+  type: http
+  seq: 4
+  tags: [auth-local]
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Menu row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "description": "Updated description"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.id
+      operator: eq
+      value: "1"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Partial update of a menu row. Renames re-slug with uniqueness handling.
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Menu row id |
+  | name | body | no | Display name (must not be empty) |
+  | description | body | no | Long description |
+  | status | body | no | publish or draft |
+  | sort_order | body | no | Display order |
+
+  ## Success example
+  ```json
+  {"data": {"id": 1, "name": "Lunch", "slug": "lunch", "status": "publish"}}
+  ```
+
+  ## Error cases
+  - `400` — empty name (`smooth_menu_missing_name`)
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown id (`smooth_menu_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-18: created alongside SMO-121

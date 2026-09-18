@@ -1,0 +1,59 @@
+info:
+  name: Delete menu
+  type: http
+  seq: 5
+  tags: [auth-local]
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Menu row id
+  headers:
+    - name: Accept
+      value: application/json
+      description: JSON response
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.id
+      operator: eq
+      value: "1"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Delete a menu row with its items and modifiers (cascades server-side).
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Menu row id |
+
+  ## Success example
+  ```json
+  {"data": {"deleted": true, "id": 1}}
+  ```
+
+  ## Error cases
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown id (`smooth_menu_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-18: created alongside SMO-121

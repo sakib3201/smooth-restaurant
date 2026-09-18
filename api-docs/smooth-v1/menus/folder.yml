@@ -4,6 +4,7 @@ info:
 docs: |-
   # Menus (`smooth_menus`, `smooth_menu_items`, `smooth_modifiers`)
 
-  Status: **skeleton** — contract requests land with SMO-121
-  (`GET /smooth/v1/menus`, `GET /smooth/v1/menus/<id>`).
+  Status: **contract** — SMO-121 (`GET /smooth/v1/menus`, `GET /smooth/v1/menus/<id>` public; `POST`/`PUT`/`DELETE` behind `smooth_manage_menus`).
   Conventions: numbered kebab-case files, `Verb resource` names, `seq` ordering.
+  Tags: `smoke` runs credential-free in CI; `auth` is the permission matrix (401 negative runs in CI); `auth-local` needs app-password credentials (local only).
+  Every request in this collection MUST carry one of those tags: docs-guard parses with all three excluded, so an untagged request would execute against no server and fail the gate.

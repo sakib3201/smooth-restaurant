@@ -19,7 +19,10 @@ http:
     - name: Content-Type
       value: application/json
       description: Why this header is sent
-  auth: inherit                  # inherit | none | explicit block below for authed requests:
+  auth: inherit                  # collection-level auth (string form only).
+  # OMIT the auth key entirely for public requests: the scalar `none` warns
+  # `toBrunoAuth failed` on CLI 4.1.0 (verified 2026-09-18 against the
+  # converter source). Explicit authed requests use the block below:
   # auth:
   #   type: basic
   #   username: "{{wpUsername}}"

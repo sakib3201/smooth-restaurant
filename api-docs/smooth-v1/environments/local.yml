@@ -5,6 +5,11 @@ variables:
     enabled: true
     secret: false
     description: Local wp-env site URL (overridable via SMOOTH_BASE_URL, see .env.sample)
+  - name: wpUsername
+    value: admin
+    enabled: true
+    secret: false
+    description: WordPress login for the app-password user (edit to match your local user)
   - name: appPassword
     value: "{{process.env.SMOOTH_APP_PASSWORD}}"
     enabled: true

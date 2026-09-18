@@ -1,0 +1,64 @@
+info:
+  name: Create menu
+  type: http
+  seq: 3
+  tags: [auth-local]
+
+http:
+  method: POST
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus"
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "name": "Brunch",
+        "description": "Late morning",
+        "status": "draft"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+    - expression: res.body.data.slug
+      operator: isString
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Create a menu row. Slug is generated server-side and deduplicated (-2, -3, …).
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | name | body | yes | Display name |
+  | description | body | no | Long description |
+  | status | body | no | publish or draft, default publish |
+  | sort_order | body | no | Display order |
+
+  ## Success example
+  ```json
+  {"data": {"id": 3, "name": "Brunch", "slug": "brunch", "status": "draft"}}
+  ```
+
+  ## Error cases
+  - `400` — missing/empty name (`smooth_menu_missing_name`)
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+
+  ## Notes / Changelog
+  - 2026-09-18: created alongside SMO-121

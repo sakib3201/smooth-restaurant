@@ -63,6 +63,14 @@ interface MenuRepositoryInterface
     public function findById(int $id): ?array;
 
     /**
+     * Find a menu row by slug.
+     *
+     * @param string $slug Menu slug.
+     * @return array<string, mixed>|null The typed row, or null when missing.
+     */
+    public function findBySlug(string $slug): ?array;
+
+    /**
      * Paginate menu rows, newest sort-order first.
      *
      * @param int    $page    1-based page number (values below 1 behave as 1).

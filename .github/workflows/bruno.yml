@@ -41,9 +41,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Collection parses (pinned CLI, zero requests expected)
+      - name: Collection parses (pinned CLI, executes nothing)
+        # Exclude-tags doubles as the tagging forcing function: every request
+        # MUST carry smoke, auth, or auth-local (see the menus folder.yml
+        # contract). An untagged request would execute here with no server
+        # and fail this required gate.
         working-directory: ${{ env.COLLECTION }}
-        run: npx --yes @usebruno/cli@${{ env.BRU_VERSION }} run --env ci
+        run: npx --yes @usebruno/cli@${{ env.BRU_VERSION }} run --env ci --exclude-tags smoke,auth,auth-local
 
       - name: Endpoint PRs must touch api-docs
         run: |

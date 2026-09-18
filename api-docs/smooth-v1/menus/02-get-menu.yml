@@ -1,0 +1,54 @@
+info:
+  name: Get menu
+  type: http
+  seq: 2
+  tags: [smoke]
+
+http:
+  method: GET
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Menu row id
+  headers:
+    - name: Accept
+      value: application/json
+      description: JSON response
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.menu.slug
+      operator: isString
+    - expression: res.body.data.items
+      operator: isArray
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Public single-menu read as a tree (menu + items + modifiers).
+
+  ## Auth
+  Public (no capability); drafts and unknown ids 404.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Menu row id |
+
+  ## Success example
+  ```json
+  {"data": {"menu": {"id": 1, "name": "Lunch"}, "items": [{"item": {"id": 1, "name": "Soup"}, "modifiers": []}]}}
+  ```
+
+  ## Error cases
+  - `404` — unknown id or not published (`smooth_menu_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-18: created alongside SMO-121
