@@ -27,4 +27,4 @@ if (true === $keep_data) {
 }
 
 // Rebuild issues add option, table, role and transient cleanup here.
-delete_option('smooth_restaurant_db_version');
+delete_option('smooth_db_version');
