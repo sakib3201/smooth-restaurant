@@ -8,9 +8,9 @@
 
 ## 2. Menus contract (gated on SMO-121)
 
-- [ ] 2.1 Skeleton `menus/` folder + folder docs now; author `menus/01-list-menus.yml` + `02-get-menu.yml` (contract style: docs, status + schema + content-type asserts, `smoke` tag, `seq` ordering) only when SMO-121 endpoints land — no speculative contracts
+- [x] 2.1 Skeleton `menus/` folder + folder docs now; author `menus/01-list-menus.yml` + `02-get-menu.yml` (contract style: docs, status + schema + content-type asserts, `smoke` tag, `seq` ordering) only when SMO-121 endpoints land — no speculative contracts
 - [ ] 2.2 Author `auth` negative cases: `*-unauthenticated.yml` (→ 401, tags `smoke` + `auth`) and `*-forbidden.yml` (→ 403, tag `auth-local`, CI-excluded)
-- [ ] 2.3 Hand-maintain interim seed `api-docs/openapi.json` (menus paths only) line-reviewed against SMO-121 route schemas
+- [x] 2.3 Hand-maintain interim seed `api-docs/openapi.json` (menus paths only) line-reviewed against SMO-121 route schemas
 
 ## 3. Schema-extract cross-check + emitter follow-up
 
