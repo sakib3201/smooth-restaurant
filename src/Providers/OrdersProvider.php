@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\OrderItemRepositoryInterface;
+use SmoothRestaurant\Contracts\OrderRepositoryInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Database\Repositories\OrderItemRepository;
+use SmoothRestaurant\Database\Repositories\OrderRepository;
 use SmoothRestaurant\Domains\Orders\OrderService;
 
 /**
@@ -45,6 +49,8 @@ final class OrdersProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(OrderService::class);
+        $container->singleton(OrderRepositoryInterface::class, OrderRepository::class);
+        $container->singleton(OrderItemRepositoryInterface::class, OrderItemRepository::class);
     }
 
     /**

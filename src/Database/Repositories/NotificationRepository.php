@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Database\Repositories;
 
+use SmoothRestaurant\Contracts\NotificationRepositoryInterface;
 use SmoothRestaurant\Database\BaseRepository;
 
 /**
@@ -14,7 +15,7 @@ use SmoothRestaurant\Database\BaseRepository;
  * follow-up issues. Schema is dbDelta-managed; raw SQL only for keys dbDelta
  * cannot express.
  */
-class NotificationRepository extends BaseRepository
+class NotificationRepository extends BaseRepository implements NotificationRepositoryInterface
 {
     protected function tableSuffix(): string
     {
