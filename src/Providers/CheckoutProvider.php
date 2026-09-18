@@ -13,6 +13,8 @@ namespace SmoothRestaurant\Providers;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
 use SmoothRestaurant\Domains\Checkout\CheckoutService;
+use SmoothRestaurant\Domains\Checkout\TotalsCalculator;
+use SmoothRestaurant\Domains\Shared\Money;
 
 /**
  * Class CheckoutProvider
@@ -33,6 +35,8 @@ final class CheckoutProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(CheckoutService::class);
+        $container->singleton(TotalsCalculator::class);
+        $container->singleton(Money::class, static fn (): Money => Money::zero('USD'));
     }
 
     /**

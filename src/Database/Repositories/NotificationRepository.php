@@ -35,7 +35,7 @@ class NotificationRepository extends BaseRepository
             . "channel varchar(32) NOT NULL DEFAULT 'email',\n"
             . "status varchar(32) NOT NULL DEFAULT 'queued',\n"
             . "attempts int(11) NOT NULL DEFAULT 0,\n"
-            . "next_try datetime NOT NULL DEFAULT '0000-00-00 00:00:00',\n"
+            . "next_try datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
             . "payload longtext NOT NULL,\n"
             . 'PRIMARY KEY  (id),' . "\n"
             . 'KEY status_next_try (status, next_try)';

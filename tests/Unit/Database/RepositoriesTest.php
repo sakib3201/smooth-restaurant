@@ -71,4 +71,47 @@ final class RepositoriesTest extends TestCase
         $this->assertStringContainsString('PRIMARY KEY', $schema);
         $this->assertStringContainsString('utf8mb4', $schema);
     }
+
+    /**
+     * @param class-string<BaseRepository> $class
+     */
+    #[DataProvider('repositoryProvider')]
+    public function test_schema_has_no_zero_date_defaults(string $class): void
+    {
+        $repository = new $class(new FakeWpdb());
+
+        $this->assertStringNotContainsString(
+            '0000-00-00',
+            $repository->schema(),
+            sprintf('%s must not use zero-date defaults (strict-mode MySQL rejects NO_ZERO_DATE).', $class)
+        );
+    }
+
+    public function test_orders_schema_has_status_created_key(): void
+    {
+        $schema = (new OrderRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('KEY status_created (status, created_at)', $schema);
+    }
+
+    public function test_reservations_schema_has_status_date_composite_key(): void
+    {
+        $schema = (new ReservationRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('KEY status_reserved (status, reserved_for)', $schema);
+    }
+
+    public function test_carts_schema_keeps_unique_session_key(): void
+    {
+        $schema = (new CartRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('UNIQUE KEY session_key (session_key)', $schema);
+    }
+
+    public function test_notifications_schema_has_status_date_key(): void
+    {
+        $schema = (new NotificationRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('KEY status_next_try (status, next_try)', $schema);
+    }
 }

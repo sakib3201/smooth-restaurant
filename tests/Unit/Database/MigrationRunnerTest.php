@@ -126,6 +126,70 @@ final class MigrationRunnerTest extends TestCase
         $this->assertSame(MigrationRunner::TARGET_VERSION, $this->stored);
     }
 
+    public function test_small_network_migrates_inline_without_cursor(): void
+    {
+        $runner = new FakeNetworkMigrationRunner();
+        $runner->sites = [1, 2, 3];
+        $runner->versions = [1 => '0.0.0', 2 => '0.0.0', 3 => '0.0.0'];
+
+        $runner->migrateAll(true, 100);
+
+        $this->assertSame([1, 2, 3], $runner->visited);
+        $this->assertSame([], $runner->pending);
+    }
+
+    public function test_large_network_batches_and_stashes_cursor(): void
+    {
+        $runner = new FakeNetworkMigrationRunner();
+        $runner->sites = range(1, 250);
+        foreach ($runner->sites as $siteId) {
+            $runner->versions[$siteId] = '0.0.0';
+        }
+
+        $runner->migrateAll(true, 100);
+
+        $this->assertSame(range(1, 100), $runner->visited);
+        $this->assertSame(range(101, 250), $runner->pending);
+    }
+
+    public function test_resume_pending_drains_cursor(): void
+    {
+        $runner = new FakeNetworkMigrationRunner();
+        $runner->sites = range(1, 250);
+        foreach ($runner->sites as $siteId) {
+            $runner->versions[$siteId] = '0.0.0';
+        }
+
+        $runner->migrateAll(true, 100);
+        $processed = $runner->resumePending();
+
+        $this->assertSame(150, $processed);
+        $this->assertSame(range(1, 250), $runner->visited);
+        $this->assertSame([], $runner->pending);
+        foreach ($runner->sites as $siteId) {
+            $this->assertSame(MigrationRunner::TARGET_VERSION, $runner->versions[$siteId]);
+        }
+    }
+
+    public function test_resume_pending_returns_zero_when_empty(): void
+    {
+        $runner = new FakeNetworkMigrationRunner();
+
+        $this->assertSame(0, $runner->resumePending());
+        $this->assertSame([], $runner->visited);
+    }
+
+    public function test_batch_size_below_one_behaves_as_one(): void
+    {
+        $runner = new FakeNetworkMigrationRunner();
+        $runner->sites = [1, 2];
+
+        $runner->migrateAll(true, 0);
+
+        $this->assertSame([1], $runner->visited);
+        $this->assertSame([2], $runner->pending);
+    }
+
     /**
      * @param array<string, callable(): void> $migrations
      */
@@ -154,6 +218,12 @@ class FakeNetworkMigrationRunner extends MigrationRunner
     /** @var array<int, string> */
     public array $versions = [1 => '0.0.0', 2 => '0.0.0'];
 
+    /** @var list<int> */
+    public array $sites = [1, 2];
+
+    /** @var list<int> */
+    public array $pending = [];
+
     public int $currentSite = 1;
 
     /** @var list<int> */
@@ -164,7 +234,7 @@ class FakeNetworkMigrationRunner extends MigrationRunner
         parent::__construct(
             [],
             function (): string {
-                return $this->versions[$this->currentSite];
+                return $this->versions[$this->currentSite] ?? '0.0.0';
             },
             function (string $version): void {
                 $this->versions[$this->currentSite] = $version;
@@ -182,7 +252,23 @@ class FakeNetworkMigrationRunner extends MigrationRunner
      */
     protected function siteIds(): array
     {
-        return [1, 2];
+        return $this->sites;
+    }
+
+    /**
+     * @return list<int>
+     */
+    protected function pendingSiteIds(): array
+    {
+        return $this->pending;
+    }
+
+    /**
+     * @param list<int> $siteIds
+     */
+    protected function storePendingSiteIds(array $siteIds): void
+    {
+        $this->pending = array_values($siteIds);
     }
 
     protected function switchToBlog(int $siteId): void

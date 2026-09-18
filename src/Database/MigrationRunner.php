@@ -26,6 +26,11 @@ class MigrationRunner
     public const OPTION = 'smooth_db_version';
 
     /**
+     * Cursor option holding site IDs deferred by batched network migrations.
+     */
+    public const PENDING_OPTION = 'smooth_migrations_pending';
+
+    /**
      * Database schema version this plugin code understands.
      */
     public const TARGET_VERSION = '0.1.0';
@@ -150,23 +155,115 @@ class MigrationRunner
     /**
      * Run migrations for this site, or for every site on network-wide activation.
      *
-     * Each site keeps its own smooth_db_version value.
+     * Each site keeps its own smooth_db_version value. Large networks are
+     * processed in batches: when the site count exceeds $batchSize, the first
+     * batch migrates now and the remaining site IDs are stashed in the
+     * smooth_migrations_pending cursor for resumePending() (hooked to
+     * admin_init by DatabaseProvider) to drain.
+     *
+     * @param bool $networkWide Whether to loop every site on the network.
+     * @param int  $batchSize   Sites to migrate synchronously; values below 1 behave as 1.
      */
-    public function migrateAll(bool $networkWide = false): void
+    public function migrateAll(bool $networkWide = false, int $batchSize = 100): void
     {
-        if ($networkWide && $this->isMultisite()) {
-            foreach ($this->siteIds() as $siteId) {
-                $this->switchToBlog($siteId);
-                try {
-                    $this->migrate();
-                } finally {
-                    $this->restoreBlog();
-                }
+        if (!$networkWide || !$this->isMultisite()) {
+            $this->migrate();
+
+            return;
+        }
+        if ($batchSize < 1) {
+            $batchSize = 1;
+        }
+        $siteIds = $this->siteIds();
+        if (\count($siteIds) <= $batchSize) {
+            foreach ($siteIds as $siteId) {
+                $this->migrateSite($siteId);
             }
 
             return;
         }
-        $this->migrate();
+        foreach (\array_slice($siteIds, 0, $batchSize) as $siteId) {
+            $this->migrateSite($siteId);
+        }
+        $this->storePendingSiteIds(\array_slice($siteIds, $batchSize));
+    }
+
+    /**
+     * Drain the deferred network-migration cursor.
+     *
+     * Migrates every stashed site ID, clears the cursor, and returns the
+     * number of sites processed (0 when nothing is pending). Migrations are
+     * idempotent, so a repeated or partial drain is safe to rerun.
+     */
+    public function resumePending(): int
+    {
+        $pending = $this->pendingSiteIds();
+        if ([] === $pending) {
+            return 0;
+        }
+        $processed = 0;
+        foreach ($pending as $siteId) {
+            $this->migrateSite($siteId);
+            $processed++;
+        }
+        $this->storePendingSiteIds([]);
+
+        return $processed;
+    }
+
+    /**
+     * Migrate a single network site, restoring the blog context afterwards.
+     */
+    private function migrateSite(int $siteId): void
+    {
+        $this->switchToBlog($siteId);
+        try {
+            $this->migrate();
+        } finally {
+            $this->restoreBlog();
+        }
+    }
+
+    /**
+     * Site IDs deferred by a batched network migration.
+     *
+     * @return list<int>
+     */
+    protected function pendingSiteIds(): array
+    {
+        $stored = null;
+        if (\function_exists('get_site_option')) {
+            $stored = \get_site_option(self::PENDING_OPTION, []);
+        } elseif (\function_exists('get_option')) {
+            $stored = \get_option(self::PENDING_OPTION, []);
+        }
+        if (!\is_array($stored)) {
+            return [];
+        }
+
+        return \array_values(\array_map(static fn ($siteId): int => (int) $siteId, $stored));
+    }
+
+    /**
+     * Persist the deferred site-ID cursor.
+     *
+     * The cursor lives in the network option on multisite; the single-site
+     * fallback uses the options table with autoload disabled so the cursor
+     * never rides on every request.
+     *
+     * @param list<int> $siteIds Remaining site IDs (empty clears the cursor).
+     */
+    protected function storePendingSiteIds(array $siteIds): void
+    {
+        $siteIds = \array_values($siteIds);
+        if (\function_exists('update_site_option')) {
+            \update_site_option(self::PENDING_OPTION, $siteIds);
+
+            return;
+        }
+        if (\function_exists('update_option')) {
+            \update_option(self::PENDING_OPTION, $siteIds, false);
+        }
     }
 
     /**
