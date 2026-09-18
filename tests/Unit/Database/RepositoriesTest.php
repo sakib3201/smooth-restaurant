@@ -10,6 +10,9 @@ use SmoothRestaurant\Database\BaseRepository;
 use SmoothRestaurant\Database\Repositories\CartRepository;
 use SmoothRestaurant\Database\Repositories\CouponRepository;
 use SmoothRestaurant\Database\Repositories\NotificationRepository;
+use SmoothRestaurant\Database\Repositories\MenuItemRepository;
+use SmoothRestaurant\Database\Repositories\MenuRepository;
+use SmoothRestaurant\Database\Repositories\ModifierRepository;
 use SmoothRestaurant\Database\Repositories\OrderItemRepository;
 use SmoothRestaurant\Database\Repositories\OrderRepository;
 use SmoothRestaurant\Database\Repositories\ReservationRepository;
@@ -39,6 +42,9 @@ final class RepositoriesTest extends TestCase
             'tables' => [RestaurantTableRepository::class, 'smooth_tables'],
             'table sessions' => [TableSessionRepository::class, 'smooth_table_sessions'],
             'carts' => [CartRepository::class, 'smooth_carts'],
+            'menus' => [MenuRepository::class, 'smooth_menus'],
+            'menu items' => [MenuItemRepository::class, 'smooth_menu_items'],
+            'modifiers' => [ModifierRepository::class, 'smooth_modifiers'],
             'coupons' => [CouponRepository::class, 'smooth_coupons'],
             'notifications' => [NotificationRepository::class, 'smooth_notifications'],
         ];
@@ -85,6 +91,28 @@ final class RepositoriesTest extends TestCase
             $repository->schema(),
             sprintf('%s must not use zero-date defaults (strict-mode MySQL rejects NO_ZERO_DATE).', $class)
         );
+    }
+
+    public function test_menus_schema_has_unique_slug_and_status_sort_key(): void
+    {
+        $schema = (new MenuRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('UNIQUE KEY slug (slug)', $schema);
+        $this->assertStringContainsString('KEY status_sort (status, sort_order)', $schema);
+    }
+
+    public function test_menu_items_schema_has_menu_status_sort_composite_key(): void
+    {
+        $schema = (new MenuItemRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('KEY menu_status_sort (menu_id, status, sort_order)', $schema);
+    }
+
+    public function test_modifiers_schema_has_item_sort_composite_key(): void
+    {
+        $schema = (new ModifierRepository(new FakeWpdb()))->schema();
+
+        $this->assertStringContainsString('KEY item_sort (item_id, sort_order)', $schema);
     }
 
     public function test_orders_schema_has_status_created_key(): void

@@ -70,6 +70,17 @@ final class RestProvider extends ServiceProvider
      * @param string $cap Required capability.
      * @return callable Permission callback returning bool.
      */
+    public static function capability(string $cap): callable
+    {
+        return self::requireCapability($cap);
+    }
+
+    /**
+     * Internal worker behind capability().
+     *
+     * @param string $cap Required capability.
+     * @return callable Permission callback returning bool.
+     */
     protected static function requireCapability(string $cap): callable
     {
         return static function (mixed ...$args) use ($cap): bool {
@@ -77,7 +88,7 @@ final class RestProvider extends ServiceProvider
                 return true;
             }
 
-            return (bool) current_user_can($cap, ...$args);
+            return current_user_can($cap, ...$args);
         };
     }
 

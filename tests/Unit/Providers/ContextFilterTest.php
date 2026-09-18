@@ -75,11 +75,14 @@ class ContextFilterTest extends TestCase
     }
 
     /**
-     * Test that the admin context excludes diner providers.
+     * Test that the admin context excludes diner providers except Menu.
+     *
+     * MenuProvider registers in admin for the capability map (editor
+     * bindings + management routes); every other diner provider stays out.
      *
      * @return void
      */
-    public function test_admin_excludes_diner_providers(): void
+    public function test_admin_excludes_diner_providers_except_menu(): void
     {
         sr_test_set_flag('is_admin', true);
         Plugin::instance()->boot();
@@ -87,7 +90,7 @@ class ContextFilterTest extends TestCase
         $classes = Plugin::instance()->providerClasses();
         $this->assertContains(AdminProvider::class, $classes);
         $this->assertContains(CoreProvider::class, $classes);
-        $this->assertNotContains(MenuProvider::class, $classes);
+        $this->assertContains(MenuProvider::class, $classes);
         $this->assertNotContains(CartProvider::class, $classes);
         $this->assertNotContains(RestProvider::class, $classes);
         $this->assertNotContains(NotificationsProvider::class, $classes);
@@ -114,9 +117,12 @@ class ContextFilterTest extends TestCase
     /**
      * Test the REST context via the test override (no process-global constant).
      *
+     * MenuProvider registers in REST for the capability map behind the
+     * management routes; every other diner/admin/cron provider stays out.
+     *
      * @return void
      */
-    public function test_rest_context_registers_rest_provider_only(): void
+    public function test_rest_context_registers_rest_and_menu_providers(): void
     {
         Context::override(Context::REST);
         Plugin::instance()->boot();
@@ -124,7 +130,7 @@ class ContextFilterTest extends TestCase
         $classes = Plugin::instance()->providerClasses();
         $this->assertContains(RestProvider::class, $classes);
         $this->assertContains(CoreProvider::class, $classes);
-        $this->assertNotContains(MenuProvider::class, $classes);
+        $this->assertContains(MenuProvider::class, $classes);
         $this->assertNotContains(AdminProvider::class, $classes);
         $this->assertNotContains(NotificationsProvider::class, $classes);
     }

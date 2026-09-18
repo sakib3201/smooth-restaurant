@@ -13,6 +13,9 @@ namespace SmoothRestaurant\Tests\Unit\Providers;
 use PHPUnit\Framework\TestCase;
 use SmoothRestaurant\Contracts\CartRepositoryInterface;
 use SmoothRestaurant\Contracts\CouponRepositoryInterface;
+use SmoothRestaurant\Contracts\MenuItemRepositoryInterface;
+use SmoothRestaurant\Contracts\MenuRepositoryInterface;
+use SmoothRestaurant\Contracts\ModifierRepositoryInterface;
 use SmoothRestaurant\Contracts\NotificationRepositoryInterface;
 use SmoothRestaurant\Contracts\OrderItemRepositoryInterface;
 use SmoothRestaurant\Contracts\OrderRepositoryInterface;
@@ -24,6 +27,9 @@ use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Database\Repositories\CartRepository;
 use SmoothRestaurant\Database\Repositories\CouponRepository;
 use SmoothRestaurant\Database\Repositories\NotificationRepository;
+use SmoothRestaurant\Database\Repositories\MenuItemRepository;
+use SmoothRestaurant\Database\Repositories\MenuRepository;
+use SmoothRestaurant\Database\Repositories\ModifierRepository;
 use SmoothRestaurant\Database\Repositories\OrderItemRepository;
 use SmoothRestaurant\Database\Repositories\OrderRepository;
 use SmoothRestaurant\Database\Repositories\ReservationRepository;
@@ -32,6 +38,7 @@ use SmoothRestaurant\Database\Repositories\TableSessionRepository;
 use SmoothRestaurant\Database\Repositories\TransactionRepository;
 use SmoothRestaurant\Providers\CartProvider;
 use SmoothRestaurant\Providers\CheckoutProvider;
+use SmoothRestaurant\Providers\MenuProvider;
 use SmoothRestaurant\Providers\NotificationsProvider;
 use SmoothRestaurant\Providers\OrdersProvider;
 use SmoothRestaurant\Providers\PaymentsProvider;
@@ -56,6 +63,9 @@ class RepositoryBindingsTest extends TestCase
     {
         $map = array(
             array( CartProvider::class, CartRepositoryInterface::class, CartRepository::class ),
+            array( MenuProvider::class, MenuRepositoryInterface::class, MenuRepository::class ),
+            array( MenuProvider::class, MenuItemRepositoryInterface::class, MenuItemRepository::class ),
+            array( MenuProvider::class, ModifierRepositoryInterface::class, ModifierRepository::class ),
             array( CheckoutProvider::class, CouponRepositoryInterface::class, CouponRepository::class ),
             array( OrdersProvider::class, OrderRepositoryInterface::class, OrderRepository::class ),
             array( OrdersProvider::class, OrderItemRepositoryInterface::class, OrderItemRepository::class ),

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Database;
 
+use SmoothRestaurant\Database\Repositories\MenuItemRepository;
+use SmoothRestaurant\Database\Repositories\MenuRepository;
+use SmoothRestaurant\Database\Repositories\ModifierRepository;
+
 /**
  * Database migration runner.
  *
@@ -14,9 +18,8 @@ namespace SmoothRestaurant\Database;
  * jobs — never in the request path, and never through this runner beyond
  * additive schema steps.
  *
- * This change ships the runner contract plus the multisite loop only.
- * Real domain tables land in follow-up issues, which append their
- * version-guarded migrations to defaults().
+  * This runner ships the migration contract plus the multisite loop;
+  * domain tables land as version-guarded entries in defaults().
  */
 class MigrationRunner
 {
@@ -33,7 +36,7 @@ class MigrationRunner
     /**
      * Database schema version this plugin code understands.
      */
-    public const TARGET_VERSION = '0.1.0';
+    public const TARGET_VERSION = '0.2.0';
 
     /**
      * Registered migrations keyed by version.
@@ -83,14 +86,21 @@ class MigrationRunner
      * Default migrations for the current plugin version.
      *
      * Follow-up domain issues append their version-guarded, idempotent,
-     * additive migrations here. The runner contract and multisite loop ship
-     * now; no domain tables yet.
+     * additive migrations here. Version 0.2.0 creates the three menu
+     * tables; each createTable() call is independently re-runnable, so a
+     * partial failure retries cleanly.
      *
      * @return array<string, callable(): void>
      */
     public static function defaults(): array
     {
-        return [];
+        return [
+            '0.2.0' => static function (): void {
+                (new MenuRepository())->createTable();
+                (new MenuItemRepository())->createTable();
+                (new ModifierRepository())->createTable();
+            },
+        ];
     }
 
     /**

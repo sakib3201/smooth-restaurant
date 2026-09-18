@@ -66,12 +66,16 @@ final class BaseRepositoryTest extends TestCase
         $this->assertStringContainsString('DEFAULT CHARACTER SET utf8mb4', $schema);
     }
 
-    public function test_create_table_requires_wordpress_upgrade_api(): void
+    public function test_create_table_delegates_schema_to_deltadb(): void
     {
+        sr_test_reset_stubs();
         $repository = new OrderRepository(new FakeWpdb());
-
-        $this->expectException(\RuntimeException::class);
         $repository->createTable();
+
+        $statements = $GLOBALS['__sr_test_dbdelta'] ?? [];
+        $this->assertIsArray($statements);
+        $this->assertCount(1, $statements);
+        $this->assertStringContainsString('CREATE TABLE wp_smooth_orders', (string) $statements[0]);
     }
 }
 

@@ -172,4 +172,123 @@ abstract class BaseRepository
 
         return $prepared;
     }
+
+    /**
+     * Insert a row through the connection, returning the new id.
+     *
+     * @param array<string, mixed> $data Column values (without id).
+     * @throws RepositoryException When the connection cannot insert.
+     */
+    protected function insertRow(string $table, array $data): int
+    {
+        $db = $this->wpdb;
+        if (!\method_exists($db, 'insert')) {
+            throw new RepositoryException('Database connection does not support insert().');
+        }
+
+        if (false === $db->insert($table, $data)) {
+            throw new RepositoryException('Database insert failed.');
+        }
+        if (!\property_exists($db, 'insert_id')) {
+            throw new RepositoryException('Database connection does not expose insert_id.');
+        }
+
+        return (int) $db->insert_id;
+    }
+
+    /**
+     * Update rows matching every $where equality through the connection.
+     *
+     * @param array<string, mixed> $data  New column values.
+     * @param array<string, mixed> $where Equality matchers.
+     * @return int Number of rows updated.
+     * @throws RepositoryException When the connection cannot update.
+     */
+    protected function updateRows(string $table, array $data, array $where): int
+    {
+        $db = $this->wpdb;
+        if (!\method_exists($db, 'update')) {
+            throw new RepositoryException('Database connection does not support update().');
+        }
+
+        $affected = $db->update($table, $data, $where);
+        if (false === $affected) {
+            throw new RepositoryException('Database update failed.');
+        }
+
+        return (int) $affected;
+    }
+
+    /**
+     * Delete rows matching every $where equality through the connection.
+     *
+     * @param array<string, mixed> $where Equality matchers.
+     * @return int Number of rows deleted.
+     * @throws RepositoryException When the connection cannot delete.
+     */
+    protected function deleteRows(string $table, array $where): int
+    {
+        $db = $this->wpdb;
+        if (!\method_exists($db, 'delete')) {
+            throw new RepositoryException('Database connection does not support delete().');
+        }
+
+        $deleted = $db->delete($table, $where);
+        if (false === $deleted) {
+            throw new RepositoryException('Database delete failed.');
+        }
+
+        return (int) $deleted;
+    }
+
+    /**
+     * Fetch one row as an associative array through the connection.
+     *
+     * Callers pass a query already run through prepare().
+     *
+     * @return array<string, mixed>|null The row, or null when no row matches.
+     * @throws RepositoryException When the connection cannot fetch rows.
+     */
+    protected function fetchRow(string $preparedQuery): ?array
+    {
+        $db = $this->wpdb;
+        if (!\method_exists($db, 'get_row')) {
+            throw new RepositoryException('Database connection does not support get_row().');
+        }
+
+        $row = $db->get_row($preparedQuery, 'ARRAY_A');
+        if (null === $row) {
+            return null;
+        }
+        if (!\is_array($row)) {
+            throw new RepositoryException('Database connection returned an unexpected row shape.');
+        }
+
+        /** @var array<string, mixed> $row */
+        return $row;
+    }
+
+    /**
+     * Fetch rows as associative arrays through the connection.
+     *
+     * Callers pass a query already run through prepare().
+     *
+     * @return list<array<string, mixed>>
+     * @throws RepositoryException When the connection cannot fetch rows.
+     */
+    protected function fetchAll(string $preparedQuery): array
+    {
+        $db = $this->wpdb;
+        if (!\method_exists($db, 'get_results')) {
+            throw new RepositoryException('Database connection does not support get_results().');
+        }
+
+        $rows = $db->get_results($preparedQuery, 'ARRAY_A');
+        if (!\is_array($rows)) {
+            throw new RepositoryException('Database connection returned an unexpected result shape.');
+        }
+
+        /** @var list<array<string, mixed>> $rows */
+        return array_values($rows);
+    }
 }

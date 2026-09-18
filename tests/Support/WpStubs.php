@@ -34,6 +34,26 @@ if (! isset($GLOBALS['__sr_test_enqueues']) || ! is_array($GLOBALS['__sr_test_en
     $GLOBALS['__sr_test_enqueues'] = array();
 }
 
+if (! isset($GLOBALS['__sr_test_caps']) || ! is_array($GLOBALS['__sr_test_caps'])) {
+    $GLOBALS['__sr_test_caps'] = array();
+}
+
+if (! isset($GLOBALS['__sr_test_routes']) || ! is_array($GLOBALS['__sr_test_routes'])) {
+    $GLOBALS['__sr_test_routes'] = array();
+}
+
+if (! isset($GLOBALS['__sr_test_bindings']) || ! is_array($GLOBALS['__sr_test_bindings'])) {
+    $GLOBALS['__sr_test_bindings'] = array();
+}
+
+if (! isset($GLOBALS['__sr_test_cache']) || ! is_array($GLOBALS['__sr_test_cache'])) {
+    $GLOBALS['__sr_test_cache'] = array();
+}
+
+if (! isset($GLOBALS['__sr_test_dbdelta']) || ! is_array($GLOBALS['__sr_test_dbdelta'])) {
+    $GLOBALS['__sr_test_dbdelta'] = array();
+}
+
 if (! function_exists('sr_test_reset_stubs')) {
     /**
      * Reset hook storage, enqueue log, and context flags between tests.
@@ -47,6 +67,11 @@ if (! function_exists('sr_test_reset_stubs')) {
             'filters' => array(),
         );
         $GLOBALS['__sr_test_enqueues'] = array();
+        $GLOBALS['__sr_test_caps']     = array();
+        $GLOBALS['__sr_test_routes']   = array();
+        $GLOBALS['__sr_test_bindings'] = array();
+        $GLOBALS['__sr_test_cache']    = array();
+        $GLOBALS['__sr_test_dbdelta']  = array();
         $GLOBALS['__sr_test_flags']    = array(
             'is_admin'   => false,
             'doing_cron' => false,
@@ -65,6 +90,22 @@ if (! function_exists('sr_test_set_flag')) {
     function sr_test_set_flag(string $flag, bool $value): void
     {
         $GLOBALS['__sr_test_flags'][ $flag ] = $value;
+    }
+}
+
+if (! function_exists('sr_test_grant_caps')) {
+    /**
+     * Grant capabilities to the stubbed current user.
+     *
+     * The current_user_can() stub denies everything by default (bare
+     * frontend request, no authenticated user); tests opt in here.
+     *
+     * @param list<string> $caps Capabilities the stub user holds.
+     * @return void
+     */
+    function sr_test_grant_caps(array $caps): void
+    {
+        $GLOBALS['__sr_test_caps'] = array_values($caps);
     }
 }
 
@@ -95,12 +136,13 @@ if (! function_exists('add_action')) {
     /**
      * Stub for add_action().
      *
-     * @param string   $hook     Hook name.
-     * @param callable $callback Callback.
-     * @param int      $priority Priority.
+     * @param string   $hook          Hook name.
+     * @param callable $callback      Callback.
+     * @param int      $priority      Priority.
+     * @param int      $acceptedArgs  Accepted argument count (recorded, not enforced).
      * @return void
      */
-    function add_action(string $hook, callable $callback, int $priority = 10): void
+    function add_action(string $hook, callable $callback, int $priority = 10, int $acceptedArgs = 1): void
     {
         sr_test_add_hook($GLOBALS['__sr_test_hooks']['actions'], $hook, $callback, $priority);
     }
@@ -143,12 +185,13 @@ if (! function_exists('add_filter')) {
     /**
      * Stub for add_filter().
      *
-     * @param string   $hook     Hook name.
-     * @param callable $callback Callback.
-     * @param int      $priority Priority.
+     * @param string   $hook          Hook name.
+     * @param callable $callback      Callback.
+     * @param int      $priority      Priority.
+     * @param int      $acceptedArgs  Accepted argument count (recorded, not enforced).
      * @return void
      */
-    function add_filter(string $hook, callable $callback, int $priority = 10): void
+    function add_filter(string $hook, callable $callback, int $priority = 10, int $acceptedArgs = 1): void
     {
         sr_test_add_hook($GLOBALS['__sr_test_hooks']['filters'], $hook, $callback, $priority);
     }
@@ -269,5 +312,136 @@ if (! function_exists('wp_enqueue_style')) {
     function wp_enqueue_style(string $handle): void
     {
         $GLOBALS['__sr_test_enqueues']['styles'][] = $handle;
+    }
+}
+
+if (! function_exists('current_user_can')) {
+    /**
+     * Stub for current_user_can(): denies everything unless the capability
+     * was granted via sr_test_grant_caps().
+     *
+     * @param string $cap Capability being checked.
+     * @return bool
+     */
+    function current_user_can(string $cap): bool
+    {
+        return \in_array($cap, $GLOBALS['__sr_test_caps'] ?? array(), true);
+    }
+}
+
+if (! function_exists('register_rest_route')) {
+    /**
+     * Stub for register_rest_route(): records the registration for assertions.
+     *
+     * @param string               $namespace Route namespace.
+     * @param string               $route     Route path.
+     * @param array<string, mixed> $args      Route arguments.
+     * @param bool                 $override  Whether to override existing routes.
+     * @return bool
+     */
+    function register_rest_route(string $namespace, string $route, array $args = array(), bool $override = false): bool
+    {
+        $GLOBALS['__sr_test_routes'][] = array(
+            'namespace' => $namespace,
+            'route'     => $route,
+            'args'      => $args,
+            'override'  => $override,
+        );
+
+        return true;
+    }
+}
+
+if (! function_exists('register_block_bindings_source')) {
+    /**
+     * Stub for register_block_bindings_source(): records the source for assertions.
+     *
+     * @param string               $name Source name.
+     * @param array<string, mixed> $args Source arguments.
+     * @return null Always null in the stub (no source object without WordPress).
+     */
+    function register_block_bindings_source(string $name, array $args): mixed
+    {
+        $GLOBALS['__sr_test_bindings'][ $name ] = $args;
+
+        return null;
+    }
+}
+
+if (! function_exists('wp_cache_get')) {
+    /**
+     * Stub for wp_cache_get(): reads the in-memory test cache (misses as false).
+     *
+     * @param string $key   Cache key.
+     * @param string $group Cache group.
+     * @return mixed
+     */
+    function wp_cache_get(string $key, string $group = ''): mixed
+    {
+        return $GLOBALS['__sr_test_cache'][ $group ][ $key ] ?? false;
+    }
+}
+
+if (! function_exists('wp_cache_set')) {
+    /**
+     * Stub for wp_cache_set(): writes the in-memory test cache.
+     *
+     * @param string $key    Cache key.
+     * @param mixed  $data   Cached value.
+     * @param string $group  Cache group.
+     * @param int    $expire Expiration in seconds (ignored by the stub).
+     * @return bool
+     */
+    function wp_cache_set(string $key, mixed $data, string $group = '', int $expire = 0): bool
+    {
+        $GLOBALS['__sr_test_cache'][ $group ][ $key ] = $data;
+
+        return true;
+    }
+}
+
+if (! function_exists('wp_cache_delete')) {
+    /**
+     * Stub for wp_cache_delete(): removes a key from the in-memory test cache.
+     *
+     * @param string $key   Cache key.
+     * @param string $group Cache group.
+     * @return bool Whether the key existed.
+     */
+    function wp_cache_delete(string $key, string $group = ''): bool
+    {
+        if (! isset($GLOBALS['__sr_test_cache'][ $group ][ $key ])) {
+            return false;
+        }
+        unset($GLOBALS['__sr_test_cache'][ $group ][ $key ]);
+
+        return true;
+    }
+}
+
+if (! function_exists('get_current_blog_id')) {
+    /**
+     * Stub for get_current_blog_id(): single-site default without WordPress.
+     *
+     * @return int
+     */
+    function get_current_blog_id(): int
+    {
+        return (int) ( $GLOBALS['__sr_test_flags']['blog_id'] ?? 1 );
+    }
+}
+
+if (! function_exists('dbDelta')) {
+    /**
+     * Stub for dbDelta(): captures schema statements for migration assertions.
+     *
+     * @param string $queries CREATE TABLE statement.
+     * @return list<string> Empty (no deltas computed without WordPress).
+     */
+    function dbDelta(string $queries): array
+    {
+        $GLOBALS['__sr_test_dbdelta'][] = $queries;
+
+        return array();
     }
 }

@@ -10,8 +10,8 @@
  * - Diner menu (frontend): Core + Database + Assets + Menu + Cart +
  *   Checkout + Orders + Payments + Slots + Reservations + Tables + Blocks
  *   register; Admin, Rest, and Notifications (cron worker) are excluded.
- * - Admin: Core + Database + Assets + Admin + Blocks register; diner
- *   providers, Rest, and Notifications are excluded.
+ * - Admin: Core + Database + Assets + Menu (capability map) + Admin +
+ *   Blocks register; diner providers, Rest, and Notifications are excluded.
  * - Cron: Core + Database + Notifications register; everything else is
  *   excluded.
  * - REST: covered by RestBootTest (REST_REQUEST is a process-global constant).
@@ -210,6 +210,7 @@ class BootMatrixTest extends TestCase
                 CoreProvider::class,
                 DatabaseProvider::class,
                 AssetsProvider::class,
+                MenuProvider::class,
                 AdminProvider::class,
                 BlocksProvider::class,
             ),
@@ -217,11 +218,11 @@ class BootMatrixTest extends TestCase
         );
 
         $this->assertBooted($providers, AdminProvider::class, true);
+        $this->assertBooted($providers, MenuProvider::class, true);
         $this->assertBooted($providers, CoreProvider::class, true);
 
         foreach (
             array(
-                MenuProvider::class,
                 CartProvider::class,
                 RestProvider::class,
                 NotificationsProvider::class,

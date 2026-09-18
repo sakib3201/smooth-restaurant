@@ -59,14 +59,15 @@ class RestBootTest extends TestCase
                 CoreProvider::class,
                 DatabaseProvider::class,
                 AssetsProvider::class,
+                MenuProvider::class,
                 RestProvider::class,
             ),
             Plugin::instance()->providerClasses()
         );
 
         $this->assertTrue($indexed[ RestProvider::class ]->booted());
+        $this->assertTrue($indexed[ MenuProvider::class ]->booted());
         $this->assertTrue($indexed[ CoreProvider::class ]->booted());
-        $this->assertArrayNotHasKey(MenuProvider::class, $indexed);
         $this->assertArrayNotHasKey(AdminProvider::class, $indexed);
     }
 }
