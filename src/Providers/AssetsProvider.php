@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers {
     use SmoothRestaurant\Core\Container;
+    use SmoothRestaurant\Core\Plugin;
     use SmoothRestaurant\Core\ServiceProvider;
 
     /**
@@ -16,6 +17,19 @@ namespace SmoothRestaurant\Providers {
      */
     class AssetsProvider extends ServiceProvider
     {
+        /**
+         * Request contexts this provider participates in.
+         *
+         * Mirrors boot(): every web context except cron, which bails
+         * before adding hooks.
+         *
+         * @return list<string>
+         */
+        public static function contexts(): array
+        {
+            return array( 'frontend', 'admin', 'rest', 'cli' );
+        }
+
         /**
          * Script/style handle prefix.
          */
@@ -55,6 +69,20 @@ namespace SmoothRestaurant\Providers {
         ];
 
         /**
+         * Memoized asset-gate verdict for the current request.
+         *
+         * @var bool|null
+         */
+        private static ?bool $memoizedLoad = null;
+
+        /**
+         * Manifest cache per surface for the current request.
+         *
+         * @var array<string, array{dependencies: list<string>, version: string}|null>
+         */
+        private static array $manifestMemo = [];
+
+        /**
          * Bind services with no side effects.
          *
          * @param Container $container The DI container.
@@ -84,19 +112,52 @@ namespace SmoothRestaurant\Providers {
         /**
          * Asset gate for procedural callers.
          *
-         * Backs the global smooth_should_load() function.
+         * Backs the global smooth_should_load() function. Resolves the
+         * bound singleton from the plugin container when the plugin has
+         * booted, so the per-request memoization is shared; falls back to
+         * a throwaway instance only when the plugin isn't booted.
          */
         public static function shouldLoadGlobal(): bool
         {
+            try {
+                $container = Plugin::instance()->container();
+                if ($container->has(self::class)) {
+                    $provider = $container->make(self::class);
+                    if ($provider instanceof self) {
+                        return $provider->shouldLoad();
+                    }
+                }
+            } catch (\Throwable) {
+                // Fall through to the throwaway instance below.
+            }
+
             return (new self(new Container()))->shouldLoad();
         }
 
         /**
+         * Clear the per-request memoization.
+         *
+         * @internal For unit tests only. Production code MUST NOT call this.
+         */
+        public static function resetMemo(): void
+        {
+            self::$memoizedLoad = null;
+            self::$manifestMemo = [];
+        }
+
+        /**
          * Whether Smooth assets should load on the current request.
+         *
+         * Memoized per request: block/shortcode scans run once, and the
+         * smooth_should_load filter fires once.
          */
         public function shouldLoad(): bool
         {
-            return $this->filterLoad($this->detectSmoothContext());
+            if (null === self::$memoizedLoad) {
+                self::$memoizedLoad = $this->filterLoad($this->detectSmoothContext());
+            }
+
+            return self::$memoizedLoad;
         }
 
         /**
@@ -281,16 +342,25 @@ namespace SmoothRestaurant\Providers {
         /**
          * Read a surface .asset.php manifest from the script build.
          *
+         * Cached per surface for the current request.
+         *
          * @return array{dependencies: list<string>, version: string}|null
          */
         protected function manifestData(string $surface): ?array
         {
+            if (\array_key_exists($surface, self::$manifestMemo)) {
+                return self::$manifestMemo[ $surface ];
+            }
             $file = $this->buildDir() . '/' . $surface . '/index.asset.php';
             if (!\is_readable($file)) {
+                self::$manifestMemo[ $surface ] = null;
+
                 return null;
             }
             $data = require $file;
             if (!\is_array($data)) {
+                self::$manifestMemo[ $surface ] = null;
+
                 return null;
             }
             $dependencies = [];
@@ -301,7 +371,9 @@ namespace SmoothRestaurant\Providers {
             }
             $version = isset($data['version']) ? (string) $data['version'] : '0.0.0';
 
-            return ['dependencies' => $dependencies, 'version' => $version];
+            self::$manifestMemo[ $surface ] = ['dependencies' => $dependencies, 'version' => $version];
+
+            return self::$manifestMemo[ $surface ];
         }
 
         /**

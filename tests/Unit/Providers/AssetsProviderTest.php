@@ -6,6 +6,7 @@ namespace SmoothRestaurant\Tests\Unit\Providers;
 
 use PHPUnit\Framework\TestCase;
 use SmoothRestaurant\Core\Container;
+use SmoothRestaurant\Core\Plugin;
 use SmoothRestaurant\Providers\AssetsProvider;
 
 /**
@@ -67,10 +68,57 @@ class TestableAssetsProvider extends AssetsProvider
 }
 
 /**
+ * AssetsProvider with call counting for memoization assertions.
+ */
+class CountingAssetsProvider extends TestableAssetsProvider
+{
+    public int $detectCalls = 0;
+
+    public int $buildCalls = 0;
+
+    protected function detectSmoothContext(): bool
+    {
+        ++$this->detectCalls;
+
+        return $this->forceLoad;
+    }
+
+    protected function buildDir(): string
+    {
+        ++$this->buildCalls;
+
+        return __DIR__ . '/Fixtures';
+    }
+}
+
+/**
  * Unit tests for the AssetsProvider asset gate.
  */
 final class AssetsProviderTest extends TestCase
 {
+    /**
+     * Clear per-request memoization before each test.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        AssetsProvider::resetMemo();
+    }
+
+    /**
+     * Clear memoization and the plugin singleton after each test.
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        AssetsProvider::resetMemo();
+        Plugin::reset();
+        parent::tearDown();
+    }
+
     public function test_register_adds_no_hooks(): void
     {
         $provider = $this->provider();
@@ -128,7 +176,9 @@ final class AssetsProviderTest extends TestCase
         $provider->enqueueFrontend();
         $this->assertSame([], $provider->surfaces);
 
+        // The gate is memoized per request: a new request re-evaluates it.
         $provider->forceLoad = true;
+        AssetsProvider::resetMemo();
         $provider->enqueueFrontend();
         $this->assertSame([AssetsProvider::FRONTEND_SURFACE], $provider->surfaces);
     }
@@ -139,7 +189,9 @@ final class AssetsProviderTest extends TestCase
         $provider->enqueueAdmin();
         $this->assertSame([], $provider->surfaces);
 
+        // The gate is memoized per request: a new request re-evaluates it.
         $provider->forceLoad = true;
+        AssetsProvider::resetMemo();
         $provider->enqueueAdmin();
         $this->assertSame([AssetsProvider::ADMIN_SURFACE], $provider->surfaces);
     }
@@ -163,6 +215,61 @@ final class AssetsProviderTest extends TestCase
     {
         $this->assertTrue(function_exists('smooth_should_load'));
         $this->assertFalse(smooth_should_load());
+    }
+
+    public function test_should_load_memoizes_gate_per_request(): void
+    {
+        $provider = new CountingAssetsProvider(new Container());
+        $provider->forceLoad = true;
+
+        $this->assertTrue($provider->shouldLoad());
+
+        // Flip the underlying context: the memoized verdict wins.
+        $provider->forceLoad = false;
+        $this->assertTrue($provider->shouldLoad());
+        $this->assertSame(1, $provider->detectCalls);
+
+        AssetsProvider::resetMemo();
+        $this->assertFalse($provider->shouldLoad());
+        $this->assertSame(2, $provider->detectCalls);
+    }
+
+    public function test_manifest_data_cached_per_surface(): void
+    {
+        $provider = new CountingAssetsProvider(new Container());
+
+        $first  = $provider->exposedManifest('frontend');
+        $second = $provider->exposedManifest('frontend');
+
+        $this->assertSame(['wp-element'], $first['dependencies'] ?? null);
+        $this->assertSame($first, $second);
+        $this->assertSame(1, $provider->buildCalls);
+
+        AssetsProvider::resetMemo();
+        $provider->exposedManifest('frontend');
+        $this->assertSame(2, $provider->buildCalls);
+    }
+
+    public function test_should_load_global_uses_bound_singleton(): void
+    {
+        Plugin::reset();
+        $stub             = $this->provider();
+        $stub->forceLoad = true;
+        Plugin::instance()->container()->instance(AssetsProvider::class, $stub);
+
+        $this->assertTrue(AssetsProvider::shouldLoadGlobal());
+
+        $stub->forceLoad = false;
+        AssetsProvider::resetMemo();
+        $this->assertFalse(AssetsProvider::shouldLoadGlobal());
+    }
+
+    public function test_should_load_global_falls_back_when_unbooted(): void
+    {
+        Plugin::reset();
+
+        $this->assertFalse(Plugin::instance()->container()->has(AssetsProvider::class));
+        $this->assertFalse(AssetsProvider::shouldLoadGlobal());
     }
 
     private function provider(): TestableAssetsProvider

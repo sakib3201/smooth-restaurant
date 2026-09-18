@@ -24,6 +24,18 @@ use SmoothRestaurant\Domains\Notifications\NotificationService;
 final class NotificationsProvider extends ServiceProvider
 {
     /**
+     * Request contexts this provider participates in.
+     *
+     * Mirrors boot(): the cron worker only.
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'cron' );
+    }
+
+    /**
      * Register services with the container.
      *
      * Bind-only: no hooks, no database access, no translation calls.

@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\LoggerInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Core\WpLogger;
 
 /**
  * Class CoreProvider
@@ -22,6 +24,18 @@ use SmoothRestaurant\Core\ServiceProvider;
 final class CoreProvider extends ServiceProvider
 {
     /**
+     * Request contexts this provider participates in.
+     *
+     * Core boots everywhere, so it keeps the 'all' default explicitly.
+     *
+     * @return list<string>
+     */
+    public static function contexts(): array
+    {
+        return array( 'all' );
+    }
+
+    /**
      * Register services with the container.
      *
      * Bind-only: no hooks, no database access, no translation calls.
@@ -31,8 +45,7 @@ final class CoreProvider extends ServiceProvider
      */
     public function register(Container $container): void
     {
-        // Shell: no core bindings yet. The container self-binding happens
-        // in Container::register(); domain follow-ups add bindings here.
+        $container->singleton(LoggerInterface::class, static fn (): WpLogger => new WpLogger());
     }
 
     /**
