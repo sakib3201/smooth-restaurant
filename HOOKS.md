@@ -17,6 +17,20 @@ Related global (not a hook): `smooth_should_load()` in
 `src/Providers/AssetsProvider.php:435` returns
 `AssetsProvider::shouldLoadGlobal()`; `@since 0.1.0`.
 
+## Owned action contracts (`do_action`)
+
+Dispatched via `SmoothRestaurant\Domains\Shared\DomainEvents::dispatch()`.
+Domain services are still shells: follow-up domain issues dispatch these at
+their state transitions. Pro and addons subscribe without overriding providers.
+
+| Hook name | Constant | Payload | @since |
+| --- | --- | --- | --- |
+| `smooth.order.created` | `DomainEvents::ORDER_CREATED` | `array{id: int, ...}` order payload | 0.1.0 |
+| `smooth.payment.captured` | `DomainEvents::PAYMENT_CAPTURED` | `array{...}` ledger payload | 0.1.0 |
+| `smooth.payment.refunded` | `DomainEvents::PAYMENT_REFUNDED` | `array{...}` ledger payload | 0.1.0 |
+| `smooth.reservation.confirmed` | `DomainEvents::RESERVATION_CONFIRMED` | `array{...}` reservation payload | 0.1.0 |
+| `smooth.cart.updated` | `DomainEvents::CART_UPDATED` | `array{...}` cart payload | 0.1.0 |
+
 ## WordPress subscriptions (`add_action`)
 
 Every subscription below is added in a provider `boot()` method (or the

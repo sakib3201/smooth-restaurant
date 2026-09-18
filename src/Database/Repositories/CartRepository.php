@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Database\Repositories;
 
+use SmoothRestaurant\Contracts\CartRepositoryInterface;
 use SmoothRestaurant\Database\BaseRepository;
 
 /**
@@ -14,7 +15,7 @@ use SmoothRestaurant\Database\BaseRepository;
  * issues. Schema is dbDelta-managed; raw SQL only for keys dbDelta cannot
  * express.
  */
-class CartRepository extends BaseRepository
+class CartRepository extends BaseRepository implements CartRepositoryInterface
 {
     protected function tableSuffix(): string
     {

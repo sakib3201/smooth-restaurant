@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\CartRepositoryInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Database\Repositories\CartRepository;
 use SmoothRestaurant\Domains\Cart\CartService;
 
 /**
@@ -45,6 +47,7 @@ final class CartProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(CartService::class);
+        $container->singleton(CartRepositoryInterface::class, CartRepository::class);
     }
 
     /**

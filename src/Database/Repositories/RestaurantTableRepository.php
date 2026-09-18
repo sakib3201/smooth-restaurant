@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Database\Repositories;
 
+use SmoothRestaurant\Contracts\RestaurantTableRepositoryInterface;
 use SmoothRestaurant\Database\BaseRepository;
 
 /**
@@ -13,7 +14,7 @@ use SmoothRestaurant\Database\BaseRepository;
  * issues. Schema is dbDelta-managed; raw SQL only for keys dbDelta cannot
  * express.
  */
-class RestaurantTableRepository extends BaseRepository
+class RestaurantTableRepository extends BaseRepository implements RestaurantTableRepositoryInterface
 {
     protected function tableSuffix(): string
     {

@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\ReservationRepositoryInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Database\Repositories\ReservationRepository;
 use SmoothRestaurant\Domains\Reservations\ReservationService;
 
 /**
@@ -45,6 +47,7 @@ final class ReservationsProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(ReservationService::class);
+        $container->singleton(ReservationRepositoryInterface::class, ReservationRepository::class);
     }
 
     /**

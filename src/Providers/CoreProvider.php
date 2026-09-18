@@ -10,9 +10,12 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\JobQueueInterface;
 use SmoothRestaurant\Contracts\LoggerInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Core\Settings;
+use SmoothRestaurant\Core\WpCronJobQueue;
 use SmoothRestaurant\Core\WpLogger;
 
 /**
@@ -46,6 +49,8 @@ final class CoreProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(LoggerInterface::class, static fn (): WpLogger => new WpLogger());
+        $container->singleton(Settings::class);
+        $container->singleton(JobQueueInterface::class, WpCronJobQueue::class);
     }
 
     /**

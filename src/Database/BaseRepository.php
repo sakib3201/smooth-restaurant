@@ -32,8 +32,21 @@ abstract class BaseRepository
      */
     protected string $prefix;
 
-    public function __construct(object $wpdb)
+    /**
+     * @param object|null $wpdb Raw database connection (`wpdb` in production,
+     *                          test double in unit tests). Null falls back to
+     *                          the global connection when available, else a
+     *                          minimal default so the container can auto-wire
+     *                          repositories without touching `$wpdb` outside
+     *                          `src/Database/`.
+     */
+    public function __construct(?object $wpdb = null)
     {
+        $wpdb ??= $GLOBALS['wpdb'] ?? null;
+        if (! is_object($wpdb)) {
+            $wpdb         = new \stdClass();
+            $wpdb->prefix = 'wp_';
+        }
         $this->wpdb   = $wpdb;
         $vars         = \get_object_vars($wpdb);
         $prefix       = $vars['prefix'] ?? 'wp_';

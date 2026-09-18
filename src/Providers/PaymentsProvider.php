@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace SmoothRestaurant\Providers;
 
+use SmoothRestaurant\Contracts\TransactionRepositoryInterface;
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Database\Repositories\TransactionRepository;
 use SmoothRestaurant\Domains\Payments\PaymentService;
 
 /**
@@ -46,6 +48,7 @@ final class PaymentsProvider extends ServiceProvider
     public function register(Container $container): void
     {
         $container->singleton(PaymentService::class);
+        $container->singleton(TransactionRepositoryInterface::class, TransactionRepository::class);
     }
 
     /**
