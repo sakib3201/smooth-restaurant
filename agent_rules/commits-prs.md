@@ -12,6 +12,10 @@
   for issue-driven work but not mandatory for chores.
 - One logical change per commit; commit review-fix layers separately
   from stream merges so reviewers can follow the story.
+- Commits MUST be atomic: each commit leaves the tree in a coherent
+  state (staged scope contains exactly that change — verify with
+  `git status` + `git diff --stat` before committing, never sweep
+  unrelated files into a commit).
 - Never commit secrets. Never amend a commit that hooks rejected —
   fix and commit anew.
 
