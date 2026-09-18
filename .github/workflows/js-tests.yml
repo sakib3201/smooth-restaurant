@@ -1,12 +1,24 @@
 name: JS Tests
 
 on:
+  pull_request:
+    branches:
+      - development
+      - 'release/*'
+  push:
+    branches:
+      - development
+      - 'release/*'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   js-tests:
     name: JS Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -30,3 +42,30 @@ jobs:
 
       - name: Run Jest unit tests
         run: npm run test:js
+
+  asset-budget:
+    name: Asset Budget (leak check)
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run asset-leak budget test
+        run: npm run test:js -- --testPathPattern='asset-budget'

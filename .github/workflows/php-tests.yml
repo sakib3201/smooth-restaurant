@@ -1,12 +1,24 @@
 name: PHP Tests
 
 on:
+  pull_request:
+    branches:
+      - development
+      - 'release/*'
+  push:
+    branches:
+      - development
+      - 'release/*'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   php-tests:
     name: PHP Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -31,18 +43,85 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Run PHPUnit unit tests
-        run: composer test:unit || vendor/bin/phpunit --testsuite Unit
+        run: composer test:unit -- --log-junit junit-unit.xml || vendor/bin/phpunit --testsuite Unit --log-junit junit-unit.xml
 
       - name: Run PHPUnit integration tests
-        run: composer test:integration || vendor/bin/phpunit --testsuite Integration
+        run: composer test:integration -- --log-junit junit-integration.xml || vendor/bin/phpunit --testsuite Integration --log-junit junit-integration.xml
 
       - name: Generate coverage report
         run: |
-          vendor/bin/phpunit --coverage-clover coverage.xml || true
+          vendor/bin/phpunit --coverage-clover coverage.xml --coverage-html coverage-html || true
 
-      - name: Upload coverage report
+      - name: Upload test evidence
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: coverage.xml
+          name: phpunit-evidence
+          path: |
+            junit-unit.xml
+            junit-integration.xml
+            coverage.xml
+            coverage-html/
+        if: always()
+
+  migration-version-lint:
+    name: Migration Version Lint (advisory)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Warn when schemas change without a version bump
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "Not a pull request event; skipping version lint."
+            exit 0
+          fi
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          if git diff --name-only "$base" "$head" -- src/Database/ | grep -q .; then
+            if git diff "$base" "$head" -- src/Database/MigrationRunner.php | grep -q "TARGET_VERSION"; then
+              echo "Database changes include a TARGET_VERSION bump."
+            else
+              echo "::warning::src/Database/ changed without bumping MigrationRunner::TARGET_VERSION. Confirm the migration is version-guarded."
+            fi
+          else
+            echo "No database changes; nothing to lint."
+          fi
+
+  money-path:
+    name: Money-Path Suites
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'money-path')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run money-path suites
+        run: vendor/bin/phpunit --filter 'TransactionIdempotency|CartSessionKey|MoneyTest|TotalsCalculatorTest|MigrationRunnerTest|RepositoriesTest|RepositoryBindingsTest|BaseRepositoryTest|CheckoutProviderTest|FakesTest' --log-junit junit-money-path.xml
+
+      - name: Upload money-path evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: money-path-evidence
+          path: junit-money-path.xml
         if: always()

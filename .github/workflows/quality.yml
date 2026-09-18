@@ -1,12 +1,24 @@
 name: Quality
 
 on:
+  pull_request:
+    branches:
+      - development
+      - 'release/*'
+  push:
+    branches:
+      - development
+      - 'release/*'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   quality:
     name: Full Quality Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout

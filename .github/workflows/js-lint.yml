@@ -1,12 +1,24 @@
 name: JS Lint
 
 on:
+  pull_request:
+    branches:
+      - development
+      - 'release/*'
+  push:
+    branches:
+      - development
+      - 'release/*'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   js-lint:
     name: JS Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
