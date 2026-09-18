@@ -30,4 +30,4 @@
 - [x] 6.1 Document branch-protection setup for `development` and `release/*` with exact required-check names (quality, php-tests, php-lint, js-lint, js-tests, build, Plugin Check; NOT e2e-tests)
 - [x] 6.2 Add `money-path` label reminder to the PR template
 - [x] 6.3 Grep-verify zero `secrets.` references across all workflows
-- [ ] 6.4 Full verification: draft PR against `development` shows all jobs run, artifacts (JUnit, coverage, ZIP) downloadable, failing gate blocks merge
+- [ ] 6.4 Full verification: draft PR against `development` shows all jobs run, artifacts (JUnit, coverage, ZIP) downloadable, failing gate blocks merge — BLOCKED 2026-09-18: PR #1 proves all 7 workflows trigger, but jobs cannot execute — GitHub account billing lock ("job was not started"). Unblocks when billing is resolved; then re-run PR #1 and flip branch protection per 6.1.
