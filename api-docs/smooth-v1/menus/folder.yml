@@ -1,0 +1,9 @@
+info:
+  name: Menus
+  type: folder
+docs: |-
+  # Menus (`smooth_menus`, `smooth_menu_items`, `smooth_modifiers`)
+
+  Status: **skeleton** — contract requests land with SMO-121
+  (`GET /smooth/v1/menus`, `GET /smooth/v1/menus/<id>`).
+  Conventions: numbered kebab-case files, `Verb resource` names, `seq` ordering.

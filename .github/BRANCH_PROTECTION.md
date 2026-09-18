@@ -17,10 +17,14 @@ CI workflows only fire on PRs targeting these branches.
    - `JS Lint` (from `js-lint.yml`)
    - `JS Tests` (from `js-tests.yml`)
    - `Asset Budget (leak check)` (from `js-tests.yml`)
-   - `Build Plugin` (from `build.yml` — includes the Plugin Check step, so Plugin Check failures block via this job)
-6. Explicitly do NOT require `E2E Tests` — it runs soft-fail
-   (`continue-on-error`) until the first money-path Playwright spec
-   exists. Flip it to required when that spec lands.
+    - `Build Plugin` (from `build.yml` — includes the Plugin Check step, so Plugin Check failures block via this job)
+    - `Bruno Docs Guard` (from `bruno.yml` — WP-free, required from day one)
+  6. Explicitly do NOT require `E2E Tests` — it runs soft-fail
+    (`continue-on-error`) until the first money-path Playwright spec
+    exists. Flip it to required when that spec lands.
+  6b. Explicitly do NOT require `Bruno Collection Run (advisory)` — it runs
+    soft-fail until the event-based promotion rule is met (>=5 consecutive
+    greens across >=3 PRs, zero infra flakes, named sign-off).
 7. Optionally check **Require branches to be up to date before merging**.
 
 ## Notes

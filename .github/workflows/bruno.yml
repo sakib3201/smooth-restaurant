@@ -1,0 +1,128 @@
+name: Bruno API Docs
+
+# Eighth workflow (bruno-api-docs change). Collection: api-docs/smooth-v1/.
+# docs-guard is WP-free and required from day one. bruno-run is advisory
+# (continue-on-error) until the event-based promotion rule is met.
+# This workflow is credential-free by design: no stored secrets, no
+# credential values in logs or artifacts (see the ci-gates no-secrets lock).
+
+on:
+  pull_request:
+    branches:
+      - development
+      - 'release/*'
+  push:
+    branches:
+      - development
+      - 'release/*'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  BRU_VERSION: 4.1.0
+  COLLECTION: api-docs/smooth-v1
+
+jobs:
+  docs-guard:
+    name: Bruno Docs Guard
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Collection parses (pinned CLI, zero requests expected)
+        working-directory: ${{ env.COLLECTION }}
+        run: npx --yes @usebruno/cli@${{ env.BRU_VERSION }} run --env ci
+
+      - name: Endpoint PRs must touch api-docs
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            HEAD="${{ github.sha }}"
+          else
+            BASE="HEAD~1"
+            HEAD="HEAD"
+          fi
+          if git diff --name-only "$BASE" "$HEAD" -- 'src/Providers/*.php' | xargs -r git diff "$BASE" "$HEAD" -- | grep -q "register_rest_route"; then
+            if ! git diff --name-only "$BASE" "$HEAD" -- 'api-docs/' | grep -q .; then
+              echo "::error::New/changed REST routes require api-docs/ updates in the same PR."
+              exit 1
+            fi
+          fi
+
+      - name: No credential material in api-docs
+        run: |
+          if grep -rn --exclude-dir=node_modules -E "BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|sk_live_|xox[bpas]-|ghp_[A-Za-z0-9]{36}" api-docs/; then
+            echo "::error::Credential literal found in api-docs/."
+            exit 1
+          fi
+          # Character-class dodge ([.]) so this step never matches its own pattern.
+          if grep -rn 'secrets[.]' api-docs/ .github/workflows/bruno.yml; then
+            echo "::error::Credential-store reference found; bruno track is credential-free."
+            exit 1
+          fi
+
+  bruno-run:
+    name: Bruno Collection Run (advisory)
+    runs-on: ubuntu-24.04
+    needs: docs-guard
+    # Advisory until the event-based promotion rule is met
+    # (>=5 consecutive greens across >=3 PRs, zero infra flakes, named
+    # sign-off). Pre-condition: billing restoration proven by one green
+    # Actions run on development (task 4.0).
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Start wp-env
+        run: npx wp-env start
+
+      - name: Verify migrations applied
+        # SMO-121 adds the menus seed (seed-menus.php) against its write
+        # path; until then this asserts the migrated baseline only.
+        run: npx wp-env run cli wp option get smooth_db_version
+
+      - name: Run Bruno collection (public smoke only, no credentials)
+        working-directory: ${{ env.COLLECTION }}
+        run: npx --yes @usebruno/cli@${{ env.BRU_VERSION }} run --env ci --tags smoke --reporter-junit ../../reports/bruno-junit.xml --reporter-html ../../reports/bruno-report.html --reporter-skip-headers "Authorization" --reporter-skip-request-body
+
+      - name: Stop wp-env
+        if: always()
+        run: npx wp-env stop
+
+      - name: Upload Bruno reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bruno-reports
+          path: reports/
+          retention-days: 30

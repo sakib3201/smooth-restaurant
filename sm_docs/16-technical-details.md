@@ -262,11 +262,11 @@ Append-only ledger; nightly reconcile report (CSV + mismatch notice); every mone
   3. **Machine-readable for AI-devs** (whiteboard mandate): `llms.txt` + `hooks.json` + `openapi.json` shipped with every release so AI assistants answer from current API, not stale training data.
   4. Starters: headless menu JSON + Next.js starter + Postman collection generated from `openapi.json`.
 - Discovery: Google → docs site; admin contextual links; starter READMEs link back to versioned docs. Docs PR required with every hook/endpoint PR (CI fails if new `apply_filters`/`register_rest_route` lacks DocBlock + example).
-- Internal API workflow: team documents endpoints in **Bruno** (`/api-docs/*.bru` committed in repo); CI validates collections and cross-checks against generated `openapi.json` (route schemas stay authoritative for public output).
+- Internal API workflow: team documents endpoints in **Bruno** (`/api-docs/smooth-v1/` in **OpenCollection YAML** committed in repo — amended 2026-09-18: Bruno v4 recommends YAML for new collections over `.bru`; `.bru` remains supported); CI validates collections and cross-checks against generated `openapi.json` (route schemas stay authoritative for public output). OpenAPI Sync UI is NOT used (OSS cap). CI is credential-free: public reads + 401 negatives only, auth matrix stays local (zero-secrets lock kept). Interim: hand-maintained `openapi.json` seed + schema-extract script until the WP-native emitter (SMO-142) lands and retires them.
 - [x] Site generator shortlist — MIT-licensed only, licenses verified 2026-09-06 (VitePress: vuejs/vitepress MIT · Starlight: withastro/starlight MIT · Scalar: scalar/scalar MIT):
   - **A. VitePress + Scalar** — guides + hooks reference in VitePress (lightest to run); interactive REST reference via Scalar rendering `openapi.json`.
   - **B. Astro Starlight + Scalar** — richer docs UX (built-in search, versioned collections, i18n routing matching i18n-day-1 ethos); second toolchain (Astro) to maintain.
-  - AI-maintenance (both): file-based markdown in repo — agents add/edit `.md` + DocBlocks + `.bru` files, CI regenerates reference pages + `llms.txt`. No DB-backed docs.
+  - AI-maintenance (both): file-based markdown in repo — agents add/edit `.md` + DocBlocks + collection `.yml` files, CI regenerates reference pages + `llms.txt`. No DB-backed docs.
 - [x] Site generator — **LOCKED 2026-09-06: Astro Starlight + Scalar** (both MIT, verified). Guides + hooks reference in Starlight (search, versioned collections, i18n routing); interactive REST reference via Scalar on `openapi.json`. Internal: Bruno collections in repo.
 
 ### 13.7 Observability / error tracking (locked 2026-09-06)

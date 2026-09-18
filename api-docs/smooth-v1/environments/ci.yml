@@ -1,0 +1,7 @@
+name: ci
+variables:
+  - name: baseUrl
+    value: http://localhost:8889
+    enabled: true
+    secret: false
+    description: Runner wp-env site URL. This environment holds NO secret refs by design (zero-secrets lock) — only public reads and 401 negatives run in CI

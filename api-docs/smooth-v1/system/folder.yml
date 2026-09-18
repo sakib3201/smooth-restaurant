@@ -1,0 +1,9 @@
+info:
+  name: System
+  type: folder
+docs: |-
+  # System (health, System Status, telemetry diagnostics)
+
+  Status: **skeleton** — contract requests arrive with the diagnostics work
+  (SMO-106/SMO-116 track). Public reads here are CI-eligible (`smoke` tag).
+  See `menus/folder.yml` for conventions.

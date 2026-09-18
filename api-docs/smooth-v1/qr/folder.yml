@@ -1,0 +1,8 @@
+info:
+  name: QR
+  type: folder
+docs: |-
+  # QR dine-in ordering endpoints
+
+  Status: **skeleton** — contract requests arrive with the QR hardening work
+  (SMO-65 track). See `menus/folder.yml` for conventions.

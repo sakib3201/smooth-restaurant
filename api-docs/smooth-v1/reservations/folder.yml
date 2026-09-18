@@ -1,0 +1,8 @@
+info:
+  name: Reservations
+  type: folder
+docs: |-
+  # Reservations (`smooth_reservations`, `smooth_tables`, `smooth_table_sessions`)
+
+  Status: **skeleton** — contract requests arrive with the reservations-lite work.
+  See `menus/folder.yml` for conventions.

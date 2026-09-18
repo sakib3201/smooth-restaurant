@@ -1,0 +1,8 @@
+info:
+  name: Orders
+  type: folder
+docs: |-
+  # Orders (`smooth_orders`, `smooth_order_items`)
+
+  Status: **skeleton** — contract requests arrive with the orders/cart work
+  (SMO-59 track). See `menus/folder.yml` for conventions.

@@ -1,0 +1,8 @@
+info:
+  name: Tables
+  type: folder
+docs: |-
+  # Tables & QR sessions (`smooth_tables`, `smooth_table_sessions`)
+
+  Status: **skeleton** — contract requests arrive with the tables/QR work
+  (SMO-62 track). See `menus/folder.yml` for conventions.

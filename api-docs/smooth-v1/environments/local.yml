@@ -1,0 +1,12 @@
+name: local
+variables:
+  - name: baseUrl
+    value: http://localhost:8889
+    enabled: true
+    secret: false
+    description: Local wp-env site URL (overridable via SMOOTH_BASE_URL, see .env.sample)
+  - name: appPassword
+    value: "{{process.env.SMOOTH_APP_PASSWORD}}"
+    enabled: true
+    secret: true
+    description: WordPress Application Password for a user holding the needed caps (local use only, never committed)
