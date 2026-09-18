@@ -26,7 +26,7 @@ class CartRepository extends BaseRepository
         return "id bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n"
             . "session_key varchar(64) NOT NULL DEFAULT '',\n"
             . "payload longtext NOT NULL,\n"
-            . "expires_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',\n"
+            . "expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
             . 'PRIMARY KEY  (id),' . "\n"
             . 'UNIQUE KEY session_key (session_key)';
     }

@@ -35,7 +35,7 @@ class TableSessionRepository extends BaseRepository
             . "table_id bigint(20) unsigned NOT NULL,\n"
             . "token varchar(64) NOT NULL DEFAULT '',\n"
             . "status varchar(32) NOT NULL DEFAULT 'active',\n"
-            . "expires_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',\n"
+            . "expires_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
             . 'PRIMARY KEY  (id),' . "\n"
             . 'KEY table_id (table_id),' . "\n"
             . 'UNIQUE KEY token (token)';

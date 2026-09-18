@@ -33,9 +33,10 @@ class ReservationRepository extends BaseRepository
         return "id bigint(20) unsigned NOT NULL AUTO_INCREMENT,\n"
             . "status varchar(32) NOT NULL DEFAULT 'pending',\n"
             . "party_size int(11) NOT NULL DEFAULT 2,\n"
-            . "reserved_for datetime NOT NULL DEFAULT '0000-00-00 00:00:00',\n"
-            . "created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',\n"
+            . "reserved_for datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
+            . "created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
             . 'PRIMARY KEY  (id),' . "\n"
-            . 'KEY reserved_for (reserved_for)';
+            . 'KEY reserved_for (reserved_for),' . "\n"
+            . 'KEY status_reserved (status, reserved_for)';
     }
 }
