@@ -11,6 +11,7 @@ No `do_action()` and no `add_filter()` calls exist in `src/`; the only
 | --- | --- | --- | --- | --- |
 | `smooth_service_providers` | filter | `src/Core/Plugin.php:149` | `array<int, class-string<ServiceProvider>> $providers` (Free list), `Container $container` → filtered provider list. Pro MUST be additive only. | 0.1.0 |
 | `smooth_should_load` | filter | `src/Providers/AssetsProvider.php:213` | `bool $load` (gate verdict: Smooth admin screen / block / shortcode present) → final verdict. | 0.1.0 |
+| `smooth_checkout_total_steps` | filter | `src/Domains/Checkout/TotalsCalculator.php:83` | `list<TotalStep> $steps` (default line→discount→tax→fee), `array $context` → final step pipeline. Non-`TotalStep` entries are ignored. | 0.1.0 |
 
 Related global (not a hook): `smooth_should_load()` in
 `src/Providers/AssetsProvider.php:435` returns
@@ -34,7 +35,8 @@ noted.
 | `init` | `TablesProvider::registerTableHandler` | `src/Providers/TablesProvider.php:62` |
 | `init` | `BlocksProvider::registerBlocks` | `src/Providers/BlocksProvider.php:63` |
 | `init` | `NotificationsProvider::scheduleWorker` | `src/Providers/NotificationsProvider.php:63` |
-| `template_redirect` | `CheckoutProvider::handleCheckoutRequest` | `src/Providers/CheckoutProvider.php:62` |
+| `template_redirect` | `CheckoutProvider::handleCheckoutRequest` | `src/Providers/CheckoutProvider.php:66` |
+| `admin_init` | `DatabaseProvider::resumePendingMigrations` | `src/Providers/DatabaseProvider.php:62` |
 | `admin_menu` | `AdminProvider::registerMenu` | `src/Providers/AdminProvider.php:61` |
 | `rest_api_init` | `RestProvider::registerRoutes` | `src/Providers/RestProvider.php:61` |
 | `wp_enqueue_scripts` | `AssetsProvider::enqueueFrontend` (via `addHook()` helper) | `src/Providers/AssetsProvider.php:305` |
