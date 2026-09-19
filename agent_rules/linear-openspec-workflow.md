@@ -19,6 +19,10 @@
   over environment limits — but say so in the comment.
 - Status timing: move to In Progress when work starts, not when the
   branch is created.
+- Cycles are journey slices: one end-to-end, demoable feature per cycle;
+  guardrails (CI, assets, a11y) ride along as a support track, not a
+  cycle of their own. Cycle exit = demo script run on a zero-Woo site +
+  evidence (gates, Bruno/e2e), never "merged".
 
 ## OpenSpec (`openspec/*`)
 
