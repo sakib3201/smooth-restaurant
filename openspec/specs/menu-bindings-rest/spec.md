@@ -25,11 +25,15 @@ The system SHALL provide `MenuRepositoryInterface`, `MenuItemRepositoryInterface
 - **THEN** it returns false and no table write occurs
 
 ### Requirement: Documented REST schemas
-`GET /smooth/v1/menus` and `GET /smooth/v1/menus/<id>` SHALL declare full JSON-Schema `schema` arrays covering params, headers, and every response field, served by a `MenuRoutes` controller in `Domains/Menu/` and delegated from `RestProvider::registerRoutes()`.
+`GET /smooth/v1/menus` and `GET /smooth/v1/menus/<id>` SHALL declare full JSON-Schema `schema` arrays covering params, headers, and every response field, served by a `MenuRoutes` controller in `Domains/Menu/` and delegated from `RestProvider::registerRoutes()`. Item and modifier writes SHALL declare equivalent schemas served by sibling `MenuItemRoutes` and `ModifierRoutes` controllers in `Domains/Menu/`, likewise delegated from `RestProvider::registerRoutes()`.
 
 #### Scenario: Schema validation
 - **WHEN** a client fetches a menu
 - **THEN** params, headers, and every response field match the declared schema
+
+#### Scenario: Item schema validation
+- **WHEN** a client creates or fetches an item or modifier
+- **THEN** params and every response field match the declared item/modifier schema
 
 ### Requirement: Read-only live bindings in BlocksProvider
 The `smooth/menu` bindings source SHALL be registered on `init` in `BlocksProvider` with `label`, `get_value_callback` reading live custom-table rows, and `use_context` for menu/item ids. It SHALL survive reorder, inline edits, and autosave without corruption. Revision restores SHALL NOT be expected to roll back table data (caveat documented in the contract doc, a code comment, and an editor notice if cheap). Editor writes SHALL travel through the cap-gated management routes.
