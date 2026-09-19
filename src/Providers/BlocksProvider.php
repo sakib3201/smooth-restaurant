@@ -216,7 +216,9 @@ final class BlocksProvider extends ServiceProvider
      */
     private function modifierValue(ModifierRepositoryInterface $modifiers, int $itemId, string $key): ?string
     {
-        $rows = $modifiers->listByItem($itemId);
+        // Publish-only, like the public tree: editor-context discrimination
+        // for draft modifiers is deferred to SMO-105/120 scope.
+        $rows = $modifiers->listByItem($itemId, 'publish');
         if ([] === $rows) {
             return null;
         }

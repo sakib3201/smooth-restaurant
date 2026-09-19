@@ -169,13 +169,22 @@ final class MenuRepositoryTest extends TestCase
         $otherItem = $this->items->insert($this->itemData($menuId, ['name' => 'Salad']));
 
         $this->modifiers->insert(
-            ['item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200, 'sort_order' => 1]
+            [
+                'item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200,
+                'status' => 'publish', 'sort_order' => 1,
+            ]
         );
         $modifierId = $this->modifiers->insert(
-            ['item_id' => $itemId, 'name' => 'Extra', 'price_cents' => 100, 'sort_order' => 0]
+            [
+                'item_id' => $itemId, 'name' => 'Extra', 'price_cents' => 100,
+                'status' => 'publish', 'sort_order' => 0,
+            ]
         );
         $this->modifiers->insert(
-            ['item_id' => $otherItem, 'name' => 'Unrelated', 'price_cents' => 0, 'sort_order' => 0]
+            [
+                'item_id' => $otherItem, 'name' => 'Unrelated', 'price_cents' => 0,
+                'status' => 'publish', 'sort_order' => 0,
+            ]
         );
 
         $listed = $this->modifiers->listByItem($itemId);
@@ -188,6 +197,36 @@ final class MenuRepositoryTest extends TestCase
         $this->assertTrue($this->modifiers->update($modifierId, ['price_cents' => 150]));
         $this->assertTrue($this->modifiers->delete($modifierId));
         $this->assertNull($this->modifiers->findById($modifierId));
+    }
+
+    public function test_modifier_status_filter_and_max_sort_order(): void
+    {
+        $menuId = $this->menus->insert($this->menuData());
+        $this->assertNull($this->items->maxSortOrderForMenu($menuId));
+
+        $itemId = $this->items->insert($this->itemData($menuId));
+        $this->assertNull($this->modifiers->maxSortOrderForItem($itemId));
+
+        $this->items->insert($this->itemData($menuId, ['name' => 'First', 'sort_order' => 0]));
+        $this->items->insert($this->itemData($menuId, ['name' => 'Second', 'sort_order' => 4]));
+        $this->assertSame(4, $this->items->maxSortOrderForMenu($menuId));
+
+        $this->modifiers->insert(
+            [
+                'item_id' => $itemId, 'name' => 'Live', 'price_cents' => 0,
+                'status' => 'publish', 'sort_order' => 2,
+            ]
+        );
+        $this->modifiers->insert(
+            [
+                'item_id' => $itemId, 'name' => 'Paused', 'price_cents' => 0,
+                'status' => 'draft', 'sort_order' => 7,
+            ]
+        );
+        $this->assertSame(7, $this->modifiers->maxSortOrderForItem($itemId));
+
+        $this->assertSame(['Live'], array_column($this->modifiers->listByItem($itemId), 'name'));
+        $this->assertSame(['Paused'], array_column($this->modifiers->listByItem($itemId, 'draft'), 'name'));
     }
 
     public function test_generate_slug_collapses_and_falls_back(): void

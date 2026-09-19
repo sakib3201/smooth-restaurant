@@ -12,7 +12,9 @@ namespace SmoothRestaurant\Providers;
 
 use SmoothRestaurant\Core\Container;
 use SmoothRestaurant\Core\ServiceProvider;
+use SmoothRestaurant\Domains\Menu\MenuItemRoutes;
 use SmoothRestaurant\Domains\Menu\MenuRoutes;
+use SmoothRestaurant\Domains\Menu\ModifierRoutes;
 
 /**
  * Class RestProvider
@@ -134,6 +136,14 @@ final class RestProvider extends ServiceProvider
         $routes = $this->container->make(MenuRoutes::class);
         if ($routes instanceof MenuRoutes) {
             $routes->register();
+        }
+        $items = $this->container->make(MenuItemRoutes::class);
+        if ($items instanceof MenuItemRoutes) {
+            $items->register();
+        }
+        $modifiers = $this->container->make(ModifierRoutes::class);
+        if ($modifiers instanceof ModifierRoutes) {
+            $modifiers->register();
         }
     }
 }

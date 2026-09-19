@@ -32,6 +32,8 @@ Pro and addons subscribe without overriding providers.
 | `smooth_restaurant_reservation_confirmed` | `DomainEvents::RESERVATION_CONFIRMED` | `array{...}` reservation payload | 0.1.0 |
 | `smooth_restaurant_cart_updated` | `DomainEvents::CART_UPDATED` | `array{...}` cart payload | 0.1.0 |
 | `smooth_restaurant_menu_saved` | `DomainEvents::MENU_SAVED` | `array{id: int, menu: array{...}}` menu payload (create + update) | 0.2.0 |
+| `smooth_restaurant_menu_item_saved` | `DomainEvents::MENU_ITEM_SAVED` | `array{action: created\|updated\|deleted\|reordered, id: int, menu_id: int, row?: array{...}}` item payload; the parent `MENU_SAVED` re-fires with `{id: menu_id, reason: 'item', action}` | 0.3.0 |
+| `smooth_restaurant_modifier_saved` | `DomainEvents::MODIFIER_SAVED` | `array{action: created\|updated\|deleted\|reordered, id: int, menu_id: int, item_id: int, row?: array{...}}` modifier payload; the parent `MENU_SAVED` re-fires with `{id: menu_id, reason: 'modifier', action}` | 0.3.0 |
 
 ## WordPress subscriptions (`add_action` / `add_filter`)
 

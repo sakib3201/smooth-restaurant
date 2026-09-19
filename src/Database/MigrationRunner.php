@@ -36,7 +36,7 @@ class MigrationRunner
     /**
      * Database schema version this plugin code understands.
      */
-    public const TARGET_VERSION = '0.2.0';
+    public const TARGET_VERSION = '0.3.0';
 
     /**
      * Registered migrations keyed by version.
@@ -88,7 +88,9 @@ class MigrationRunner
      * Follow-up domain issues append their version-guarded, idempotent,
      * additive migrations here. Version 0.2.0 creates the three menu
      * tables; each createTable() call is independently re-runnable, so a
-     * partial failure retries cleanly.
+     * partial failure retries cleanly. Version 0.3.0 re-runs all three
+     * menu createTable() calls so dbDelta converges the additive modifier
+     * status column; cycle 3 owns this single version bump (SMO-144).
      *
      * @return array<string, callable(): void>
      */
@@ -96,6 +98,11 @@ class MigrationRunner
     {
         return [
             '0.2.0' => static function (): void {
+                (new MenuRepository())->createTable();
+                (new MenuItemRepository())->createTable();
+                (new ModifierRepository())->createTable();
+            },
+            '0.3.0' => static function (): void {
                 (new MenuRepository())->createTable();
                 (new MenuItemRepository())->createTable();
                 (new ModifierRepository())->createTable();

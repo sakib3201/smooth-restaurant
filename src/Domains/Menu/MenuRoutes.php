@@ -31,6 +31,8 @@ use SmoothRestaurant\Providers\RestProvider;
  */
 final class MenuRoutes
 {
+    use MenuRestSupport;
+
     /**
      * Constructor.
      *
@@ -246,8 +248,10 @@ final class MenuRoutes
         foreach (['publish', 'draft'] as $status) {
             foreach ($this->items->listByMenu((int) $menu['id'], $status) as $item) {
                 $itemId = (int) ($item['id'] ?? 0);
-                foreach ($this->modifiers->listByItem($itemId) as $modifier) {
-                    $this->modifiers->delete((int) ($modifier['id'] ?? 0));
+                foreach (['publish', 'draft'] as $modifierStatus) {
+                    foreach ($this->modifiers->listByItem($itemId, $modifierStatus) as $modifier) {
+                        $this->modifiers->delete((int) ($modifier['id'] ?? 0));
+                    }
                 }
                 $this->items->delete($itemId);
             }
@@ -359,7 +363,10 @@ final class MenuRoutes
     }
 
     /**
-     * Assemble the full tree for a menu row.
+     * Assemble the publish-only tree for a menu row.
+     *
+     * Draft items and modifiers stay invisible on the public read; delete
+     * cascades still cover both statuses.
      *
      * @param array<string, mixed> $menu Menu row.
      * @return array{menu: array<string, mixed>, items: list<array{item: array<string, mixed>,
@@ -367,50 +374,15 @@ final class MenuRoutes
      */
     private function tree(int $menuId, array $menu): array
     {
-        $items = [];
+        $items = $this->items->listByMenu($menuId);
         $modifiers = [];
-        foreach (['publish', 'draft'] as $status) {
-            foreach ($this->items->listByMenu($menuId, $status) as $item) {
-                $items[] = $item;
-                foreach ($this->modifiers->listByItem((int) ($item['id'] ?? 0)) as $modifier) {
-                    $modifiers[] = $modifier;
-                }
+        foreach ($items as $item) {
+            foreach ($this->modifiers->listByItem((int) ($item['id'] ?? 0)) as $modifier) {
+                $modifiers[] = $modifier;
             }
         }
 
         return MenuService::assemble($menu, $items, $modifiers);
-    }
-
-    /**
-     * Normalize request params from a WP_REST_Request or a unit-test array.
-     *
-     * @return array<string, mixed>
-     */
-    private static function params(mixed $request): array
-    {
-        if (\is_array($request)) {
-            return $request;
-        }
-        if (\is_object($request) && \method_exists($request, 'get_params')) {
-            $params = $request->get_params();
-            if (\is_array($params)) {
-                return $params;
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * Normalize the status input, defaulting to publish.
-     *
-     * @param array<string, mixed> $params Request params.
-     */
-    private function status(array $params): string
-    {
-        $status = (string) ($params['status'] ?? 'publish');
-
-        return 'draft' === $status ? 'draft' : 'publish';
     }
 
     /**
@@ -433,34 +405,6 @@ final class MenuRoutes
                 return $base . '-' . time();
             }
         }
-    }
-
-    /**
-     * Wrap a payload in a status-coded response when WordPress is loaded.
-     *
-     * Unit context (no WP_REST_Response) returns the payload array, which
-     * WordPress would serialize to a 200 JSON response in production.
-     *
-     * @param array<string, mixed> $data Payload.
-     * @return mixed
-     */
-    private function respond(array $data, int $status): mixed
-    {
-        if (\class_exists('WP_REST_Response')) {
-            return new \WP_REST_Response($data, $status);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Error payload with a machine-readable code.
-     *
-     * @return mixed
-     */
-    private function error(string $code, string $message, int $status): mixed
-    {
-        return $this->respond(['code' => $code, 'message' => $message, 'data' => ['status' => $status]], $status);
     }
 
     /**

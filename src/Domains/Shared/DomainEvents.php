@@ -51,6 +51,16 @@ final class DomainEvents
     public const MENU_SAVED = 'smooth_restaurant_menu_saved';
 
     /**
+     * Fired after a menu item row is created, updated, deleted, or reordered.
+     */
+    public const MENU_ITEM_SAVED = 'smooth_restaurant_menu_item_saved';
+
+    /**
+     * Fired after a modifier row is created, updated, deleted, or reordered.
+     */
+    public const MODIFIER_SAVED = 'smooth_restaurant_modifier_saved';
+
+    /**
      * Dispatch a domain event.
      *
      * No-op when WordPress is not loaded (unit-test context).

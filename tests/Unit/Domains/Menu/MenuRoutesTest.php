@@ -172,13 +172,33 @@ final class MenuRoutesTest extends TestCase
             'menu_id' => $menuId, 'name' => 'Soup', 'description' => '', 'price_cents' => 950,
             'image_id' => 0, 'status' => 'publish', 'sort_order' => 0,
         ]);
-        $modifiers->insert(['item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200, 'sort_order' => 0]);
+        $modifiers->insert(
+            ['item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200, 'status' => 'publish', 'sort_order' => 0]
+        );
+        $draftItemId = $items->insert([
+            'menu_id' => $menuId, 'name' => 'Secret', 'description' => '', 'price_cents' => 100,
+            'image_id' => 0, 'status' => 'draft', 'sort_order' => 1,
+        ]);
+        $modifiers->insert(
+            [
+                'item_id' => $itemId, 'name' => 'Paused', 'price_cents' => 0,
+                'status' => 'draft', 'sort_order' => 1,
+            ]
+        );
+        $modifiers->insert(
+            [
+                'item_id' => $draftItemId, 'name' => 'Hidden', 'price_cents' => 0,
+                'status' => 'publish', 'sort_order' => 0,
+            ]
+        );
         $draftId = $this->seedMenu(['name' => 'Draft', 'status' => 'draft']);
 
         $response = $this->routes->getMenu(['id' => $menuId]);
         $this->assertIsArray($response);
         $this->assertSame('Lunch', $response['data']['menu']['name']);
+        $this->assertCount(1, $response['data']['items']);
         $this->assertSame('Soup', $response['data']['items'][0]['item']['name']);
+        $this->assertCount(1, $response['data']['items'][0]['modifiers']);
         $this->assertSame('Large', $response['data']['items'][0]['modifiers'][0]['name']);
 
         $missing = $this->routes->getMenu(['id' => 999]);
@@ -219,7 +239,12 @@ final class MenuRoutesTest extends TestCase
             'menu_id' => $menuId, 'name' => 'Soup', 'description' => '', 'price_cents' => 950,
             'image_id' => 0, 'status' => 'publish', 'sort_order' => 0,
         ]);
-        $modifiers->insert(['item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200, 'sort_order' => 0]);
+        $modifiers->insert(
+            ['item_id' => $itemId, 'name' => 'Large', 'price_cents' => 200, 'status' => 'publish', 'sort_order' => 0]
+        );
+        $modifiers->insert(
+            ['item_id' => $itemId, 'name' => 'Paused', 'price_cents' => 0, 'status' => 'draft', 'sort_order' => 1]
+        );
 
         $missing = $this->routes->updateMenu(['id' => 999, 'name' => 'Ghost']);
         $this->assertIsArray($missing);
@@ -243,6 +268,7 @@ final class MenuRoutesTest extends TestCase
         $this->assertSame([], $items->listByMenu($menuId, 'publish'));
         $this->assertSame([], $items->listByMenu($menuId, 'draft'));
         $this->assertSame([], $modifiers->listByItem($itemId));
+        $this->assertSame([], $modifiers->listByItem($itemId, 'draft'));
 
         $gone = $this->routes->deleteMenu(['id' => $menuId]);
         $this->assertIsArray($gone);

@@ -82,7 +82,8 @@ class MenuBindingsTest extends TestCase
             'price_cents' => 950, 'image_id' => 0, 'status' => 'publish', 'sort_order' => 0,
         ]);
         $modifiers->insert([
-            'item_id' => $this->itemId, 'name' => 'Large', 'price_cents' => 200, 'sort_order' => 0,
+            'item_id' => $this->itemId, 'name' => 'Large', 'price_cents' => 200,
+            'status' => 'publish', 'sort_order' => 0,
         ]);
     }
 

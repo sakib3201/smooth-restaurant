@@ -10,9 +10,9 @@ use SmoothRestaurant\Database\BaseRepository;
 /**
  * Modifiers table repository.
  *
- * Owns modifier rows (item membership, name, cents price delta, display
- * order). Schema is dbDelta-managed; raw SQL only for keys dbDelta cannot
- * express.
+ * Owns modifier rows (item membership, name, cents price delta, status,
+ * display order). Schema is dbDelta-managed; raw SQL only for keys dbDelta
+ * cannot express.
  */
 class ModifierRepository extends BaseRepository implements ModifierRepositoryInterface
 {
@@ -35,6 +35,7 @@ class ModifierRepository extends BaseRepository implements ModifierRepositoryInt
             . "item_id bigint(20) unsigned NOT NULL,\n"
             . "name varchar(191) NOT NULL,\n"
             . "price_cents bigint(20) NOT NULL DEFAULT 0,\n"
+            . "status varchar(32) NOT NULL DEFAULT 'publish',\n"
             . "sort_order int(11) NOT NULL DEFAULT 0,\n"
             . "created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
             . "updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\n"
@@ -68,17 +69,34 @@ class ModifierRepository extends BaseRepository implements ModifierRepositoryInt
     /**
      * @return list<array<string, mixed>>
      */
-    public function listByItem(int $itemId): array
+    public function listByItem(int $itemId, string $status = 'publish'): array
     {
         return $this->mapRows(
             $this->fetchAll(
                 $this->prepare(
                     'SELECT * FROM ' . $this->getTable()
-                        . ' WHERE item_id = %d ORDER BY sort_order ASC, id ASC',
-                    $itemId
+                        . ' WHERE item_id = %d AND status = %s ORDER BY sort_order ASC, id ASC',
+                    $itemId,
+                    $status
                 )
             )
         );
+    }
+
+    /**
+     * @return int|null Highest sort_order, or null when the item has no modifiers.
+     */
+    public function maxSortOrderForItem(int $itemId): ?int
+    {
+        $row = $this->fetchRow(
+            $this->prepare(
+                'SELECT MAX(sort_order) AS max_order FROM ' . $this->getTable() . ' WHERE item_id = %d',
+                $itemId
+            )
+        );
+        $max = $row['max_order'] ?? null;
+
+        return \is_numeric($max) ? (int) $max : null;
     }
 
     /**

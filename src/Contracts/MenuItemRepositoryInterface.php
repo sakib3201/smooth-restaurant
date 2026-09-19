@@ -72,6 +72,17 @@ interface MenuItemRepositoryInterface
     public function listByMenu(int $menuId, string $status = 'publish'): array;
 
     /**
+     * Highest display order within one menu, or null when empty.
+     *
+     * Backs server-assigned appends: create without sort_order lands at
+     * MAX(sort_order)+1.
+     *
+     * @param int $menuId Menu row id.
+     * @return int|null Highest sort_order, or null when the menu has no items.
+     */
+    public function maxSortOrderForMenu(int $menuId): ?int;
+
+    /**
      * Update a menu item row by id.
      *
      * @param int                  $id   Row id.

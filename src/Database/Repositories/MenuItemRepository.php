@@ -86,6 +86,22 @@ class MenuItemRepository extends BaseRepository implements MenuItemRepositoryInt
     }
 
     /**
+     * @return int|null Highest sort_order, or null when the menu has no items.
+     */
+    public function maxSortOrderForMenu(int $menuId): ?int
+    {
+        $row = $this->fetchRow(
+            $this->prepare(
+                'SELECT MAX(sort_order) AS max_order FROM ' . $this->getTable() . ' WHERE menu_id = %d',
+                $menuId
+            )
+        );
+        $max = $row['max_order'] ?? null;
+
+        return \is_numeric($max) ? (int) $max : null;
+    }
+
+    /**
      * @param array<string, mixed> $data New column values.
      */
     public function update(int $id, array $data): bool

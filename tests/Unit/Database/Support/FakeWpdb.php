@@ -13,8 +13,8 @@ namespace SmoothRestaurant\Tests\Unit\Database\Support;
  * served through get_row()/get_results() are evaluated against that store
  * by a small parser that understands the canonical shapes repositories
  * emit: `FROM {table}`, equality `col = %s|%d`, `col LIKE %s` (substring,
- * `%`-wildcards stripped), OR-grouped LIKEs, `ORDER BY sort_order`, and
- * `LIMIT %d OFFSET %d`. Placeholder args bind positionally via the
+ * `%`-wildcards stripped), OR-grouped LIKEs, `ORDER BY sort_order`,
+ * `SELECT MAX(col)` aggregates, and `LIMIT %d OFFSET %d`. Placeholder args bind positionally via the
  * structured `$preparedArgs` log (never by re-splitting the rendered
  * string), so search input containing `|` stays intact.
  */
@@ -191,7 +191,12 @@ final class FakeWpdb
         $args = $this->argsFor($query);
 
         $rows = $this->applyWhere($query, $rows, $args);
-        $rows = $this->applyOrder($query, $rows);
+        $aggregate = $this->applyMaxAggregate($query, $rows);
+        if (null !== $aggregate) {
+            $rows = [$aggregate];
+        } else {
+            $rows = $this->applyOrder($query, $rows);
+        }
 
         [$limit, $offset] = $this->limitAndOffset($query, $args);
         if (null !== $limitOverride) {
@@ -289,6 +294,39 @@ final class FakeWpdb
                 }
             )
         );
+    }
+
+    /**
+     * Evaluate SELECT MAX(col) AS alias against the filtered store.
+     *
+     * Repositories emit this shape for server-assigned appends
+     * (maxSortOrder*()). Returns null when the query is not an aggregate so
+     * normal row selection proceeds.
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return array<string, mixed>|null Single aggregate row, or null.
+     */
+    private function applyMaxAggregate(string $query, array $rows): ?array
+    {
+        if (1 !== preg_match('/SELECT\s+MAX\s*\(\s*`?(\w+)`?\s*\)(?:\s+AS\s+`?(\w+)`?)?/i', $query, $match)) {
+            return null;
+        }
+        $column = $match[1];
+        $alias = $match[2] ?? 'max_order';
+
+        $max = null;
+        foreach ($rows as $row) {
+            $value = $row[$column] ?? null;
+            if (!\is_numeric($value)) {
+                continue;
+            }
+            $int = (int) $value;
+            if (null === $max || $int > $max) {
+                $max = $int;
+            }
+        }
+
+        return [$alias => $max];
     }
 
     /**

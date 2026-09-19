@@ -65,10 +65,22 @@ interface ModifierRepositoryInterface
     /**
      * List modifier rows for one menu item in display order.
      *
-     * @param int $itemId Menu item row id.
+     * @param int    $itemId Menu item row id.
+     * @param string $status Row status filter.
      * @return list<array<string, mixed>> Typed rows.
      */
-    public function listByItem(int $itemId): array;
+    public function listByItem(int $itemId, string $status = 'publish'): array;
+
+    /**
+     * Highest display order within one menu item, or null when empty.
+     *
+     * Backs server-assigned appends: create without sort_order lands at
+     * MAX(sort_order)+1.
+     *
+     * @param int $itemId Menu item row id.
+     * @return int|null Highest sort_order, or null when the item has no modifiers.
+     */
+    public function maxSortOrderForItem(int $itemId): ?int;
 
     /**
      * Update a modifier row by id.
