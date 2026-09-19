@@ -1,0 +1,72 @@
+info:
+  name: Update item
+  type: http
+  seq: 8
+  tags: [auth-local]
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/wp-json/smooth/v1/items/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Item row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "description": "Updated description"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.id
+      operator: eq
+      value: "1"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Partial update of an item row. Only present fields change; `menu_id` is immutable and silently ignored.
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Item row id |
+  | name | body | no | Display name (must not be empty) |
+  | description | body | no | Long description |
+  | price_cents | body | no | Price in cents, integer >= 0 |
+  | image_id | body | no | WP media attachment id, integer >= 0 |
+  | status | body | no | publish or draft |
+  | sort_order | body | no | Display order (escape hatch; drag uses the order endpoint) |
+
+  ## Success example
+  ```json
+  {"data": {"id": 1, "menu_id": 1, "name": "Soup", "status": "publish"}}
+  ```
+
+  ## Error cases
+  - `400` — empty name (`smooth_menu_item_missing_name`), invalid price/image
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown id (`smooth_menu_item_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

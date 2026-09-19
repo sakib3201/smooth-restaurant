@@ -1,0 +1,66 @@
+info:
+  name: Reorder modifiers
+  type: http
+  seq: 14
+  tags: [auth-local]
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/wp-json/smooth/v1/items/1/modifiers/order"
+  params:
+    - name: item_id
+      value: "1"
+      type: path
+      description: Parent item row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "ids": [2, 1]
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.ids
+      operator: isArray
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Canonical drag/reorder path: send the item's full ordered modifier id set; the server assigns dense `sort_order` (`0..n-1`) and echoes the ids. The id set must equal the parent's full current set (stale drags are rejected, nothing is written).
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | item_id | path | yes | Parent item row id |
+  | ids | body | yes | Full ordered modifier id set for the item |
+
+  ## Success example
+  ```json
+  {"data": {"ids": [2, 1]}}
+  ```
+
+  ## Error cases
+  - `400` — unknown or missing ids (`smooth_modifier_order_mismatch`), no `sort_order` changes
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown item (`smooth_menu_item_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

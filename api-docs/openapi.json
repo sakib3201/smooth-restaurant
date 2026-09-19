@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Smooth Restaurant API",
-    "version": "0.2.0",
-    "description": "Menu endpoints (smooth/v1). Revision caveat: menu data lives in custom tables, not post content — restoring a post revision does not roll back menu rows. See docs/menu-binding-contract.md."
+    "version": "0.3.0",
+    "description": "Menu, item, and modifier endpoints (smooth/v1). The public tree returns publish rows only. Revision caveat: menu data lives in custom tables, not post content — restoring a post revision does not roll back menu rows. See docs/menu-binding-contract.md and docs/menu-write-contract.md."
   },
   "servers": [
     {
@@ -158,6 +158,290 @@
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
+    },
+    "/menus/{menu_id}/items": {
+      "post": {
+        "summary": "Create an item under a menu (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "menu_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created item row (sort_order assigned server-side when omitted).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/MenuItem" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/items/{id}": {
+      "patch": {
+        "summary": "Partially update an item (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated item row (only present fields change; menu_id is immutable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/MenuItem" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "summary": "Delete an item with its modifiers (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletion receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": { "type": "boolean" },
+                        "id": { "type": "integer" }
+                      },
+                      "required": ["deleted", "id"]
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/menus/{menu_id}/items/order": {
+      "put": {
+        "summary": "Reorder a menu's items (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "menu_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered ids echoed back; sort_order is dense 0..n-1 server-side.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ids": { "type": "array", "items": { "type": "integer" } }
+                      },
+                      "required": ["ids"]
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/items/{item_id}/modifiers": {
+      "post": {
+        "summary": "Create a modifier under an item (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created modifier row (sort_order assigned server-side when omitted).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Modifier" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/modifiers/{id}": {
+      "patch": {
+        "summary": "Partially update a modifier (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated modifier row (only present fields change; item_id is immutable).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "$ref": "#/components/schemas/Modifier" }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a modifier (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deletion receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": { "type": "boolean" },
+                        "id": { "type": "integer" }
+                      },
+                      "required": ["deleted", "id"]
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
+    },
+    "/items/{item_id}/modifiers/order": {
+      "put": {
+        "summary": "Reorder an item's modifiers (requires smooth_manage_menus)",
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ordered ids echoed back; sort_order is dense 0..n-1 server-side.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ids": { "type": "array", "items": { "type": "integer" } }
+                      },
+                      "required": ["ids"]
+                    }
+                  },
+                  "required": ["data"]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {
@@ -175,6 +459,36 @@
           "updated_at": { "type": "string", "format": "date-time" }
         },
         "required": ["id", "name", "slug", "status"]
+      },
+      "MenuItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "menu_id": { "type": "integer" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "price_cents": { "type": "integer", "minimum": 0 },
+          "image_id": { "type": "integer", "minimum": 0 },
+          "status": { "type": "string", "enum": ["publish", "draft"] },
+          "sort_order": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "menu_id", "name", "status"]
+      },
+      "Modifier": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "item_id": { "type": "integer" },
+          "name": { "type": "string" },
+          "price_cents": { "type": "integer", "minimum": 0 },
+          "status": { "type": "string", "enum": ["publish", "draft"] },
+          "sort_order": { "type": "integer" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["id", "item_id", "name", "status"]
       },
       "MenuCollection": {
         "type": "object",
@@ -206,8 +520,8 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "item": { "type": "object" },
-                    "modifiers": { "type": "array", "items": { "type": "object" } }
+                    "item": { "$ref": "#/components/schemas/MenuItem" },
+                    "modifiers": { "type": "array", "items": { "$ref": "#/components/schemas/Modifier" } }
                   },
                   "required": ["item", "modifiers"]
                 }
@@ -235,7 +549,7 @@
     },
     "responses": {
       "BadRequest": {
-        "description": "Validation failure (smooth_menu_missing_name).",
+        "description": "Validation failure (smooth_menu_missing_name, smooth_menu_item_missing_name, smooth_modifier_missing_name, order-mismatch and invalid-field codes).",
         "content": {
           "application/json": {
             "schema": { "$ref": "#/components/schemas/Error" }

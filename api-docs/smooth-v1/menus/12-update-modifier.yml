@@ -1,0 +1,70 @@
+info:
+  name: Update modifier
+  type: http
+  seq: 12
+  tags: [auth-local]
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/wp-json/smooth/v1/modifiers/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Modifier row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "price_cents": 200
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.id
+      operator: eq
+      value: "1"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Partial update of a modifier row. Only present fields change; `item_id` is immutable and silently ignored.
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Modifier row id |
+  | name | body | no | Display name (must not be empty) |
+  | price_cents | body | no | Price delta in cents, integer >= 0 |
+  | status | body | no | publish or draft |
+  | sort_order | body | no | Display order (escape hatch; drag uses the order endpoint) |
+
+  ## Success example
+  ```json
+  {"data": {"id": 1, "item_id": 1, "name": "Extra cheese", "status": "publish"}}
+  ```
+
+  ## Error cases
+  - `400` — empty name (`smooth_modifier_missing_name`), invalid price
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown id (`smooth_modifier_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

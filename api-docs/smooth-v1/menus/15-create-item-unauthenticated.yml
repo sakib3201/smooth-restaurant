@@ -1,0 +1,51 @@
+info:
+  name: Create item unauthenticated
+  type: http
+  seq: 15
+  tags: [smoke, auth]
+
+http:
+  method: POST
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus/1/items"
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  body:
+    mode: json
+    json: |-
+      {
+        "name": "Should not be created"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "401"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Permission-matrix negative: an unauthenticated item write must be rejected before touching storage.
+
+  ## Auth
+  None sent on purpose; expects `401`.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | name | body | yes | Any name (request must be rejected) |
+
+  ## Success example
+  ```json
+  {"code": "rest_forbidden", "message": "Sorry, you are not allowed to do that.", "data": {"status": 401}}
+  ```
+
+  ## Error cases
+  - `200`/`201` — REGRESSION: the capability gate is open
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

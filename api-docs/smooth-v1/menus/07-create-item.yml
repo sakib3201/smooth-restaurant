@@ -1,0 +1,74 @@
+info:
+  name: Create item
+  type: http
+  seq: 7
+  tags: [auth-local]
+
+http:
+  method: POST
+  url: "{{baseUrl}}/wp-json/smooth/v1/menus/1/items"
+  params:
+    - name: menu_id
+      value: "1"
+      type: path
+      description: Parent menu row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "name": "Soup",
+        "description": "Hot soup",
+        "price_cents": 950,
+        "status": "draft"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+    - expression: res.body.data.id
+      operator: isNumber
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Create an item row under a menu. Omitted `sort_order` appends at the end (server assigns `MAX(sort_order)+1`).
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | menu_id | path | yes | Parent menu row id |
+  | name | body | yes | Display name |
+  | description | body | no | Long description |
+  | price_cents | body | no | Price in cents, integer >= 0, default 0 |
+  | image_id | body | no | WP media attachment id, integer >= 0, default 0 |
+  | status | body | no | publish or draft, default publish |
+  | sort_order | body | no | Display order (server-assigned when omitted) |
+
+  ## Success example
+  ```json
+  {"data": {"id": 1, "menu_id": 1, "name": "Soup", "status": "draft", "sort_order": 0}}
+  ```
+
+  ## Error cases
+  - `400` — missing/empty name (`smooth_menu_item_missing_name`), negative/non-integer price or image (`smooth_menu_item_invalid_price`, `smooth_menu_item_invalid_image`)
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown menu (`smooth_menu_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

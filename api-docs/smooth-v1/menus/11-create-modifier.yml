@@ -1,0 +1,71 @@
+info:
+  name: Create modifier
+  type: http
+  seq: 11
+  tags: [auth-local]
+
+http:
+  method: POST
+  url: "{{baseUrl}}/wp-json/smooth/v1/items/1/modifiers"
+  params:
+    - name: item_id
+      value: "1"
+      type: path
+      description: Parent item row id
+  headers:
+    - name: Content-Type
+      value: application/json
+      description: JSON request body
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+  body:
+    mode: json
+    json: |-
+      {
+        "name": "Extra cheese",
+        "price_cents": 150,
+        "status": "publish"
+      }
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+    - expression: res.body.data.id
+      operator: isNumber
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Create a modifier row under an item. Omitted `sort_order` appends at the end (server assigns `MAX(sort_order)+1`). `status` stages single add-ons (`draft` pauses one without touching the item).
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | item_id | path | yes | Parent item row id |
+  | name | body | yes | Display name |
+  | price_cents | body | no | Price delta in cents, integer >= 0, default 0 |
+  | status | body | no | publish or draft, default publish |
+  | sort_order | body | no | Display order (server-assigned when omitted) |
+
+  ## Success example
+  ```json
+  {"data": {"id": 1, "item_id": 1, "name": "Extra cheese", "status": "publish", "sort_order": 0}}
+  ```
+
+  ## Error cases
+  - `400` — missing/empty name (`smooth_modifier_missing_name`), negative/non-integer price (`smooth_modifier_invalid_price`)
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown item (`smooth_menu_item_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144

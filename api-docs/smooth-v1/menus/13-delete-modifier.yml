@@ -1,0 +1,55 @@
+info:
+  name: Delete modifier
+  type: http
+  seq: 13
+  tags: [auth-local]
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/wp-json/smooth/v1/modifiers/1"
+  params:
+    - name: id
+      value: "1"
+      type: path
+      description: Modifier row id
+  auth:
+    type: basic
+    username: "{{wpUsername}}"
+    password: "{{appPassword}}"
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+    - expression: res.body.data.deleted
+      operator: eq
+      value: "true"
+
+settings:
+  encodeUrl: true
+
+docs: |-
+  ## Purpose
+  Delete a modifier row.
+
+  ## Auth
+  Capability `smooth_manage_menus` (401 without credentials, 403 without cap). Local-only: needs app-password credentials.
+
+  ## Parameters
+  | Name | In | Required | Description |
+  | ---- | -- | -------- | ----------- |
+  | id | path | yes | Modifier row id |
+
+  ## Success example
+  ```json
+  {"data": {"deleted": true, "id": 1}}
+  ```
+
+  ## Error cases
+  - `401` — missing/invalid credentials
+  - `403` — authenticated but lacking the cap
+  - `404` — unknown id (`smooth_modifier_not_found`)
+
+  ## Notes / Changelog
+  - 2026-09-19: created alongside SMO-144
